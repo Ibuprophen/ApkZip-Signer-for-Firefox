@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   Copyright 2012 Hai Bison
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 
 /*
@@ -90,7 +101,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         add(txtPwd, gridBagConstraints);
 
         txtPwd2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPwd2.setBorder(javax.swing.BorderFactory.createTitledBorder("Retype:"));
+        txtPwd2.setBorder(javax.swing.BorderFactory.createTitledBorder("Confirm:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -98,6 +109,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtPwd2, gridBagConstraints);
 
+        txtAlias.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtAlias.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -106,6 +118,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtAlias, gridBagConstraints);
 
+        txtAliasPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtAliasPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias password:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -114,6 +127,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtAliasPwd, gridBagConstraints);
 
+        txtAliasPwd2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtAliasPwd2.setBorder(javax.swing.BorderFactory.createTitledBorder("Confirm:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -130,6 +144,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtValidity, gridBagConstraints);
 
+        txtName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtName.setBorder(javax.swing.BorderFactory.createTitledBorder("First and last name:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -138,6 +153,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtName, gridBagConstraints);
 
+        txtOrgUnit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtOrgUnit.setBorder(javax.swing.BorderFactory.createTitledBorder("Organizational unit:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -146,6 +162,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtOrgUnit, gridBagConstraints);
 
+        txtOrg.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtOrg.setBorder(javax.swing.BorderFactory.createTitledBorder("Organization:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -154,6 +171,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtOrg, gridBagConstraints);
 
+        txtCity.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCity.setBorder(javax.swing.BorderFactory.createTitledBorder("City or locality:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -162,6 +180,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtCity, gridBagConstraints);
 
+        txtState.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtState.setBorder(javax.swing.BorderFactory.createTitledBorder("State or province:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -171,6 +190,7 @@ public class PanelKeygen extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(txtState, gridBagConstraints);
 
+        txtCountry.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCountry.setBorder(javax.swing.BorderFactory.createTitledBorder("Country code (XX):"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;

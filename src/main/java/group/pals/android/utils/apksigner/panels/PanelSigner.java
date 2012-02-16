@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   Copyright 2012 Hai Bison
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 
 /*
@@ -14,6 +25,8 @@ import group.pals.android.utils.apksigner.MainFrame;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.Signer;
+import group.pals.android.utils.apksigner.utils.UI;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -79,7 +92,6 @@ public class PanelSigner extends javax.swing.JPanel {
         add(txtPwd, gridBagConstraints);
 
         cbxAliases.setEditable(true);
-        cbxAliases.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbxAliases.setBorder(javax.swing.BorderFactory.createTitledBorder("Aliases:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -116,6 +128,7 @@ public class PanelSigner extends javax.swing.JPanel {
     private javax.swing.JPasswordField txtAliasPwd;
     private javax.swing.JPasswordField txtPwd;
     // End of variables declaration//GEN-END:variables
+
     private File keyFile;
 
     /**
@@ -126,11 +139,12 @@ public class PanelSigner extends javax.swing.JPanel {
     }
 
     /**
-     * @param keyFile the keyFile to set
+     * @param file the keyFile to set
      */
-    public void setKeyFile(File keyFile) {
-        this.keyFile = keyFile;
-        btnLoadKeyFile.setText(keyFile == null ? "Load key-file..." : String.format("[ %s ]", keyFile.getName()));
+    public void setKeyFile(File file) {
+        this.keyFile = file;
+        btnLoadKeyFile.setText(file == null ? "Load key-file..." : String.format("[ %s ]", file.getName()));
+        btnLoadKeyFile.setForeground(file == null ? Color.black : UI.SelectedFileColor);
         DefaultComboBoxModel model = (DefaultComboBoxModel) cbxAliases.getModel();
         model.removeAllElements();
     }
@@ -144,11 +158,12 @@ public class PanelSigner extends javax.swing.JPanel {
     }
 
     /**
-     * @param apkFile the keyFile to set
+     * @param file the keyFile to set
      */
-    public void setApkFile(File apkFile) {
-        this.apkFile = apkFile;
-        btnLoadApkFile.setText(apkFile == null ? "Load apk-file..." : String.format("[ %s ]", apkFile.getName()));
+    public void setApkFile(File file) {
+        this.apkFile = file;
+        btnLoadApkFile.setText(file == null ? "Load apk-file..." : String.format("[ %s ]", file.getName()));
+        btnLoadApkFile.setForeground(file == null ? Color.black : UI.SelectedFileColor);
     }
 
     /*
@@ -197,7 +212,6 @@ public class PanelSigner extends javax.swing.JPanel {
             }
         }
     };//BtnSignListener
-
     /**
      * TODO: load aliases automatically, and let user to be able to choose them
      */

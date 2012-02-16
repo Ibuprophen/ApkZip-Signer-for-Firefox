@@ -60,7 +60,7 @@
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Retype:"/>
+            <TitledBorder title="Confirm:"/>
           </Border>
         </Property>
       </Properties>
@@ -72,6 +72,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtAlias">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Alias:"/>
@@ -86,6 +87,7 @@
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtAliasPwd">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Alias password:"/>
@@ -100,6 +102,7 @@
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtAliasPwd2">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Confirm:"/>
@@ -128,6 +131,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtName">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="First and last name:"/>
@@ -142,6 +146,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtOrgUnit">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Organizational unit:"/>
@@ -156,6 +161,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtOrg">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Organization:"/>
@@ -170,6 +176,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtCity">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="City or locality:"/>
@@ -184,6 +191,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtState">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="State or province:"/>
@@ -198,6 +206,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtCountry">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Country code (XX):"/>

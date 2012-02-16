@@ -1,6 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   Copyright 2012 Hai Bison
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 
 /*
@@ -13,14 +24,15 @@ package group.pals.android.utils.apksigner;
 import group.pals.android.utils.apksigner.panels.PanelKeygen;
 import group.pals.android.utils.apksigner.panels.PanelSigner;
 import group.pals.android.utils.apksigner.utils.Files;
+import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.UI;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.AbstractAction;
 
 /**
  *
- * @author root
+ * @author Hai Bison
  */
 public class MainFrame extends javax.swing.JFrame {
 
@@ -28,7 +40,9 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
 
-        btnChooseJdkPath.addActionListener(BtnChooseJdkPathListener);
+        btnChooseJdkPath.setAction(ActionChooseJdkPath);
+        miExit.setAction(ActionExit);
+        miAbout.setAction(ActionAbout);
 
         tabbedPane.add("Key Generator", new PanelKeygen(this));
         tabbedPane.add("APK Signer", new PanelSigner(this));
@@ -48,6 +62,11 @@ public class MainFrame extends javax.swing.JFrame {
         txtJdkPath = new javax.swing.JTextField();
         btnChooseJdkPath = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        miExit = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        miAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -79,6 +98,22 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(tabbedPane, gridBagConstraints);
 
+        jMenu1.setText("File");
+
+        miExit.setText("jMenuItem1");
+        jMenu1.add(miExit);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Help");
+
+        miAbout.setText("jMenuItem1");
+        jMenu2.add(miAbout);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -92,14 +127,26 @@ public class MainFrame extends javax.swing.JFrame {
 
             public void run() {
                 MainFrame m = new MainFrame();
+
                 UI.setWindowCenterScreen(m, 51);
+
+                Package pkg = MainFrame.class.getPackage();
+                m.setTitle(String.format("%s %s",
+                        pkg != null ? pkg.getImplementationTitle() : "apk-ssigner",
+                        pkg != null ? pkg.getImplementationVersion() : "[unknown]"));
+
                 m.setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChooseJdkPath;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenuItem miAbout;
+    private javax.swing.JMenuItem miExit;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField txtJdkPath;
     // End of variables declaration//GEN-END:variables
@@ -117,16 +164,37 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public void setJdkDir(File v) {
         this.jdkDir = v;
-        txtJdkPath.setText(v.getAbsolutePath());
+        txtJdkPath.setText(v != null ? v.getAbsolutePath() : null);
 
     }
-    private final ActionListener BtnChooseJdkPathListener = new ActionListener() {
+    /*
+     * ACTION LISTENERS
+     */
+    private final AbstractAction ActionChooseJdkPath = new AbstractAction("Choose...") {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFile(null);
-            if (file != null) {
-                setJdkDir(file);
-            }
+            File file = Files.chooseDir(null);
+            setJdkDir(file);
         }
-    };// BtnChooseJdkPathListener
+    };//ActionChooseJdkPath
+    private final AbstractAction ActionExit = new AbstractAction("Exit") {
+
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
+    };//ActionExit
+    private final AbstractAction ActionAbout = new AbstractAction("About...") {
+
+        public void actionPerformed(ActionEvent e) {
+            Package pkg = MainFrame.class.getPackage();
+            String msg = String.format("%s %s\n\n"
+                    + "...by Hai Bison\n\n"
+                    + "License: Apache License 2.0\n"
+                    + "Homepage: https://sites.google.com/site/haitimeid/\n"
+                    + "Code page: http://code.google.com/p/apk-signer/\n",
+                    pkg != null ? pkg.getImplementationTitle() : "apk-signer",
+                    pkg != null ? pkg.getImplementationVersion() : "[unknown]");
+            MsgBox.showHugeInfoMsg(null, null, msg, 400, 200);
+        }
+    };//ActionAbout
 }

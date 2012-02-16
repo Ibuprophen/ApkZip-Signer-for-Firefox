@@ -1,7 +1,7 @@
 apk-signer
 Copyright 2012 Hai Bison
 
-Version: 1.0
+Version: 1.1
 
 This product includes software developed at
 http://code.google.com/p/apk-signer/
@@ -22,5 +22,5 @@ limitations under the License.
 
 History:
 
-+++ Version 1.0 +++
++++ Version 1.1 +++
  - Release: Feb 16, 2012

@@ -22,9 +22,11 @@
 package group.pals.android.utils.apksigner.panels;
 
 import group.pals.android.utils.apksigner.MainFrame;
+import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.KeyGen;
 import group.pals.android.utils.apksigner.utils.MsgBox;
+import group.pals.android.utils.apksigner.utils.UI;
 import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +49,8 @@ public class PanelKeygen extends javax.swing.JPanel {
         btnChooseFile.addActionListener(BtnChooseFileListener);
         btnGenFile.setAction(ActionGenKeyfile);
         txtValidity.setValue(25);
+        
+        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }
 
     /** This method is called from within the constructor to
@@ -227,7 +231,6 @@ public class PanelKeygen extends javax.swing.JPanel {
     private javax.swing.JTextField txtState;
     private javax.swing.JSpinner txtValidity;
     // End of variables declaration//GEN-END:variables
-
     /**
      * Preferences
      */

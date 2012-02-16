@@ -1,7 +1,7 @@
 apk-signer
 Copyright 2012 Hai Bison
 
-Version: 1.1
+Version: 1.2
 
 This product includes software developed at
 http://code.google.com/p/apk-signer/
@@ -21,6 +21,16 @@ limitations under the License.
 ===============================================================
 
 History:
+
++++ Version 1.2 +++
+ - Release: Feb 16, 2012
+
+ - Add popup menu for all text components;
+
++++ Version 1.1.1 +++
+ - Release: Feb 16, 2012
+
+ - Fix: use save dialog instead of open dialog in panel keygen;
 
 +++ Version 1.1 +++
  - Release: Feb 16, 2012

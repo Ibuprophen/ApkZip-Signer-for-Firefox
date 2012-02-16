@@ -23,6 +23,7 @@ package group.pals.android.utils.apksigner;
 
 import group.pals.android.utils.apksigner.panels.PanelKeygen;
 import group.pals.android.utils.apksigner.panels.PanelSigner;
+import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.UI;
@@ -41,6 +42,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
 
+        UI.setEditorPopupMenu(getContentPane(), new JEditorPopupMenu());
         btnChooseJdkPath.setAction(ActionChooseJdkPath);
         miExit.setAction(ActionExit);
         miAbout.setAction(ActionAbout);

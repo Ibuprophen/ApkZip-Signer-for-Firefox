@@ -22,6 +22,7 @@
 package group.pals.android.utils.apksigner.panels;
 
 import group.pals.android.utils.apksigner.MainFrame;
+import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.Signer;
@@ -56,9 +57,9 @@ public class PanelSigner extends javax.swing.JPanel {
         btnLoadKeyFile.addActionListener(BtnLoadKeyFileListener);
         btnLoadApkFile.addActionListener(BtnLoadApkFileListener);
         btnSignFile.setAction(ActionSign);
-//        btnSignFile.setEnabled(false);
 
         txtPwd.addKeyListener(TxtPwdKeyListener);
+        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }
 
     /** This method is called from within the constructor to

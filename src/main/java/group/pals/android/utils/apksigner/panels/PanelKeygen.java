@@ -240,7 +240,7 @@ public class PanelKeygen extends javax.swing.JPanel {
     private final ActionListener BtnChooseFileListener = new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFile(new File(P.get(KeyLastWorkingDir, "/")));
+            File file = Files.chooseFileToSave(new File(P.get(KeyLastWorkingDir, "/")));
             if (file != null) {
                 txtFile.setText(file.getAbsolutePath());
                 P.set(KeyLastWorkingDir, file.getParent());

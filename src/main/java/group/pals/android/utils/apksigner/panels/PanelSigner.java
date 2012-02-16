@@ -26,6 +26,7 @@ import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.Signer;
 import group.pals.android.utils.apksigner.utils.UI;
+import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -53,7 +55,7 @@ public class PanelSigner extends javax.swing.JPanel {
 
         btnLoadKeyFile.addActionListener(BtnLoadKeyFileListener);
         btnLoadApkFile.addActionListener(BtnLoadApkFileListener);
-        btnSignFile.addActionListener(BtnSignListener);
+        btnSignFile.setAction(ActionSign);
 //        btnSignFile.setEnabled(false);
 
         txtPwd.addKeyListener(TxtPwdKeyListener);
@@ -128,7 +130,12 @@ public class PanelSigner extends javax.swing.JPanel {
     private javax.swing.JPasswordField txtAliasPwd;
     private javax.swing.JPasswordField txtPwd;
     // End of variables declaration//GEN-END:variables
-
+    /**
+     * Preferences
+     */
+    private final Prefs P = Prefs.getInstance();
+    private static final String KeyKeyfileLastWorkingDir = PanelSigner.class.getName() + ".key-file-last-working-dir";
+    private static final String KeyApkFileLastWorkingDir = PanelSigner.class.getName() + ".apk-file-last-working-dir";
     private File keyFile;
 
     /**
@@ -139,12 +146,12 @@ public class PanelSigner extends javax.swing.JPanel {
     }
 
     /**
-     * @param file the keyFile to set
+     * @param f the keyFile to set
      */
-    public void setKeyFile(File file) {
-        this.keyFile = file;
-        btnLoadKeyFile.setText(file == null ? "Load key-file..." : String.format("[ %s ]", file.getName()));
-        btnLoadKeyFile.setForeground(file == null ? Color.black : UI.SelectedFileColor);
+    public void setKeyFile(File f) {
+        this.keyFile = f;
+        btnLoadKeyFile.setText(f == null ? "Load key-file..." : String.format("[ %s ]", f.getName()));
+        btnLoadKeyFile.setForeground(f == null ? Color.black : UI.SelectedFileColor);
         DefaultComboBoxModel model = (DefaultComboBoxModel) cbxAliases.getModel();
         model.removeAllElements();
     }
@@ -158,12 +165,12 @@ public class PanelSigner extends javax.swing.JPanel {
     }
 
     /**
-     * @param file the keyFile to set
+     * @param f the keyFile to set
      */
-    public void setApkFile(File file) {
-        this.apkFile = file;
-        btnLoadApkFile.setText(file == null ? "Load apk-file..." : String.format("[ %s ]", file.getName()));
-        btnLoadApkFile.setForeground(file == null ? Color.black : UI.SelectedFileColor);
+    public void setApkFile(File f) {
+        this.apkFile = f;
+        btnLoadApkFile.setText(f == null ? "Load apk-file..." : String.format("[ %s ]", f.getName()));
+        btnLoadApkFile.setForeground(f == null ? Color.black : UI.SelectedFileColor);
     }
 
     /*
@@ -172,22 +179,24 @@ public class PanelSigner extends javax.swing.JPanel {
     private final ActionListener BtnLoadKeyFileListener = new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFile(null);
-            if (file != null) {
-                setKeyFile(file);
+            File f = Files.chooseFile(new File(P.get(KeyKeyfileLastWorkingDir, "/")));
+            if (f != null) {
+                setKeyFile(f);
+                P.set(KeyKeyfileLastWorkingDir, f.getParent());
             }
         }
     };//BtnLoadKeyFileListener
     private final ActionListener BtnLoadApkFileListener = new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFile(null);
-            if (file != null) {
-                setApkFile(file);
+            File f = Files.chooseFile(new File(P.get(KeyApkFileLastWorkingDir, "/")), "(?si).*apk", "APK files");
+            if (f != null) {
+                setApkFile(f);
+                P.set(KeyApkFileLastWorkingDir, f.getParent());
             }
         }
     };//BtnLoadApkFileListener
-    private final ActionListener BtnSignListener = new ActionListener() {
+    private final AbstractAction ActionSign = new AbstractAction("Sign!") {
 
         public void actionPerformed(ActionEvent e) {
             if (getKeyFile() == null || !getKeyFile().isFile()) {
@@ -211,7 +220,7 @@ public class PanelSigner extends javax.swing.JPanel {
                 MsgBox.showErrMsg(null, null, "Error while signing file. Please try again.\n\nDetails:\n" + ex);
             }
         }
-    };//BtnSignListener
+    };//ActionSign
     /**
      * TODO: load aliases automatically, and let user to be able to choose them
      */

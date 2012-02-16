@@ -1,0 +1,24 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package group.pals.android.utils.apksigner.utils;
+
+import java.io.File;
+import java.net.URLDecoder;
+
+/**
+ *
+ * @author Hai Bison
+ */
+public class Sys {
+
+    public static File getStartupDir() {
+        try {
+            String file = Sys.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+            return new File(URLDecoder.decode(file, "utf-8")).getParentFile();
+        } catch (Exception e) {
+            return null;
+        }
+    }//getStartupDir
+}

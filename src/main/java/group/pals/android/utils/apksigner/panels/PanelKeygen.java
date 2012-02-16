@@ -25,9 +25,11 @@ import group.pals.android.utils.apksigner.MainFrame;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.KeyGen;
 import group.pals.android.utils.apksigner.utils.MsgBox;
+import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.AbstractAction;
 
 /**
  *
@@ -43,7 +45,7 @@ public class PanelKeygen extends javax.swing.JPanel {
 
         initComponents();
         btnChooseFile.addActionListener(BtnChooseFileListener);
-        btnGenFile.addActionListener(BtnGenKeyFileListener);
+        btnGenFile.setAction(ActionGenKeyfile);
         txtValidity.setValue(25);
     }
 
@@ -226,19 +228,26 @@ public class PanelKeygen extends javax.swing.JPanel {
     private javax.swing.JSpinner txtValidity;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Preferences
+     */
+    private final Prefs P = Prefs.getInstance();
+    private static final String KeyLastWorkingDir = PanelKeygen.class.getName() + ".last-working-dir";
+
     /*
      * ACTION LISTENERS
      */
     private final ActionListener BtnChooseFileListener = new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFile(null);
+            File file = Files.chooseFile(new File(P.get(KeyLastWorkingDir, "/")));
             if (file != null) {
                 txtFile.setText(file.getAbsolutePath());
+                P.set(KeyLastWorkingDir, file.getParent());
             }
         }
     };//BtnChooseFileListener
-    private final ActionListener BtnGenKeyFileListener = new ActionListener() {
+    private final AbstractAction ActionGenKeyfile = new AbstractAction("Generate Keyfile") {
 
         public void actionPerformed(ActionEvent e) {
             File file = new File(txtFile.getText());
@@ -309,5 +318,5 @@ public class PanelKeygen extends javax.swing.JPanel {
                 MsgBox.showErrMsg(null, null, "Error while generating key-file. Please try again.\n\nDetails:\n" + ex);
             }
         }
-    };//BtnGenKeyFileListener
+    };//ActionGenKeyfile
 }

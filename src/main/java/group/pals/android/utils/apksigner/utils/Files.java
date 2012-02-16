@@ -19,6 +19,7 @@ package group.pals.android.utils.apksigner.utils;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -31,7 +32,7 @@ public class Files {
     public static final String TitleSaveFile = "Save File As...";
 
     public static File chooseFile(File currentDir) {
-        JFileChooser fc = new JFileChooserEx(currentDir);
+        JFileChooserEx fc = new JFileChooserEx(currentDir);
         fc.setDialogTitle(TitleOpenFile);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -43,8 +44,22 @@ public class Files {
         }
     }//chooseFile
 
+    public static File chooseFile(File currentDir, String regexFilenameFilter, String description) {
+        JFileChooserEx fc = new JFileChooserEx(currentDir);
+        fc.setDialogTitle(TitleOpenFile);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setFilenameFilter(regexFilenameFilter, description);
+
+        switch (fc.showOpenDialog(null)) {
+            case JFileChooser.APPROVE_OPTION:
+                return fc.getSelectedFile();
+            default:
+                return null;
+        }
+    }//chooseFile
+
     public static File chooseDir(File currentDir) {
-        JFileChooser fc = new JFileChooserEx(currentDir);
+        JFileChooserEx fc = new JFileChooserEx(currentDir);
         fc.setDialogTitle(TitleOpenDir);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -57,7 +72,7 @@ public class Files {
     }//chooseDir
 
     public static File chooseFileToSave(File currentDir) {
-        JFileChooser fc = new JFileChooserEx(currentDir);
+        JFileChooserEx fc = new JFileChooserEx(currentDir);
         fc.setDialogTitle(TitleSaveFile);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -76,6 +91,21 @@ public class Files {
 
         public JFileChooserEx(File currentDir) {
             super(currentDir);
+        }
+        
+        public void setFilenameFilter(final String Regex, final String Description) {
+            setFileFilter(new FileFilter() {
+
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().matches(Regex);
+                }
+
+                @Override
+                public String getDescription() {
+                    return Description;
+                }
+            });
         }
         
         @Override

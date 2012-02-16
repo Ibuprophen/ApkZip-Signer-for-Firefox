@@ -26,6 +26,7 @@ import group.pals.android.utils.apksigner.panels.PanelSigner;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
 import group.pals.android.utils.apksigner.utils.UI;
+import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.AbstractAction;
@@ -150,6 +151,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField txtJdkPath;
     // End of variables declaration//GEN-END:variables
+    /**
+     * Preferences
+     */
+    private final Prefs P = Prefs.getInstance();
+    private static final String KeyLastWorkingDir = MainFrame.class.getName() + ".last-working-dir";
     private File jdkDir;
 
     /**
@@ -160,12 +166,11 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     /**
-     * @param v the keyFile to set
+     * @param f the keyFile to set
      */
-    public void setJdkDir(File v) {
-        this.jdkDir = v;
-        txtJdkPath.setText(v != null ? v.getAbsolutePath() : null);
-
+    public void setJdkDir(File f) {
+        this.jdkDir = f;
+        txtJdkPath.setText(f != null ? f.getAbsolutePath() : null);
     }
     /*
      * ACTION LISTENERS
@@ -173,8 +178,11 @@ public class MainFrame extends javax.swing.JFrame {
     private final AbstractAction ActionChooseJdkPath = new AbstractAction("Choose...") {
 
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseDir(null);
-            setJdkDir(file);
+            File f = Files.chooseDir(new File(P.get(KeyLastWorkingDir, "/")));
+            setJdkDir(f);
+            if (f != null) {
+                P.set(KeyLastWorkingDir, f.getParent());
+            }
         }
     };//ActionChooseJdkPath
     private final AbstractAction ActionExit = new AbstractAction("Exit") {

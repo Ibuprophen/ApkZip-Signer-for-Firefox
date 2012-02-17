@@ -38,6 +38,13 @@ import javax.swing.AbstractAction;
  */
 public class MainFrame extends javax.swing.JFrame {
 
+    /**
+     * Preferences
+     */
+    private final Prefs P = Prefs.getInstance();
+    private static final String KeyLastWorkingDir = MainFrame.class.getName() + ".last-working-dir";
+    private static final String KeyJdkPath = MainFrame.class.getName() + ".jdk-path";
+
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
@@ -47,6 +54,12 @@ public class MainFrame extends javax.swing.JFrame {
         miExit.setAction(ActionExit);
         miAbout.setAction(ActionAbout);
 
+        if (P.get(KeyJdkPath) != null) {
+            File f = new File(P.get(KeyJdkPath));
+            if (f.isDirectory())
+                setJdkDir(f);
+        }
+        
         tabbedPane.add("Key Generator", new PanelKeygen(this));
         tabbedPane.add("APK Signer", new PanelSigner(this));
     }
@@ -153,11 +166,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField txtJdkPath;
     // End of variables declaration//GEN-END:variables
-    /**
-     * Preferences
-     */
-    private final Prefs P = Prefs.getInstance();
-    private static final String KeyLastWorkingDir = MainFrame.class.getName() + ".last-working-dir";
     private File jdkDir;
 
     /**
@@ -173,6 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
     public void setJdkDir(File f) {
         this.jdkDir = f;
         txtJdkPath.setText(f != null ? f.getAbsolutePath() : null);
+        P.set(KeyJdkPath, f != null ? f.getAbsolutePath() : null);
     }
     /*
      * ACTION LISTENERS

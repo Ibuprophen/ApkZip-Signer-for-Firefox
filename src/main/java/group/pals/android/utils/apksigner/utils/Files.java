@@ -98,7 +98,12 @@ public class Files {
 
                 @Override
                 public boolean accept(File f) {
-                    return f.getName().matches(Regex);
+                    if (getFileSelectionMode() == DIRECTORIES_ONLY)
+                        return f.getName().matches(Regex);
+                    else if (f.isDirectory())
+                        return true;
+                    else
+                        return f.getName().matches(Regex);
                 }
 
                 @Override
@@ -111,7 +116,7 @@ public class Files {
         @Override
         public void approveSelection() {
             switch (getDialogType()) {
-                case JFileChooser.SAVE_DIALOG: {
+                case SAVE_DIALOG: {
                     File file = getSelectedFile();
                     if ((file != null) && file.exists()) {
                         final String[] UsrOptions = {"Yes", "No"};
@@ -126,7 +131,7 @@ public class Files {
                     break;
                 }//case SAVE_DIALOG
 
-                case JFileChooser.OPEN_DIALOG: {
+                case OPEN_DIALOG: {
                     File file = getSelectedFile();
                     if ((file == null) || !file.exists()) {
                         JOptionPane.showMessageDialog(this,

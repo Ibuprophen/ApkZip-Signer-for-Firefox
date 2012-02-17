@@ -1,7 +1,7 @@
 apk-signer
 Copyright 2012 Hai Bison
 
-Version: 1.2
+Version: 1.3
 
 This product includes software developed at
 http://code.google.com/p/apk-signer/
@@ -21,6 +21,12 @@ limitations under the License.
 ===============================================================
 
 History:
+
++++ Version 1.3 +++
+ - Release: Feb 17, 2012
+
+ - remember JDK path;
+ - fix JFileChooserEx with regex filename filter;
 
 +++ Version 1.2 +++
  - Release: Feb 16, 2012

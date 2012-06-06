@@ -1,7 +1,7 @@
 apk-signer
 Copyright 2012 Hai Bison
 
-Version: 1.3
+Version: 1.4
 
 This product includes software developed at
 http://code.google.com/p/apk-signer/
@@ -21,6 +21,11 @@ limitations under the License.
 ===============================================================
 
 History:
+
++++ Version 1.4 +++
+ - Release: June 07, 2012
+
+ - add library TinyLaF (thanks to Hans Bickel);
 
 +++ Version 1.3 +++
  - Release: Feb 17, 2012

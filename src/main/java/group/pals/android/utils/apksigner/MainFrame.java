@@ -21,6 +21,9 @@
  */
 package group.pals.android.utils.apksigner;
 
+import de.muntjak.tinylookandfeel.Theme;
+import de.muntjak.tinylookandfeel.ThemeDescription;
+import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import group.pals.android.utils.apksigner.panels.PanelKeygen;
 import group.pals.android.utils.apksigner.panels.PanelSigner;
 import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
@@ -31,6 +34,9 @@ import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -45,8 +51,25 @@ public class MainFrame extends javax.swing.JFrame {
     private static final String KeyLastWorkingDir = MainFrame.class.getName() + ".last-working-dir";
     private static final String KeyJdkPath = MainFrame.class.getName() + ".jdk-path";
 
+    private void initUi() {
+        try {
+            ThemeDescription[] availableThemes = Theme.getAvailableThemes();
+            for (ThemeDescription td : availableThemes) {
+                if (td.getName().matches("(?i).*nightly.*")) {
+                    Theme.loadTheme(td);
+                    UIManager.setLookAndFeel(new TinyLookAndFeel());
+                    SwingUtilities.updateComponentTreeUI(getRootPane());
+                    break;
+                }
+            }
+        } catch (UnsupportedLookAndFeelException ex) {
+            //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//initUi()
+
     /** Creates new form MainFrame */
     public MainFrame() {
+        initUi();
         initComponents();
 
         UI.setEditorPopupMenu(getContentPane(), new JEditorPopupMenu());
@@ -56,10 +79,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         if (P.get(KeyJdkPath) != null) {
             File f = new File(P.get(KeyJdkPath));
-            if (f.isDirectory())
+            if (f.isDirectory()) {
                 setJdkDir(f);
+            }
         }
-        
+
         tabbedPane.add("Key Generator", new PanelKeygen(this));
         tabbedPane.add("APK Signer", new PanelSigner(this));
     }
@@ -148,11 +172,11 @@ public class MainFrame extends javax.swing.JFrame {
 
                 Package pkg = MainFrame.class.getPackage();
                 m.setTitle(String.format("%s %s",
-                        pkg != null ? pkg.getImplementationTitle() : "apk-ssigner",
+                        pkg != null ? pkg.getImplementationTitle() : "apk-signer",
                         pkg != null ? pkg.getImplementationVersion() : "[unknown]"));
 
                 m.setVisible(true);
-            }
+            }//run()
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -208,12 +232,16 @@ public class MainFrame extends javax.swing.JFrame {
             Package pkg = MainFrame.class.getPackage();
             String msg = String.format("%s %s\n\n"
                     + "...by Hai Bison\n\n"
-                    + "License: Apache License 2.0\n"
-                    + "Homepage: https://sites.google.com/site/haitimeid/\n"
-                    + "Code page: http://code.google.com/p/apk-signer/\n",
+                    + " - License: Apache License 2.0\n"
+                    + " - Code page: http://code.google.com/p/apk-signer/\n"
+                    + " - HaiBisonApps on Google+: https://plus.google.com/b/101446402850080320852/101446402850080320852/posts\n"
+                    + "\n"
+                    + "Special thanks to Hans Bickel for TinyLaF library:\n"
+                    + " - http://www.muntjak.de/hans/java/tinylaf/index.html\n"
+                    + " - License: GNU Lesser General Public License",
                     pkg != null ? pkg.getImplementationTitle() : "apk-signer",
                     pkg != null ? pkg.getImplementationVersion() : "[unknown]");
-            MsgBox.showHugeInfoMsg(null, null, msg, 400, 200);
+            MsgBox.showHugeInfoMsg(null, null, msg, 800, 450);
         }
     };//ActionAbout
 }

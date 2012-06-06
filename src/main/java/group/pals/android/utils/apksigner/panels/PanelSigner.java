@@ -36,7 +36,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -74,7 +73,7 @@ public class PanelSigner extends javax.swing.JPanel {
 
         btnLoadKeyFile = new javax.swing.JButton();
         txtPwd = new javax.swing.JPasswordField();
-        cbxAliases = new javax.swing.JComboBox();
+        txtAlias = new javax.swing.JTextField();
         txtAliasPwd = new javax.swing.JPasswordField();
         btnLoadApkFile = new javax.swing.JButton();
         btnSignFile = new javax.swing.JButton();
@@ -94,13 +93,14 @@ public class PanelSigner extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         add(txtPwd, gridBagConstraints);
 
-        cbxAliases.setEditable(true);
-        cbxAliases.setBorder(javax.swing.BorderFactory.createTitledBorder("Aliases:"));
+        txtAlias.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtAlias.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(cbxAliases, gridBagConstraints);
+        gridBagConstraints.weightx = 0.5;
+        add(txtAlias, gridBagConstraints);
 
         txtAliasPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtAliasPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias password:"));
@@ -127,7 +127,7 @@ public class PanelSigner extends javax.swing.JPanel {
     private javax.swing.JButton btnLoadApkFile;
     private javax.swing.JButton btnLoadKeyFile;
     private javax.swing.JButton btnSignFile;
-    private javax.swing.JComboBox cbxAliases;
+    private javax.swing.JTextField txtAlias;
     private javax.swing.JPasswordField txtAliasPwd;
     private javax.swing.JPasswordField txtPwd;
     // End of variables declaration//GEN-END:variables
@@ -152,9 +152,7 @@ public class PanelSigner extends javax.swing.JPanel {
     public void setKeyFile(File f) {
         this.keyFile = f;
         btnLoadKeyFile.setText(f == null ? "Load key-file..." : String.format("[ %s ]", f.getName()));
-        btnLoadKeyFile.setForeground(f == null ? Color.black : UI.SelectedFileColor);
-        DefaultComboBoxModel model = (DefaultComboBoxModel) cbxAliases.getModel();
-        model.removeAllElements();
+        btnLoadKeyFile.setForeground(f == null ? Color.cyan : UI.mSelectedFileColor);
     }
     private File apkFile;
 
@@ -171,7 +169,7 @@ public class PanelSigner extends javax.swing.JPanel {
     public void setApkFile(File f) {
         this.apkFile = f;
         btnLoadApkFile.setText(f == null ? "Load apk-file..." : String.format("[ %s ]", f.getName()));
-        btnLoadApkFile.setForeground(f == null ? Color.black : UI.SelectedFileColor);
+        btnLoadApkFile.setForeground(f == null ? Color.cyan : UI.mSelectedFileColor);
     }
 
     /*
@@ -208,7 +206,7 @@ public class PanelSigner extends javax.swing.JPanel {
                 MsgBox.showErrMsg(null, null, "APK file does not exist");
                 return;
             }
-            String alias = String.valueOf(cbxAliases.getSelectedItem() == null ? "" : cbxAliases.getSelectedItem());
+            String alias = String.valueOf(txtAlias.getText());
             if (alias.isEmpty()) {
                 MsgBox.showErrMsg(null, null, "Alias is empty");
                 return;
@@ -216,7 +214,11 @@ public class PanelSigner extends javax.swing.JPanel {
 
             try {
                 String info = Signer.sign(MF.getJdkDir(), getApkFile(), getKeyFile(), new String(txtPwd.getPassword()), alias, new String(txtAliasPwd.getPassword()));
-                MsgBox.showHugeInfoMsg(null, null, info.length() == 0 ? "APK is signed" : info, 600, 300);
+                if (info == null || info.isEmpty()) {
+                    MsgBox.showInfoMsg(null, null, "APK is signed");
+                } else {
+                    MsgBox.showHugeInfoMsg(null, null, info, 800, 450);
+                }
             } catch (Exception ex) {
                 MsgBox.showErrMsg(null, null, "Error while signing file. Please try again.\n\nDetails:\n" + ex);
             }

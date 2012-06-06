@@ -26,7 +26,7 @@ import javax.swing.text.JTextComponent;
  */
 public class UI {
 
-    public static final Color SelectedFileColor = Color.blue;
+    public static final Color mSelectedFileColor = Color.yellow;
 
     /**
      * Set <code>window</code> center screen, also resizes it by ratio 16:9  :-)

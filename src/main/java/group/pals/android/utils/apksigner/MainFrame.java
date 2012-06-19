@@ -234,14 +234,14 @@ public class MainFrame extends javax.swing.JFrame {
                     + "...by Hai Bison\n\n"
                     + " - License: Apache License 2.0\n"
                     + " - Code page: http://code.google.com/p/apk-signer/\n"
-                    + " - HaiBisonApps on Google+: https://plus.google.com/b/101446402850080320852/101446402850080320852/posts\n"
+                    + " - HaiBisonApps on Google+: https://plus.google.com/101446402850080320852/\n"
                     + "\n"
                     + "Special thanks to Hans Bickel for TinyLaF library:\n"
                     + " - http://www.muntjak.de/hans/java/tinylaf/index.html\n"
                     + " - License: GNU Lesser General Public License",
                     pkg != null ? pkg.getImplementationTitle() : "apk-signer",
                     pkg != null ? pkg.getImplementationVersion() : "[unknown]");
-            MsgBox.showHugeInfoMsg(null, null, msg, 800, 450);
+            MsgBox.showHugeInfoMsg(null, null, msg, 630, 270);
         }
     };//ActionAbout
 }

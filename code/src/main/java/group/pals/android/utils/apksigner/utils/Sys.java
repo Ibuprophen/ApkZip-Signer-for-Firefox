@@ -1,7 +1,10 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *    Copyright (C) 2012 Hai Bison
+ *
+ *    See the file LICENSE at the root directory of this project for copying
+ *    permission.
  */
+
 package group.pals.android.utils.apksigner.utils;
 
 import java.io.File;

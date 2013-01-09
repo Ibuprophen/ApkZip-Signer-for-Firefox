@@ -4,7 +4,6 @@
  *    See the file LICENSE at the root directory of this project for copying
  *    permission.
  */
-
 package group.pals.android.utils.apksigner.utils;
 
 import java.io.File;
@@ -20,8 +19,9 @@ public class KeyGen {
         target.delete();
 
         /*
-         * keytool -genkey -alias ALIAS_NAME -keypass KEY_PASS -validity YEARS
-         * -keystore TARGET_FILE -storepass STORE_PASS -genkeypair -dname
+         * keytool -genkey -sigalg MD5withRSA -digestalg SHA1 -alias ALIAS_NAME
+         * -keypass KEY_PASS -validity YEARS -keystore TARGET_FILE
+         * -storepass STORE_PASS -genkeypair -dname
          * "CN=Mark Jones, OU=JavaSoft, O=Sun, L=city, S=state C=US"
          */
 
@@ -39,10 +39,11 @@ public class KeyGen {
          * JDK for Linux does not need to specify full path
          */
         String keytool = jdkPath != null && jdkPath.isDirectory() ? jdkPath.getAbsolutePath() + "/keytool.exe" : "keytool";
-        
+
         ProcessBuilder pb = new ProcessBuilder(new String[]{
                     keytool,
                     "-genkey",
+                    "-keyalg", "RSA",
                     "-alias",
                     alias,
                     "-keypass",
@@ -61,7 +62,7 @@ public class KeyGen {
         StringBuffer sb = new StringBuffer();
         InputStream stream = p.getInputStream();
         try {
-            int read = 0;
+            int read;
             byte[] buf = new byte[1024 * 99];
             while ((read = stream.read(buf)) > 0) {
                 sb.append(new String(buf, 0, read));

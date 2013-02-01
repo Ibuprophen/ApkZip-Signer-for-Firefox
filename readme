@@ -6,6 +6,12 @@ Feel free to contact us at:
 
 History:
 
++++ Version 1.4.2 +++
+ - Release: Jan 08, 2013
+
+ - Fixes issue #1, thanks to Leo Chien  :-)
+ - Now the app works fine with JDK 1.7;
+
 +++ Version 1.4.1 +++
  - Release: June 19, 2012
 

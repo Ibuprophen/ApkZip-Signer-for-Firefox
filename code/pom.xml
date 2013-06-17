@@ -4,7 +4,7 @@
 
   <groupId>group.pals.android.utils</groupId>
   <artifactId>apk-signer</artifactId>
-  <version>1.5 beta</version>
+  <version>1.5</version>
   <packaging>jar</packaging>
 
   <name>apk-signer</name>

@@ -112,7 +112,7 @@ public class PanelKeytools extends javax.swing.JPanel {
 
         mTextInfo.setEditable(false);
         mTextInfo.setColumns(20);
-        mTextInfo.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
+        mTextInfo.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         mTextInfo.setRows(5);
         jScrollPane1.setViewportView(mTextInfo);
 

@@ -9,6 +9,7 @@ package group.pals.android.utils.apksigner.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
 
 /**
  * Helper class to sign APK files.
@@ -18,11 +19,16 @@ import java.io.InputStream;
 public class Signer {
 
     /**
+     * Used to append to newly signed APK's file name.
+     */
+    private static final String SIGNED = "SIGNED";
+
+    /**
      * Signs an APK file.
      *
      * @param jdkPath the path to JDK, can be {@code null} on Unix system.
-     * @param apk the APK file.
-     * @param key the keystore file.
+     * @param apkFile the APK file.
+     * @param keyFile the keystore file.
      * @param storepass the keystore's password.
      * @param alias the keystore alias.
      * @param keypass the keystore's alias password.
@@ -30,7 +36,7 @@ public class Signer {
      * @throws IOException if any occurred.
      * @throws InterruptedException if any occurred.
      */
-    public static String sign(File jdkPath, File apk, File key, String storepass, String alias,
+    public static String sign(File jdkPath, File apkFile, File keyFile, String storepass, String alias,
             String keypass) throws IOException, InterruptedException {
 
         /*
@@ -43,11 +49,11 @@ public class Signer {
          * -storepass STORE_PASS -keypass KEY_PASS APK_FILE ALIAS_NAME
          */
         ProcessBuilder pb = new ProcessBuilder(new String[]{jarsigner,
-                    "-keystore", key.getAbsolutePath(),
+                    "-keystore", keyFile.getAbsolutePath(),
                     "-sigalg", "MD5withRSA",
                     "-digestalg", "SHA1",
                     "-storepass", storepass,
-                    "-keypass", keypass, apk.getAbsolutePath(), alias});
+                    "-keypass", keypass, apkFile.getAbsolutePath(), alias});
         Process p = pb.start();
 
         StringBuilder sb = new StringBuilder();
@@ -70,6 +76,25 @@ public class Signer {
 
         p.waitFor();
 
-        return sb.toString().trim();
+        /*
+         * Renames newly signed file...
+         */
+
+        final String oldApkName = apkFile.getName();
+        String newApkName;
+        if (oldApkName.matches("(?si).*?unsigned.+")) {
+            newApkName = oldApkName.replaceFirst("(?si)unsigned", Matcher.quoteReplacement(SIGNED));
+        } else if (oldApkName.matches("(?si).+\\.apk$")) {
+            newApkName = oldApkName.replaceFirst("(?si)\\.apk$", Matcher.quoteReplacement(String.format("_%s.apk", SIGNED)));
+        } else {
+            newApkName = String.format("%s_%s.apk", oldApkName, SIGNED);
+        }
+
+        if (apkFile.renameTo(new File(apkFile.getParent() + File.separator + newApkName))) {
+            return sb.toString().trim();
+        }
+        return String.format("Can't rename source APK file to \"%s\"!\n\n", newApkName)
+                + "The result of signing process was "
+                + "(if empty, it means everything is OK):\n\n" + sb.toString().trim();
     }//sign()
 }

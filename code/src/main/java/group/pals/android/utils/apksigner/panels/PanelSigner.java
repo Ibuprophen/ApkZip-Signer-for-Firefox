@@ -222,7 +222,7 @@ public class PanelSigner extends javax.swing.JPanel {
                     MsgBox.showHugeInfoMsg(null, null, info, 800, 450);
                 }
             } catch (Exception ex) {
-                MsgBox.showErrMsg(null, null, "Error while signing file. Please try again.\n\nDetails:\n" + ex);
+                MsgBox.showErrMsg(null, null, "Error while signing file. Please try again.\n\nDetails:\n\n" + ex);
             }
         }//actionPerformed()
     };//mActionSign

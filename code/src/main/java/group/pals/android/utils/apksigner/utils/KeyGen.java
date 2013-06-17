@@ -97,7 +97,7 @@ public class KeyGen {
         }
 
         /*
-         * TODO: get output of keytool to parse for errors, warnings...
+         * TODO: parse output for errors, warnings...
          */
 
         p.waitFor();

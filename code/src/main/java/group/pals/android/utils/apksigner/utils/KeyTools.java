@@ -57,7 +57,7 @@ public class KeyTools {
             }
 
             /*
-             * TODO: get output of jarsigner to parse for errors, warnings...
+             * TODO: parse output for errors, warnings...
              */
 
             p.waitFor();

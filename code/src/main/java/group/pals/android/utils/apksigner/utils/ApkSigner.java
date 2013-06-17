@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
  *
  * @author Hai Bison
  */
-public class Signer {
+public class ApkSigner {
 
     /**
      * Used to append to newly signed APK's file name.
@@ -36,8 +36,8 @@ public class Signer {
      * @throws IOException if any occurred.
      * @throws InterruptedException if any occurred.
      */
-    public static String sign(File jdkPath, File apkFile, File keyFile, String storepass, String alias,
-            String keypass) throws IOException, InterruptedException {
+    public static String sign(File jdkPath, File apkFile, File keyFile, char[] storepass, String alias,
+            char[] keypass) throws IOException, InterruptedException {
 
         /*
          * JDK for Linux does not need to specify full path
@@ -52,8 +52,9 @@ public class Signer {
                     "-keystore", keyFile.getAbsolutePath(),
                     "-sigalg", "MD5withRSA",
                     "-digestalg", "SHA1",
-                    "-storepass", storepass,
-                    "-keypass", keypass, apkFile.getAbsolutePath(), alias});
+                    "-storepass", new String(storepass),
+                    "-keypass", new String(keypass),
+                    apkFile.getAbsolutePath(), alias});
         Process p = pb.start();
 
         StringBuilder sb = new StringBuilder();

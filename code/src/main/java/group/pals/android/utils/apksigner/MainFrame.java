@@ -16,6 +16,7 @@ import de.muntjak.tinylookandfeel.Theme;
 import de.muntjak.tinylookandfeel.ThemeDescription;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import group.pals.android.utils.apksigner.panels.PanelKeygen;
+import group.pals.android.utils.apksigner.panels.PanelKeytools;
 import group.pals.android.utils.apksigner.panels.PanelSigner;
 import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import group.pals.android.utils.apksigner.utils.Files;
@@ -83,6 +84,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.add("Key Generator", new PanelKeygen(this));
         tabbedPane.add("APK Signer", new PanelSigner(this));
+        tabbedPane.add("Key Tools", new PanelKeytools(this));
     }//MainFrame()
 
     /**
@@ -164,7 +166,7 @@ public class MainFrame extends javax.swing.JFrame {
             public void run() {
                 MainFrame m = new MainFrame();
 
-                UI.setWindowCenterScreen(m, 51);
+                UI.setWindowCenterScreen(m, 59);
 
                 Package pkg = MainFrame.class.getPackage();
                 m.setTitle(String.format("%s %s",

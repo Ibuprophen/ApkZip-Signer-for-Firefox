@@ -16,7 +16,8 @@ import group.pals.android.utils.apksigner.MainFrame;
 import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import group.pals.android.utils.apksigner.utils.Files;
 import group.pals.android.utils.apksigner.utils.MsgBox;
-import group.pals.android.utils.apksigner.utils.Signer;
+import group.pals.android.utils.apksigner.utils.ApkSigner;
+import group.pals.android.utils.apksigner.utils.Constants;
 import group.pals.android.utils.apksigner.utils.UI;
 import group.pals.android.utils.apksigner.utils.prefs.Prefs;
 import java.awt.Color;
@@ -49,11 +50,11 @@ public class PanelSigner extends javax.swing.JPanel {
         setKeyFile(null);
         setApkFile(null);
 
-        btnLoadKeyFile.addActionListener(mBtnLoadKeyFileListener);
-        btnLoadApkFile.addActionListener(mBtnLoadApkFileListener);
-        btnSignFile.setAction(mActionSign);
+        mBtnLoadKeyFile.addActionListener(mBtnLoadKeyFileListener);
+        mBtnLoadApkFile.addActionListener(mBtnLoadApkFileListener);
+        mBtnSignFile.setAction(mActionSign);
 
-        txtPwd.addKeyListener(mTxtPwdKeyListener);
+        mTextPwd.addKeyListener(mTxtPwdKeyListener);
         UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }//PanelSigner()
 
@@ -67,65 +68,71 @@ public class PanelSigner extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        btnLoadKeyFile = new javax.swing.JButton();
-        txtPwd = new javax.swing.JPasswordField();
-        txtAlias = new javax.swing.JTextField();
-        txtAliasPwd = new javax.swing.JPasswordField();
-        btnLoadApkFile = new javax.swing.JButton();
-        btnSignFile = new javax.swing.JButton();
+        mBtnLoadKeyFile = new javax.swing.JButton();
+        mTextPwd = new javax.swing.JPasswordField();
+        mTextAlias = new javax.swing.JTextField();
+        mTextAliasPwd = new javax.swing.JPasswordField();
+        mBtnLoadApkFile = new javax.swing.JButton();
+        mBtnSignFile = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
-        btnLoadKeyFile.setText("jButton1");
+        mBtnLoadKeyFile.setText("jButton1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.weightx = 1.0;
-        add(btnLoadKeyFile, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mBtnLoadKeyFile, gridBagConstraints);
 
-        txtPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Password:"));
+        mTextPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mTextPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Password:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(txtPwd, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mTextPwd, gridBagConstraints);
 
-        txtAlias.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtAlias.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias:"));
+        mTextAlias.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mTextAlias.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
-        add(txtAlias, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mTextAlias, gridBagConstraints);
 
-        txtAliasPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtAliasPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias password:"));
+        mTextAliasPwd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mTextAliasPwd.setBorder(javax.swing.BorderFactory.createTitledBorder("Alias password:"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(txtAliasPwd, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mTextAliasPwd, gridBagConstraints);
 
-        btnLoadApkFile.setText("jButton1");
+        mBtnLoadApkFile.setText("jButton1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        add(btnLoadApkFile, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mBtnLoadApkFile, gridBagConstraints);
 
-        btnSignFile.setText("Sign!");
+        mBtnSignFile.setText("Sign!");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.weighty = 1.0;
-        add(btnSignFile, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
+        add(mBtnSignFile, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnLoadApkFile;
-    private javax.swing.JButton btnLoadKeyFile;
-    private javax.swing.JButton btnSignFile;
-    private javax.swing.JTextField txtAlias;
-    private javax.swing.JPasswordField txtAliasPwd;
-    private javax.swing.JPasswordField txtPwd;
+    private javax.swing.JButton mBtnLoadApkFile;
+    private javax.swing.JButton mBtnLoadKeyFile;
+    private javax.swing.JButton mBtnSignFile;
+    private javax.swing.JTextField mTextAlias;
+    private javax.swing.JPasswordField mTextAliasPwd;
+    private javax.swing.JPasswordField mTextPwd;
     // End of variables declaration//GEN-END:variables
     /**
      * Preferences
@@ -151,8 +158,8 @@ public class PanelSigner extends javax.swing.JPanel {
      */
     public void setKeyFile(File file) {
         mKeyFile = file;
-        btnLoadKeyFile.setText(file == null ? "Load key-file..." : String.format("[ %s ]", file.getName()));
-        btnLoadKeyFile.setForeground(file == null ? Color.cyan : UI.COLOUR_SELECTED_FILE);
+        mBtnLoadKeyFile.setText(file == null ? "Load key-file..." : String.format("[ %s ]", file.getName()));
+        mBtnLoadKeyFile.setForeground(file == null ? Color.cyan : UI.COLOUR_SELECTED_FILE);
     }//setKeyFile()
     private File mApkFile;
 
@@ -172,8 +179,8 @@ public class PanelSigner extends javax.swing.JPanel {
      */
     public void setApkFile(File file) {
         mApkFile = file;
-        btnLoadApkFile.setText(file == null ? "Load apk-file..." : String.format("[ %s ]", file.getName()));
-        btnLoadApkFile.setForeground(file == null ? Color.cyan : UI.COLOUR_SELECTED_FILE);
+        mBtnLoadApkFile.setText(file == null ? "Load apk-file..." : String.format("[ %s ]", file.getName()));
+        mBtnLoadApkFile.setForeground(file == null ? Color.cyan : UI.COLOUR_SELECTED_FILE);
     }//setApkFile()
 
     /*
@@ -182,7 +189,8 @@ public class PanelSigner extends javax.swing.JPanel {
     private final ActionListener mBtnLoadKeyFileListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            File f = Files.chooseFile(new File(mPrefs.get(KEY_KEYFILE_LAST_WORKING_DIR, "/")));
+            File f = Files.chooseFile(new File(mPrefs.get(KEY_KEYFILE_LAST_WORKING_DIR, "/")),
+                    Constants.REGEX_KEYSTORE_FILES, Constants.DESC_KEYSTORE_FILES);
             if (f != null) {
                 setKeyFile(f);
                 mPrefs.set(KEY_KEYFILE_LAST_WORKING_DIR, f.getParent());
@@ -192,7 +200,8 @@ public class PanelSigner extends javax.swing.JPanel {
     private final ActionListener mBtnLoadApkFileListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            File f = Files.chooseFile(new File(mPrefs.get(KEY_APK_FILE_LAST_WORKING_DIR, "/")), "(?si).*apk", "APK files");
+            File f = Files.chooseFile(new File(mPrefs.get(KEY_APK_FILE_LAST_WORKING_DIR, "/")),
+                    Constants.REGEX_APK_FILES, Constants.DESC_APK_FILES);
             if (f != null) {
                 setApkFile(f);
                 mPrefs.set(KEY_APK_FILE_LAST_WORKING_DIR, f.getParent());
@@ -210,14 +219,16 @@ public class PanelSigner extends javax.swing.JPanel {
                 MsgBox.showErrMsg(null, null, "APK file does not exist");
                 return;
             }
-            String alias = String.valueOf(txtAlias.getText());
+            String alias = String.valueOf(mTextAlias.getText());
             if (alias.isEmpty()) {
                 MsgBox.showErrMsg(null, null, "Alias is empty");
                 return;
             }
 
             try {
-                String info = Signer.sign(mMainFrame.getJdkDir(), getApkFile(), getKeyFile(), new String(txtPwd.getPassword()), alias, new String(txtAliasPwd.getPassword()));
+                String info = ApkSigner.sign(mMainFrame.getJdkDir(),
+                        getApkFile(), getKeyFile(), mTextPwd.getPassword(), alias,
+                        mTextAliasPwd.getPassword());
                 if (info == null || info.isEmpty()) {
                     MsgBox.showInfoMsg(null, null, "APK is signed");
                 } else {

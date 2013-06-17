@@ -35,8 +35,8 @@ public class KeyGen {
      * @throws IOException if any occurred.
      * @throws InterruptedException if any occurred.
      */
-    public static void genKey(File jdkPath, File target, String storepass, String alias,
-            String keypass, int aliasYears, String coName, String ouName,
+    public static void genKey(File jdkPath, File target, char[] storepass, String alias,
+            char[] keypass, int aliasYears, String coName, String ouName,
             String oName, String city, String state, String country)
             throws IOException, InterruptedException {
         target.delete();
@@ -70,13 +70,13 @@ public class KeyGen {
                     "-alias",
                     alias,
                     "-keypass",
-                    keypass,
+                    new String(keypass),
                     "-validity",
                     Integer.toString(aliasYears),
                     "-keystore",
                     target.getAbsolutePath(),
                     "-storepass",
-                    storepass,
+                    new String(storepass),
                     "-genkeypair",
                     "-dname",
                     String.format("%s", dname)});

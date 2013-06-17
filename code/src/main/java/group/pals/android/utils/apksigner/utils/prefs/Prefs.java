@@ -4,7 +4,6 @@
  *    See the file LICENSE at the root directory of this project for copying
  *    permission.
  */
-
 package group.pals.android.utils.apksigner.utils.prefs;
 
 import group.pals.android.utils.apksigner.utils.Sys;
@@ -14,61 +13,94 @@ import java.util.Properties;
 
 /**
  * Convenient class for storing/ loading preferences.
+ *
  * @author Hai Bison
  */
 public class Prefs {
 
-    private static Prefs instance;
-    
+    private static Prefs mInstance;
+
+    /**
+     * Gets the global instance of this class.
+     *
+     * @return the global instance of this class.
+     */
     public static Prefs getInstance() {
-        if (instance == null)
-            instance = new Prefs();
-        return instance;
-    }//getInstance
-    
-    public static String PrefsFilename = ".prefs";
-    private final Properties P;
-    
+        if (mInstance == null) {
+            mInstance = new Prefs();
+        }
+
+        return mInstance;
+    }//getInstance()
+    public static final String PREFS_FILENAME = ".prefs";
+    private final Properties mProperties;
+
+    /**
+     * Creates new instance.
+     */
     private Prefs() {
-        P = new Properties();
-        
+        mProperties = new Properties();
+
         try {
             FileReader r = new FileReader(
-                    Sys.getStartupDir().getAbsolutePath() + "/" + PrefsFilename);
+                    Sys.getStartupDir().getAbsolutePath() + "/" + PREFS_FILENAME);
             try {
-                P.load(r);
+                mProperties.load(r);
             } finally {
                 r.close();
             }
         } catch (Exception e) {
             System.err.printf("[%s] Error loading preferences: %s\n", Prefs.class.getName(), e);
         }
-    }//Prefs
+    }//Prefs()
 
+    /**
+     * Stores all preferences to file.
+     */
     public void store() {
         try {
             FileWriter w = new FileWriter(
-                    Sys.getStartupDir().getAbsolutePath() + "/" + PrefsFilename);
+                    Sys.getStartupDir().getAbsolutePath() + "/" + PREFS_FILENAME);
             try {
-                P.store(w, null);
+                mProperties.store(w, null);
             } finally {
                 w.close();
             }
         } catch (Exception e) {
             System.err.printf("[%s] Error storing preferences: %s\n", Prefs.class.getName(), e);
         }
-    }
-    
-    public void set(String k, String v) {
-        P.setProperty(k, v != null ? v.trim() : "");
-        store();
-    }
-    
-    public String get(String k) {
-        return P.getProperty(k);
-    }
+    }//store()
 
+    /**
+     * Sets a preference.
+     *
+     * @param k the key name.
+     * @param v the value of the key.
+     */
+    public void set(String k, String v) {
+        mProperties.setProperty(k, v != null ? v.trim() : "");
+        store();
+    }//set()
+
+    /**
+     * Gets value of a key.
+     *
+     * @param k the key name.
+     * @return the value of the given key.
+     */
+    public String get(String k) {
+        return mProperties.getProperty(k);
+    }//get()
+
+    /**
+     * Gets value of a key.
+     *
+     * @param k the key name.
+     * @param def the default value if the given key does not exist.
+     * @return the value of the given key, or {@code def} if the given key does
+     * not exist.
+     */
     public String get(String k, String def) {
-        return P.getProperty(k, def);
-    }
+        return mProperties.getProperty(k, def);
+    }//get()
 }

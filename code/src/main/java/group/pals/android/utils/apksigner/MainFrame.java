@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
+ * The main frame.
  *
  * @author Hai Bison
  */
@@ -38,10 +39,13 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Preferences
      */
-    private final Prefs P = Prefs.getInstance();
-    private static final String KeyLastWorkingDir = MainFrame.class.getName() + ".last-working-dir";
-    private static final String KeyJdkPath = MainFrame.class.getName() + ".jdk-path";
+    private final Prefs mPrefs = Prefs.getInstance();
+    private static final String KEY_LAST_WORKING_DIR = MainFrame.class.getName() + ".last-working-dir";
+    private static final String KEY_JDK_PATH = MainFrame.class.getName() + ".jdk-path";
 
+    /**
+     * Initializes UI.
+     */
     private void initUi() {
         try {
             ThemeDescription[] availableThemes = Theme.getAvailableThemes();
@@ -66,12 +70,12 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
 
         UI.setEditorPopupMenu(getContentPane(), new JEditorPopupMenu());
-        btnChooseJdkPath.setAction(ActionChooseJdkPath);
-        miExit.setAction(ActionExit);
-        miAbout.setAction(ActionAbout);
+        btnChooseJdkPath.setAction(mActionChooseJdkPath);
+        miExit.setAction(mActionExit);
+        miAbout.setAction(mActionAbout);
 
-        if (P.get(KeyJdkPath) != null) {
-            File f = new File(P.get(KeyJdkPath));
+        if (mPrefs.get(KEY_JDK_PATH) != null) {
+            File f = new File(mPrefs.get(KEY_JDK_PATH));
             if (f.isDirectory()) {
                 setJdkDir(f);
             }
@@ -79,7 +83,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         tabbedPane.add("Key Generator", new PanelKeygen(this));
         tabbedPane.add("APK Signer", new PanelSigner(this));
-    }
+    }//MainFrame()
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -170,7 +174,7 @@ public class MainFrame extends javax.swing.JFrame {
                 m.setVisible(true);
             }//run()
         });
-    }
+    }//main()
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChooseJdkPath;
     private javax.swing.JMenu jMenu1;
@@ -182,58 +186,65 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JTextField txtJdkPath;
     // End of variables declaration//GEN-END:variables
-    private File jdkDir;
+    private File mJdkDir;
 
     /**
-     * @return the keyFile
+     * Gets JDK directory.
+     *
+     * @return the JDK directory.
      */
     public File getJdkDir() {
-        return jdkDir;
-    }
+        return mJdkDir;
+    }//getJdkDir()
 
     /**
-     * @param f the keyFile to set
+     * Sets the JDK directory.
+     *
+     * @param dir the JDK directory to set.
      */
-    public void setJdkDir(File f) {
-        this.jdkDir = f;
-        txtJdkPath.setText(f != null ? f.getAbsolutePath() : null);
-        P.set(KeyJdkPath, f != null ? f.getAbsolutePath() : null);
-    }
+    public void setJdkDir(File dir) {
+        this.mJdkDir = dir;
+        txtJdkPath.setText(dir != null ? dir.getAbsolutePath() : null);
+        mPrefs.set(KEY_JDK_PATH, dir != null ? dir.getAbsolutePath() : null);
+    }//setJdkDir()
     /*
      * ACTION LISTENERS
      */
-    private final AbstractAction ActionChooseJdkPath = new AbstractAction("Choose...") {
+    private final AbstractAction mActionChooseJdkPath = new AbstractAction("Choose...") {
+        @Override
         public void actionPerformed(ActionEvent e) {
-            File f = Files.chooseDir(new File(P.get(KeyLastWorkingDir, "/")));
+            File f = Files.chooseDir(new File(mPrefs.get(KEY_LAST_WORKING_DIR, "/")));
             setJdkDir(f);
             if (f != null) {
-                P.set(KeyLastWorkingDir, f.getParent());
+                mPrefs.set(KEY_LAST_WORKING_DIR, f.getParent());
             }
-        }
-    };//ActionChooseJdkPath
-    private final AbstractAction ActionExit = new AbstractAction("Exit") {
+        }//actionPerformed()
+    };//mActionChooseJdkPath
+    private final AbstractAction mActionExit = new AbstractAction("Exit") {
+        @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
-        }
-    };//ActionExit
-    private final AbstractAction ActionAbout = new AbstractAction("About...") {
+        }//actionPerformed()
+    };//mActionExit
+    private final AbstractAction mActionAbout = new AbstractAction("About...") {
+        @Override
         public void actionPerformed(ActionEvent e) {
             Package pkg = MainFrame.class.getPackage();
             String msg = String.format("%s %s\n\n"
                     + "...by Hai Bison\n\n"
                     + " - License: MIT License\n"
-                    + " - Code page: http://code.google.com/p/apk-signer/\n"
+                    + " - Code page: https://code.google.com/p/apk-signer/\n"
                     + " - Official site: http://www.haibison.com\n"
                     + "\n"
                     + "Special thanks to Hans Bickel for TinyLaF library:\n"
                     + " - http://www.muntjak.de/hans/java/tinylaf/index.html\n"
                     + " - License: GNU Lesser General Public License\n"
                     + "\n"
-                    + "And thanks to friends who have been contributing to this project:\n"
+                    + "And thanks to our friends who have been contributing to this project:\n"
                     + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
                     pkg != null ? pkg.getImplementationTitle() : "apk-signer",
                     pkg != null ? pkg.getImplementationVersion() : "[unknown]");
             MsgBox.showHugeInfoMsg(null, null, msg, 630, 270);
-        }
-    };//ActionAbout
+        }//actionPerformed()
+    };//mActionAbout
 }

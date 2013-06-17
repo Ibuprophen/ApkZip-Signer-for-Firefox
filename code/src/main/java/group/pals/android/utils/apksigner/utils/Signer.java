@@ -10,8 +10,26 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Helper class to sign APK files.
+ *
+ * @author Hai Bison
+ */
 public class Signer {
 
+    /**
+     * Signs an APK file.
+     *
+     * @param jdkPath the path to JDK, can be {@code null} on Unix system.
+     * @param apk the APK file.
+     * @param key the keystore file.
+     * @param storepass the keystore's password.
+     * @param alias the keystore alias.
+     * @param keypass the keystore's alias password.
+     * @return
+     * @throws IOException if any occurred.
+     * @throws InterruptedException if any occurred.
+     */
     public static String sign(File jdkPath, File apk, File key, String storepass, String alias,
             String keypass) throws IOException, InterruptedException {
 
@@ -53,5 +71,5 @@ public class Signer {
         p.waitFor();
 
         return sb.toString().trim();
-    }//sign
+    }//sign()
 }

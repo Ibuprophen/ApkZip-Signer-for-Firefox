@@ -4,7 +4,6 @@
  *    See the file LICENSE at the root directory of this project for copying
  *    permission.
  */
-
 package group.pals.android.utils.apksigner.panels.ui;
 
 import java.awt.Component;
@@ -16,25 +15,32 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.TextAction;
 
 /**
- * Editor popup menu for {@link JTextComponent}
+ * Editor popup menu for {@link JTextComponent}.
+ *
  * @author Hai Bison
  */
 public class JEditorPopupMenu extends JPopupMenu {
 
-    public final static String ActionNameCut = "cut";
-    public final static String ActionNameCopy = "copy";
-    public final static String ActionNameCopyAll = "copy-all";
-    public final static String ActionNamePaste = "paste";
-    public final static String ActionNameClearAndPaste = "clear-and-paste";
-    public final static String ActionNameClear = "clear";
-    public final static String ActionNameDelete = "delete";
-    public final static String ActionNameSelectAll = "select-all";
+    public final static String ACTION_NAME_CUT = "cut";
+    public final static String ACTION_NAME_COPY = "copy";
+    public final static String ACTION_NAME_COPY_ALL = "copy-all";
+    public final static String ACTION_NAME_PASTE = "paste";
+    public final static String ACTION_NAME_CLEAR_AND_PASTE = "clear-and-paste";
+    public final static String ACTION_NAME_CLEAR = "clear";
+    public final static String ACTION_NAME_DELETE = "delete";
+    public final static String ACTION_NAME_SELECT_ALL = "select-all";
 
+    /**
+     * Creates new instance.
+     */
     public JEditorPopupMenu() {
         super();
         initMenuItems();
-    }
+    }//JEditorPopupMenu()
 
+    /**
+     * Initializes all menu items.
+     */
     private void initMenuItems() {
         final String ItemSeparator = "-";
         final String[] ItemTitles = {"Cut", "Copy", "Copy All", "Paste", ItemSeparator,
@@ -55,25 +61,38 @@ public class JEditorPopupMenu extends JPopupMenu {
                 this.add(menuItem);
             }
         }
-    }//initMenuItems
+    }//initMenuItems()
 
+    /**
+     * Fires an action... (TODO ???)
+     *
+     * @param actionName the action name.
+     */
     private void fireAfterActionPerformed(String actionName) {
         Component invoker = getInvoker();
         if (invoker != null) {
             invoker.firePropertyChange(actionName, 0, 1);
         }
-    }//fireAfterActionPerformed
+    }//fireAfterActionPerformed()
 
     /*
      * EDITOR ACTIONS
      */
-
+    /**
+     * The CUT action.
+     */
     private class CutAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public CutAction(String name) {
             super(name);
-        }
+        }//CutAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -83,19 +102,28 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.cut();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameCut);
+                        fireAfterActionPerformed(ACTION_NAME_CUT);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//CutAction
 
+    /**
+     * The COPY action.
+     */
     private class CopyAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public CopyAction(String name) {
             super(name);
-        }
+        }//CopyAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -105,19 +133,28 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.copy();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameCopy);
+                        fireAfterActionPerformed(ACTION_NAME_COPY);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//CopyAction
 
+    /**
+     * The COPY ALL action.
+     */
     private class CopyAllAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public CopyAllAction(String name) {
             super(name);
-        }
+        }//CopyAllAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -128,19 +165,25 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.copy();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameCopyAll);
+                        fireAfterActionPerformed(ACTION_NAME_COPY_ALL);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//CopyAllAction
 
     private class PasteAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public PasteAction(String name) {
             super(name);
-        }
+        }//PasteAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -150,19 +193,25 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.paste();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNamePaste);
+                        fireAfterActionPerformed(ACTION_NAME_PASTE);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//PasteAction
 
     private class ClearAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public ClearAction(String name) {
             super(name);
-        }
+        }//ClearAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -172,19 +221,25 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.setText(null);
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameClear);
+                        fireAfterActionPerformed(ACTION_NAME_CLEAR);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//ClearAction
 
     private class DeleteAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public DeleteAction(String name) {
             super(name);
-        }
+        }//DeleteAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -207,19 +262,25 @@ public class JEditorPopupMenu extends JPopupMenu {
                         }
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameDelete);
+                        fireAfterActionPerformed(ACTION_NAME_DELETE);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//DeleteAction
 
     private class ClearAndPasteAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public ClearAndPasteAction(String name) {
             super(name);
-        }
+        }//ClearAndPasteAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -230,19 +291,25 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.paste();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameClearAndPaste);
+                        fireAfterActionPerformed(ACTION_NAME_CLEAR_AND_PASTE);
                     }
                 }
             }
-        }
+        }//actionPerformed()
     }//ClearAndPasteAction
 
     private class SelectAllAction extends TextAction {
 
+        /**
+         * Creates new instance.
+         *
+         * @param name the action name.
+         */
         public SelectAllAction(String name) {
             super(name);
-        }
+        }//SelectAllAction()
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof JMenuItem) {
                 if (((JMenuItem) e.getSource()).getParent() instanceof JPopupMenu) {
@@ -252,14 +319,17 @@ public class JEditorPopupMenu extends JPopupMenu {
                         textComponent.selectAll();
                         textComponent.requestFocusInWindow();
 
-                        fireAfterActionPerformed(ActionNameSelectAll);
+                        fireAfterActionPerformed(ACTION_NAME_SELECT_ALL);
                     }
                 }
             }
-        }
-    }//SelectAllAction
+        }//actionPerformed()
+    }//SelectAllAction()
 
-    //check if invoker is enabled or not, then reset enabled-status of all menu items
+    /**
+     * Checks if invoker is enabled or not, then reset enabled-status of all
+     * menu items.
+     */
     @Override
     protected void firePopupMenuWillBecomeVisible() {
         final Component Invoker = getInvoker();
@@ -283,5 +353,5 @@ public class JEditorPopupMenu extends JPopupMenu {
                 comp.setEnabled(enabled);
             }
         }
-    }//firePopupMenuWillBecomeVisible
+    }//firePopupMenuWillBecomeVisible()
 }

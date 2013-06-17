@@ -4,7 +4,6 @@
  *    See the file LICENSE at the root directory of this project for copying
  *    permission.
  */
-
 package group.pals.android.utils.apksigner.utils;
 
 import java.io.File;
@@ -13,18 +12,25 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 /**
+ * Helper class for working with files.
  *
  * @author Hai Bison
  */
 public class Files {
 
-    public static final String TitleOpenFile = "Choose File...";
-    public static final String TitleOpenDir = "Choose Folder...";
-    public static final String TitleSaveFile = "Save File As...";
+    public static final String TITLE_CHOOSE_FILE = "Choose File...";
+    public static final String TITLE_CHOOSE_DIRECTORY = "Choose Folder...";
+    public static final String TITLE_SAVE_AS = "Save File As...";
 
-    public static File chooseFile(File currentDir) {
-        JFileChooserEx fc = new JFileChooserEx(currentDir);
-        fc.setDialogTitle(TitleOpenFile);
+    /**
+     * Opens a dialog to choose a file.
+     *
+     * @param startupDir the startup directory.
+     * @return the chosen file, or {@code null} if the user cancelled.
+     */
+    public static File chooseFile(File startupDir) {
+        JFileChooserEx fc = new JFileChooserEx(startupDir);
+        fc.setDialogTitle(TITLE_CHOOSE_FILE);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         switch (fc.showOpenDialog(null)) {
@@ -33,11 +39,19 @@ public class Files {
             default:
                 return null;
         }
-    }//chooseFile
+    }//chooseFile()
 
-    public static File chooseFile(File currentDir, String regexFilenameFilter, String description) {
-        JFileChooserEx fc = new JFileChooserEx(currentDir);
-        fc.setDialogTitle(TitleOpenFile);
+    /**
+     * Opens a dialog to choose a file.
+     *
+     * @param startupDir the startup directory.
+     * @param regexFilenameFilter the regex filename filter.
+     * @param description the file filter description.
+     * @return the chosen file, can be {@code null}.
+     */
+    public static File chooseFile(File startupDir, String regexFilenameFilter, String description) {
+        JFileChooserEx fc = new JFileChooserEx(startupDir);
+        fc.setDialogTitle(TITLE_CHOOSE_FILE);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.setFilenameFilter(regexFilenameFilter, description);
 
@@ -47,11 +61,17 @@ public class Files {
             default:
                 return null;
         }
-    }//chooseFile
+    }//chooseFile()
 
-    public static File chooseDir(File currentDir) {
-        JFileChooserEx fc = new JFileChooserEx(currentDir);
-        fc.setDialogTitle(TitleOpenDir);
+    /**
+     * Opens a dialog to choose a directory.
+     *
+     * @param startupDir the startup directory.
+     * @return the chosen directory, can be {@code null}.
+     */
+    public static File chooseDir(File startupDir) {
+        JFileChooserEx fc = new JFileChooserEx(startupDir);
+        fc.setDialogTitle(TITLE_CHOOSE_DIRECTORY);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         switch (fc.showOpenDialog(null)) {
@@ -60,11 +80,17 @@ public class Files {
             default:
                 return null;
         }
-    }//chooseDir
+    }//chooseDir()
 
-    public static File chooseFileToSave(File currentDir) {
-        JFileChooserEx fc = new JFileChooserEx(currentDir);
-        fc.setDialogTitle(TitleSaveFile);
+    /**
+     * Opens a dialog to choose a file to save.
+     *
+     * @param startupDir the startup directory.
+     * @return the chosen file, can be {@code null}.
+     */
+    public static File chooseFileToSave(File startupDir) {
+        JFileChooserEx fc = new JFileChooserEx(startupDir);
+        fc.setDialogTitle(TITLE_SAVE_AS);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         switch (fc.showSaveDialog(null)) {
@@ -73,37 +99,51 @@ public class Files {
             default:
                 return null;
         }
-    }//chooseFile
+    }//chooseFileToSave()
 
+    /**
+     * Extended class of {@link JFileChooser}, which hacks some methods :-)
+     */
     private static class JFileChooserEx extends JFileChooser {
 
-        public static final String PatternOverrideFile = "This file \"%s\" already exists.\nDo you want to replace it?";
-        public static final String PatternFileNotExisted = "File \"%s\" does not exist";
+        public static final String PMSG_OVERRIDE_FILE = "This file \"%s\" already exists.\n\nDo you want to replace it?";
+        public static final String PMSG_FILE_NOT_EXISTED = "File \"%s\" does not exist";
 
-        public JFileChooserEx(File currentDir) {
-            super(currentDir);
-        }
-        
-        public void setFilenameFilter(final String Regex, final String Description) {
+        /**
+         * Creates new instance.
+         *
+         * @param startupDir the startup directory.
+         */
+        public JFileChooserEx(File startupDir) {
+            super(startupDir);
+        }//JFileChooserEx()
+
+        /**
+         * Sets the regex file name filter.
+         *
+         * @param regex the regular expression.
+         * @param description the description.
+         */
+        public void setFilenameFilter(final String regex, final String description) {
             setFileFilter(new FileFilter() {
-
                 @Override
                 public boolean accept(File f) {
-                    if (getFileSelectionMode() == DIRECTORIES_ONLY)
-                        return f.getName().matches(Regex);
-                    else if (f.isDirectory())
+                    if (getFileSelectionMode() == DIRECTORIES_ONLY) {
+                        return f.getName().matches(regex);
+                    } else if (f.isDirectory()) {
                         return true;
-                    else
-                        return f.getName().matches(Regex);
+                    } else {
+                        return f.getName().matches(regex);
+                    }
                 }
 
                 @Override
                 public String getDescription() {
-                    return Description;
+                    return description;
                 }
             });
-        }
-        
+        }//setFilenameFilter()
+
         @Override
         public void approveSelection() {
             switch (getDialogType()) {
@@ -112,8 +152,8 @@ public class Files {
                     if ((file != null) && file.exists()) {
                         final String[] UsrOptions = {"Yes", "No"};
                         int usrOption = JOptionPane.showOptionDialog(this,
-                                String.format(PatternOverrideFile, file.getName()),
-                                MsgBox.TitleConfirmation, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+                                String.format(PMSG_OVERRIDE_FILE, file.getName()),
+                                MsgBox.TITLE_CONFIRMATION, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
                                 null, UsrOptions, UsrOptions[1]);
                         if (usrOption != 0) {
                             return;
@@ -126,8 +166,8 @@ public class Files {
                     File file = getSelectedFile();
                     if ((file == null) || !file.exists()) {
                         JOptionPane.showMessageDialog(this,
-                                String.format(PatternFileNotExisted, file.getName()),
-                                MsgBox.TitleError, JOptionPane.ERROR_MESSAGE);
+                                String.format(PMSG_FILE_NOT_EXISTED, file.getName()),
+                                MsgBox.TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     break;
@@ -135,6 +175,6 @@ public class Files {
             }
 
             super.approveSelection();
-        }
+        }//approveSelection()
     }//JFileChooserEx
 }

@@ -10,8 +10,31 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Helper class to generate keystore file.
+ *
+ * @author Hai Bison
+ */
 public class KeyGen {
 
+    /**
+     * Generates new keystore file.
+     *
+     * @param jdkPath the JDK path, can be {@code null} on Unix system.
+     * @param target the target file which will be generated to.
+     * @param storepass the keystore's password.
+     * @param alias the keystore's alias name.
+     * @param keypass the keystore's alias password.
+     * @param aliasYears the validity, in years.
+     * @param coName the company name.
+     * @param ouName the organization unit name.
+     * @param oName the organization name.
+     * @param city the city name.
+     * @param state the state name.
+     * @param country the country ISO code.
+     * @throws IOException if any occurred.
+     * @throws InterruptedException if any occurred.
+     */
     public static void genKey(File jdkPath, File target, String storepass, String alias,
             String keypass, int aliasYears, String coName, String ouName,
             String oName, String city, String state, String country)
@@ -82,5 +105,5 @@ public class KeyGen {
         if (!target.isFile()) {
             throw new IOException("Error: " + sb);
         }
-    }//genKey
+    }//genKey()
 }

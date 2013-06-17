@@ -4,7 +4,6 @@
  *    See the file LICENSE at the root directory of this project for copying
  *    permission.
  */
-
 package group.pals.android.utils.apksigner.utils;
 
 import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
@@ -15,32 +14,64 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
+ * Utilities for message boxes.
  *
  * @author Hai Bison
  */
 public class MsgBox {
 
-    public static final String TitleInformation = "Information";
-    public static final String TitleWarning = "Warning";
-    public static final String TitleConfirmation = "Confirmation";
-    public static final String TitleError = "Error";
+    public static final String TITLE_INFORMATION = "Information";
+    public static final String TITLE_WARNING = "Warning";
+    public static final String TITLE_CONFIRMATION = "Confirmation";
+    public static final String TITLE_ERROR = "Error";
 
+    /**
+     * Shows an error message.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param msg the message.
+     */
     public static void showErrMsg(Component comp, String title, Object msg) {
-        JOptionPane.showMessageDialog(comp, msg, title == null ? TitleError : title,
+        JOptionPane.showMessageDialog(comp, msg, title == null ? TITLE_ERROR : title,
                 JOptionPane.ERROR_MESSAGE);
-    }//showErrMsg
+    }//showErrMsg()
 
-    public static void showException(Component comp, String title, Exception ex) {
+    /**
+     * Shows an exception message.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param e the exception.
+     */
+    public static void showException(Component comp, String title, Exception e) {
         String msg = String.format("Exception:\n%s\n\nMessage:\n%s",
-                ex.getClass().getName(), ex.getMessage());
+                e.getClass().getName(), e.getMessage());
         showErrMsg(comp, title, msg);
-    }//showException
+    }//showException()
 
+    /**
+     * Shows an information message.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param msg the message.
+     */
     public static void showInfoMsg(Component comp, String title, Object msg) {
-        JOptionPane.showMessageDialog(comp, msg, (title == null ? TitleInformation : title),
+        JOptionPane.showMessageDialog(comp, msg, (title == null ? TITLE_INFORMATION : title),
                 JOptionPane.INFORMATION_MESSAGE);
-    }//showInfoMsg
+    }//showInfoMsg()
 
+    /**
+     * Shows a huge information message. The dialog size will be hardcoded with
+     * {@code width} and {@code height}.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param msg the message.
+     * @param width the dialog width.
+     * @param height the dialog height.
+     */
     public static void showHugeInfoMsg(Component comp, String title, String msg,
             int width, int height) {
         JTextArea textArea = new JTextArea(msg);
@@ -56,22 +87,38 @@ public class MsgBox {
         }
 
         showInfoMsg(comp, title, scrollPane);
-    }//showHugeInfoMsg
+    }//showHugeInfoMsg()
 
+    /**
+     * Shows a warning message.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param msg the message.
+     */
     public static void showWarningMsg(Component comp, String title, Object msg) {
-        JOptionPane.showMessageDialog(comp, msg, title == null ? TitleWarning : title,
+        JOptionPane.showMessageDialog(comp, msg, title == null ? TITLE_WARNING : title,
                 JOptionPane.WARNING_MESSAGE);
-    }//showWarningMsg
+    }//showWarningMsg()
 
+    /**
+     * Shows a yes-no confirmation dialog.
+     *
+     * @param comp the root component.
+     * @param title the title.
+     * @param msg the message.
+     * @param defaultButton the default suggested button.
+     * @return {@code true} if the user chose "yes", otherwise {@code false}.
+     */
     public static boolean confirmYesNo(Component comp, String title, Object msg, int defaultButton) {
         Object[] options = {"Yes", "No"};
         int opt = JOptionPane.showOptionDialog(comp,
                 msg,
-                title == null ? TitleConfirmation : title,
+                title == null ? TITLE_CONFIRMATION : title,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.WARNING_MESSAGE,
                 null,
                 options, options[defaultButton]);
         return opt == 0;
-    }//confirmYesNo
+    }//confirmYesNo()
 }

@@ -38,10 +38,12 @@ public class PanelSigner extends javax.swing.JPanel {
     private final MainFrame mMainFrame;
 
     /**
-     * Creates new form PanelSigner
+     * Creates new form PanelSigner.
+     *
+     * @param mainFrame the main frame.
      */
-    public PanelSigner(MainFrame m) {
-        mMainFrame = m;
+    public PanelSigner(MainFrame mainFrame) {
+        mMainFrame = mainFrame;
 
         initComponents();
         setKeyFile(null);

@@ -31,13 +31,15 @@ import javax.swing.AbstractAction;
  */
 public class PanelKeygen extends javax.swing.JPanel {
 
-    private final MainFrame MF;
+    private final MainFrame mMainFrame;
 
     /**
-     * Creates new form PanelKeygen
+     * Creates new form PanelKeygen.
+     *
+     * @param mainFrame the main frame.
      */
-    public PanelKeygen(MainFrame m) {
-        MF = m;
+    public PanelKeygen(MainFrame mainFrame) {
+        mMainFrame = mainFrame;
 
         initComponents();
         btnChooseFile.addActionListener(mBtnChooseFileListener);
@@ -237,7 +239,9 @@ public class PanelKeygen extends javax.swing.JPanel {
     private final ActionListener mBtnChooseFileListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            File file = Files.chooseFileToSave(new File(mPrefs.get(KEY_LAST_WORKING_DIR, "/")));
+            File file = Files.chooseFileToSave(
+                    new File(mPrefs.get(KEY_LAST_WORKING_DIR, "/")),
+                    ".keystore", "(?si).+\\.keystore", "Keystore Files");
             if (file != null) {
                 txtFile.setText(file.getAbsolutePath());
                 mPrefs.set(KEY_LAST_WORKING_DIR, file.getParent());
@@ -309,7 +313,7 @@ public class PanelKeygen extends javax.swing.JPanel {
                     file.delete();
                 }
 
-                KeyGen.genKey(MF.getJdkDir(), file, pwd, alias, aliasPwd, validity * 365, name, orgUnit, org, city, state, country);
+                KeyGen.genKey(mMainFrame.getJdkDir(), file, pwd, alias, aliasPwd, validity * 365, name, orgUnit, org, city, state, country);
                 MsgBox.showInfoMsg(null, null, "Key-file generated successfully");
             } catch (Exception ex) {
                 MsgBox.showErrMsg(null, null, "Error while generating key-file. Please try again.\n\nDetails:\n" + ex);

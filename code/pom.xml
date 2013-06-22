@@ -4,7 +4,7 @@
 
   <groupId>group.pals.android.utils</groupId>
   <artifactId>apk-signer</artifactId>
-  <version>1.5</version>
+  <version>1.5.1</version>
   <packaging>jar</packaging>
 
   <name>apk-signer</name>
@@ -67,4 +67,7 @@
       <version>1.4.0</version>
     </dependency>
   </dependencies>
+    <description>This tool tends to serve end-users, not developers.
+
+Publisher: Hai Bison Apps -- http://www.haibison.com</description>
 </project>

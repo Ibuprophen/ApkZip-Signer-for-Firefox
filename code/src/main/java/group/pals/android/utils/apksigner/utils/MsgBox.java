@@ -9,6 +9,7 @@ package group.pals.android.utils.apksigner.utils;
 import group.pals.android.utils.apksigner.panels.ui.JEditorPopupMenu;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Insets;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -76,6 +77,7 @@ public class MsgBox {
             int width, int height) {
         JTextArea textArea = new JTextArea(msg);
         textArea.setEditable(false);
+        textArea.setMargin(new Insets(9, 9, 9, 9));
         textArea.setComponentPopupMenu(new JEditorPopupMenu());
 
         JScrollPane scrollPane = new JScrollPane(textArea);

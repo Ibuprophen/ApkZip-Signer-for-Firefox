@@ -114,6 +114,7 @@ public class PanelKeytools extends javax.swing.JPanel {
         mTextInfo.setColumns(20);
         mTextInfo.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         mTextInfo.setRows(5);
+        mTextInfo.setMargin(new java.awt.Insets(9, 9, 9, 9));
         jScrollPane1.setViewportView(mTextInfo);
 
         gridBagConstraints = new java.awt.GridBagConstraints();

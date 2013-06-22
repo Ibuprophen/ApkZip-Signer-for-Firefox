@@ -57,13 +57,13 @@ public class ApkSigner {
                     apkFile.getAbsolutePath(), alias});
         Process p = pb.start();
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder console = new StringBuilder();
         InputStream stream = p.getInputStream();
         try {
-            int read = 0;
+            int read;
             byte[] buf = new byte[1024 * 99];
             while ((read = stream.read(buf)) > 0) {
-                sb.append(new String(buf, 0, read));
+                console.append(new String(buf, 0, read));
             }
         } finally {
             if (stream != null) {
@@ -81,21 +81,26 @@ public class ApkSigner {
          * Renames newly signed file...
          */
 
-        final String oldApkName = apkFile.getName();
-        String newApkName;
-        if (oldApkName.matches("(?si).*?unsigned.+")) {
-            newApkName = oldApkName.replaceFirst("(?si)unsigned", Matcher.quoteReplacement(SIGNED));
-        } else if (oldApkName.matches("(?si).+\\.apk$")) {
-            newApkName = oldApkName.replaceFirst("(?si)\\.apk$", Matcher.quoteReplacement(String.format("_%s.apk", SIGNED)));
-        } else {
-            newApkName = String.format("%s_%s.apk", oldApkName, SIGNED);
-        }
+        if (console.toString().trim().isEmpty()) {
+            final String oldApkName = apkFile.getName();
+            String newApkName;
+            if (oldApkName.matches("(?si).*?unsigned.+")) {
+                newApkName = oldApkName.replaceFirst("(?si)unsigned", Matcher.quoteReplacement(SIGNED));
+            } else if (oldApkName.matches("(?si).+\\.apk$")) {
+                newApkName = oldApkName.replaceFirst("(?si)\\.apk$", Matcher.quoteReplacement(String.format("_%s.apk", SIGNED)));
+            } else {
+                newApkName = String.format("%s_%s.apk", oldApkName, SIGNED);
+            }
 
-        if (apkFile.renameTo(new File(apkFile.getParent() + File.separator + newApkName))) {
-            return sb.toString().trim();
-        }
-        return String.format("Can't rename source APK file to \"%s\"!\n\n", newApkName)
-                + "The result of signing process was "
-                + "(if empty, it means everything is OK):\n\n" + sb.toString().trim();
+            if (apkFile.renameTo(new File(apkFile.getParent() + File.separator + newApkName))) {
+                return null;
+            }
+            return String.format("Can't rename source APK file to \"%s\"!\n\n", newApkName)
+                    + "The result of signing process was "
+                    + "(if empty, it means everything is OK):\n\n" + console.toString().trim();
+        }// results from console is empty
+        else {
+            return console.toString().trim();
+        }// results from console is NOT empty
     }//sign()
 }

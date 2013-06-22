@@ -6,6 +6,12 @@ Feel free to contact us at:
 
 History:
 
++++ Version 1.5.1 +++
+ * Release: June 22, 2013
+
+ - Fix a bug after signing APK file: if signing process was not OK then don't
+   rename the original APK.
+
 +++ Version 1.5 +++
  * Initialize: June 17, 2013
  * Release: June 18, 2013

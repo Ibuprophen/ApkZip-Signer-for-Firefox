@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.SwingConstants;
 
 /**
  * Keystore file generator panel.
@@ -95,6 +96,7 @@ public class PanelKeygen extends JPanel {
         panel.add(mBtnGenerateKeyfile);
 
         mTextPassword = new JPasswordField();
+        mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
                 .getString("password"), TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
@@ -106,6 +108,7 @@ public class PanelKeygen extends JPanel {
         add(mTextPassword, gbc_mTextPassword);
 
         mTextPasswordConfirm = new JPasswordField();
+        mTextPasswordConfirm.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPasswordConfirm.setBorder(new TitledBorder(null, Messages
                 .getString("confirm"), TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
@@ -117,6 +120,7 @@ public class PanelKeygen extends JPanel {
         add(mTextPasswordConfirm, gbc_mTextPasswordConfirm);
 
         mTextAlias = new JTextField();
+        mTextAlias.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAlias.setBorder(new TitledBorder(null,
                 Messages.getString("alias"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -129,6 +133,7 @@ public class PanelKeygen extends JPanel {
         mTextAlias.setColumns(10);
 
         mTextAliasPassword = new JPasswordField();
+        mTextAliasPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAliasPassword.setBorder(new TitledBorder(null, Messages
                 .getString("alias_password"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -140,6 +145,7 @@ public class PanelKeygen extends JPanel {
         add(mTextAliasPassword, gbc_mTextAliasPassword);
 
         mTextAliasPasswordConfirm = new JPasswordField();
+        mTextAliasPasswordConfirm.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAliasPasswordConfirm.setBorder(new TitledBorder(null, Messages
                 .getString("confirm"), TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
@@ -162,6 +168,7 @@ public class PanelKeygen extends JPanel {
         add(mSpinnerValidity, gbc_mSpinnerValidity);
 
         mTextName = new JTextField();
+        mTextName.setHorizontalAlignment(SwingConstants.CENTER);
         mTextName.setBorder(new TitledBorder(null, Messages
                 .getString("first_and_last_name"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -174,6 +181,7 @@ public class PanelKeygen extends JPanel {
         mTextName.setColumns(10);
 
         mTextOrganizationalUnit = new JTextField();
+        mTextOrganizationalUnit.setHorizontalAlignment(SwingConstants.CENTER);
         mTextOrganizationalUnit.setBorder(new TitledBorder(null, Messages
                 .getString("organizational_unit"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -186,6 +194,7 @@ public class PanelKeygen extends JPanel {
         mTextOrganizationalUnit.setColumns(10);
 
         mTextOrganization = new JTextField();
+        mTextOrganization.setHorizontalAlignment(SwingConstants.CENTER);
         mTextOrganization.setBorder(new TitledBorder(null, Messages
                 .getString("organization"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -198,6 +207,7 @@ public class PanelKeygen extends JPanel {
         mTextOrganization.setColumns(10);
 
         mTextCityOrLocality = new JTextField();
+        mTextCityOrLocality.setHorizontalAlignment(SwingConstants.CENTER);
         mTextCityOrLocality.setBorder(new TitledBorder(null, Messages
                 .getString("city_or_locality"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -210,6 +220,7 @@ public class PanelKeygen extends JPanel {
         mTextCityOrLocality.setColumns(10);
 
         mTextStateOrProvince = new JTextField();
+        mTextStateOrProvince.setHorizontalAlignment(SwingConstants.CENTER);
         mTextStateOrProvince.setBorder(new TitledBorder(null, Messages
                 .getString("state_or_province"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
@@ -222,6 +233,7 @@ public class PanelKeygen extends JPanel {
         mTextStateOrProvince.setColumns(10);
 
         mTextCountryCode = new JTextField();
+        mTextCountryCode.setHorizontalAlignment(SwingConstants.CENTER);
         mTextCountryCode.setBorder(new TitledBorder(null, Messages
                 .getString("country_code"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));

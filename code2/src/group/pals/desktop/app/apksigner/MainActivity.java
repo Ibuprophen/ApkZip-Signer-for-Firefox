@@ -121,6 +121,7 @@ public class MainActivity {
 
         mTabbedPane.add(Messages.getString("key_generator"), new PanelKeygen());
         mTabbedPane.add(Messages.getString("apk_signer"), new PanelApkSigner());
+        mTabbedPane.add(Messages.getString("key_tools"), new PanelKeyTools());
     }// MainActivity()
 
     /**

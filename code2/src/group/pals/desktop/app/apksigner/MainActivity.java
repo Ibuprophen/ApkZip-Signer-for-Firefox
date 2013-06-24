@@ -120,6 +120,7 @@ public class MainActivity {
             mTextJdkPath.setText(jdkPath.getAbsolutePath());
 
         mTabbedPane.add(Messages.getString("key_generator"), new PanelKeygen());
+        mTabbedPane.add(Messages.getString("apk_signer"), new PanelApkSigner());
     }// MainActivity()
 
     /**

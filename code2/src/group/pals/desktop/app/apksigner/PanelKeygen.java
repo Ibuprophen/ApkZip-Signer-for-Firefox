@@ -244,7 +244,6 @@ public class PanelKeygen extends JPanel {
         gbc_mTextCountryCode.gridy = 7;
         add(mTextCountryCode, gbc_mTextCountryCode);
         mTextCountryCode.setColumns(10);
-
     }// PanelKeygen()
 
 }

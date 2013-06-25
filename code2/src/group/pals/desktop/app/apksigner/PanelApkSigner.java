@@ -8,10 +8,19 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.utils.ApkSigner;
+import group.pals.desktop.app.apksigner.utils.Files;
+import group.pals.desktop.app.apksigner.utils.Preferences;
+import group.pals.desktop.app.apksigner.utils.Texts;
+import group.pals.desktop.app.apksigner.utils.UI;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -43,9 +52,24 @@ public class PanelApkSigner extends JPanel {
      */
     private static final String PKEY_LAST_WORKING_DIR = CLASSNAME
             + ".last_working_dir";
-    private JPasswordField passwordField;
-    private JTextField textField;
-    private JPasswordField passwordField_1;
+
+    /*
+     * FIELDS
+     */
+
+    private File mKeyfile;
+    private File mApkFile;
+
+    /*
+     * CONTROLS
+     */
+
+    private JPasswordField mTextPassword;
+    private JTextField mTextAlias;
+    private JPasswordField mTextAliasPassword;
+    private JButton mBtnChooseKeyfile;
+    private JButton mBtnChooseApkFile;
+    private JButton mBtnSign;
 
     /**
      * Create the panel.
@@ -59,64 +83,182 @@ public class PanelApkSigner extends JPanel {
                 Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
-        JButton btnNewButton = new JButton(
+        mBtnChooseKeyfile = new JButton(
                 Messages.getString("desc_load_key_file"));
-        GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-        gbc_btnNewButton.insets = new Insets(10, 3, 3, 3);
-        gbc_btnNewButton.gridx = 0;
-        gbc_btnNewButton.gridy = 0;
-        add(btnNewButton, gbc_btnNewButton);
+        mBtnChooseKeyfile.addActionListener(new ActionListener() {
 
-        passwordField = new JPasswordField();
-        passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-        passwordField.setBorder(new TitledBorder(null, Messages
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
+                        .get(PKEY_LAST_WORKING_DIR, "/")),
+                        Texts.REGEX_KEYSTORE_FILES, Messages
+                                .getString("desc_keystore_files"));
+                if (mKeyfile != null) {
+                    mBtnChooseKeyfile.setText(mKeyfile.getName());
+                    mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
+                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                            mKeyfile.getParentFile().getAbsolutePath());
+                } else {
+                    mBtnChooseKeyfile.setText(Messages
+                            .getString("desc_load_key_file"));
+                    mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
+                }
+            }// actionPerformed()
+        });
+        GridBagConstraints gbc_mBtnChooseKeyfile = new GridBagConstraints();
+        gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 3, 3);
+        gbc_mBtnChooseKeyfile.gridx = 0;
+        gbc_mBtnChooseKeyfile.gridy = 0;
+        add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
+
+        mTextPassword = new JPasswordField();
+        mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
+        mTextPassword.setBorder(new TitledBorder(null, Messages
                 .getString("password"), TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
-        GridBagConstraints gbc_passwordField = new GridBagConstraints();
-        gbc_passwordField.insets = new Insets(3, 3, 3, 3);
-        gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_passwordField.gridx = 0;
-        gbc_passwordField.gridy = 1;
-        add(passwordField, gbc_passwordField);
+        GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
+        gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
+        gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
+        gbc_mTextPassword.gridx = 0;
+        gbc_mTextPassword.gridy = 1;
+        add(mTextPassword, gbc_mTextPassword);
 
-        textField = new JTextField();
-        textField.setHorizontalAlignment(SwingConstants.CENTER);
-        textField.setBorder(new TitledBorder(null, Messages.getString("alias"),
-                TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.insets = new Insets(3, 3, 3, 3);
-        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField.gridx = 0;
-        gbc_textField.gridy = 2;
-        add(textField, gbc_textField);
-        textField.setColumns(10);
+        mTextAlias = new JTextField();
+        mTextAlias.setHorizontalAlignment(SwingConstants.CENTER);
+        mTextAlias.setBorder(new TitledBorder(null,
+                Messages.getString("alias"), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_mTextAlias = new GridBagConstraints();
+        gbc_mTextAlias.insets = new Insets(3, 3, 3, 3);
+        gbc_mTextAlias.fill = GridBagConstraints.HORIZONTAL;
+        gbc_mTextAlias.gridx = 0;
+        gbc_mTextAlias.gridy = 2;
+        add(mTextAlias, gbc_mTextAlias);
+        mTextAlias.setColumns(10);
 
-        passwordField_1 = new JPasswordField();
-        passwordField_1.setHorizontalAlignment(SwingConstants.CENTER);
-        passwordField_1.setBorder(new TitledBorder(null, Messages
+        mTextAliasPassword = new JPasswordField();
+        mTextAliasPassword.setHorizontalAlignment(SwingConstants.CENTER);
+        mTextAliasPassword.setBorder(new TitledBorder(null, Messages
                 .getString("alias_password"), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_passwordField_1 = new GridBagConstraints();
-        gbc_passwordField_1.insets = new Insets(3, 3, 3, 3);
-        gbc_passwordField_1.fill = GridBagConstraints.HORIZONTAL;
-        gbc_passwordField_1.gridx = 0;
-        gbc_passwordField_1.gridy = 3;
-        add(passwordField_1, gbc_passwordField_1);
+        GridBagConstraints gbc_mTextAliasPassword = new GridBagConstraints();
+        gbc_mTextAliasPassword.insets = new Insets(3, 3, 3, 3);
+        gbc_mTextAliasPassword.fill = GridBagConstraints.HORIZONTAL;
+        gbc_mTextAliasPassword.gridx = 0;
+        gbc_mTextAliasPassword.gridy = 3;
+        add(mTextAliasPassword, gbc_mTextAliasPassword);
 
-        JButton btnNewButton_1 = new JButton(
+        mBtnChooseApkFile = new JButton(
                 Messages.getString("desc_load_apk_file"));
-        GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-        gbc_btnNewButton_1.insets = new Insets(3, 3, 3, 3);
-        gbc_btnNewButton_1.gridx = 0;
-        gbc_btnNewButton_1.gridy = 4;
-        add(btnNewButton_1, gbc_btnNewButton_1);
+        mBtnChooseApkFile.addActionListener(new ActionListener() {
 
-        JButton btnNewButton_2 = new JButton(Messages.getString("sign"));
-        GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-        gbc_btnNewButton_2.insets = new Insets(10, 10, 10, 10);
-        gbc_btnNewButton_2.gridx = 0;
-        gbc_btnNewButton_2.gridy = 5;
-        add(btnNewButton_2, gbc_btnNewButton_2);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mApkFile = Files.chooseFile(new File(Preferences.getInstance()
+                        .get(PKEY_LAST_WORKING_DIR, "/")),
+                        Texts.REGEX_APK_FILES, Messages
+                                .getString("desc_apk_files"));
+                if (mApkFile != null) {
+                    mBtnChooseApkFile.setText(mApkFile.getName());
+                    mBtnChooseApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
+                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                            mApkFile.getParentFile().getAbsolutePath());
+                } else {
+                    mBtnChooseApkFile.setText(Messages
+                            .getString("desc_load_apk_file"));
+                    mBtnChooseApkFile.setForeground(UI.COLOUR_WAITING_CMD);
+                }
+            }// actionPerformed()
+        });
+        GridBagConstraints gbc_mBtnChooseApkFile = new GridBagConstraints();
+        gbc_mBtnChooseApkFile.insets = new Insets(3, 3, 3, 3);
+        gbc_mBtnChooseApkFile.gridx = 0;
+        gbc_mBtnChooseApkFile.gridy = 4;
+        add(mBtnChooseApkFile, gbc_mBtnChooseApkFile);
+
+        mBtnSign = new JButton(Messages.getString("sign"));
+        mBtnSign.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validateFields())
+                    signApkFile();
+            }// actionPerformed()
+        });
+        GridBagConstraints gbc_mBtnSign = new GridBagConstraints();
+        gbc_mBtnSign.insets = new Insets(10, 10, 10, 10);
+        gbc_mBtnSign.gridx = 0;
+        gbc_mBtnSign.gridy = 5;
+        add(mBtnSign, gbc_mBtnSign);
     }// PanelApkSigner()
 
+    /**
+     * Validates all fields.
+     * 
+     * @return {@code true} or {@code false}.
+     */
+    private boolean validateFields() {
+        if (mKeyfile == null || !mKeyfile.isFile() || !mKeyfile.canRead()) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_keyfile_doesnt_exist"));
+            mBtnChooseKeyfile.requestFocus();
+            return false;
+        }
+
+        if (mTextPassword.getPassword() == null
+                || mTextPassword.getPassword().length == 0) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_password_is_empty"));
+            mTextPassword.requestFocus();
+            return false;
+        }
+
+        if (mTextAlias.getText() == null
+                || mTextAlias.getText().trim().isEmpty()) {
+            Dlg.showErrMsg(null, null, Messages.getString("msg_alias_is_empty"));
+            mTextAlias.requestFocus();
+            return false;
+        }
+
+        if (mTextAliasPassword.getPassword() == null
+                || mTextAliasPassword.getPassword().length == 0) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_alias_password_is_empty"));
+            mTextAliasPassword.requestFocus();
+            return false;
+        }
+
+        if (mApkFile == null || !mApkFile.isFile() || !mApkFile.canWrite()) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_apk_file_doesnt_exist"));
+            mBtnChooseApkFile.requestFocus();
+            return false;
+        }
+
+        return true;
+    }// validateFields()
+
+    /**
+     * Signs the APK file.
+     * <p>
+     * <b>Notes:</b> You should call {@link #validateFields()} first.
+     * </p>
+     */
+    private void signApkFile() {
+        try {
+            String info = ApkSigner.sign(
+                    Preferences.getInstance().getJdkPath(), mApkFile, mKeyfile,
+                    mTextPassword.getPassword(), mTextAlias.getText().trim(),
+                    mTextAliasPassword.getPassword());
+            if (info == null || info.isEmpty())
+                Dlg.showInfoMsg(null, null,
+                        Messages.getString("msg_apk_is_signed"));
+            else
+                Dlg.showErrMsg(null, null, String.format(
+                        Messages.getString("pmsg_error_signing_apkfile"), info));
+        } catch (Exception e) {
+            Dlg.showErrMsg(null, null, String.format(
+                    Messages.getString("pmsg_error_signing_apkfile"), e));
+        }
+    }// signApkFile()
 }

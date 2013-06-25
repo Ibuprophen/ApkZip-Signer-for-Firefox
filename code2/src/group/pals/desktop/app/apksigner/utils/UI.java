@@ -28,6 +28,11 @@ public class UI {
     public static final Color COLOUR_SELECTED_FILE = Color.yellow;
 
     /**
+     * The colour of waiting command.
+     */
+    public static final Color COLOUR_WAITING_CMD = Color.cyan;
+
+    /**
      * Moves the {@code window} to center of the screen, also resizes it by
      * ratio 16:9 :-) (in a multiplication with {@code luckyNo}).
      * 

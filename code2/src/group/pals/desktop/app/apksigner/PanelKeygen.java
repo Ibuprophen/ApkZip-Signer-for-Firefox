@@ -8,19 +8,31 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
+import group.pals.desktop.app.apksigner.utils.Files;
+import group.pals.desktop.app.apksigner.utils.KeyGen;
+import group.pals.desktop.app.apksigner.utils.Preferences;
+import group.pals.desktop.app.apksigner.utils.Texts;
+import group.pals.desktop.app.apksigner.utils.UI;
 
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
 
 /**
  * Keystore file generator panel.
@@ -46,6 +58,16 @@ public class PanelKeygen extends JPanel {
      */
     private static final String PKEY_LAST_WORKING_DIR = CLASSNAME
             + ".last_working_dir";
+
+    /*
+     * FIELDS
+     */
+
+    private File mTargetFile;
+
+    /*
+     * CONTROLS
+     */
 
     private JPasswordField mTextPassword;
     private JPasswordField mTextPasswordConfirm;
@@ -89,10 +111,38 @@ public class PanelKeygen extends JPanel {
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         mBtnChooseTargetFile = new JButton(Messages.getString("desc_save_as"));
+        mBtnChooseTargetFile.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mTargetFile = Files.chooseFileToSave(new File(Preferences
+                        .getInstance().get(PKEY_LAST_WORKING_DIR, "/")),
+                        Texts.FILE_EXT_KEYSTORE, Texts.REGEX_KEYSTORE_FILES,
+                        Messages.getString("desc_keystore_files"));
+                if (mTargetFile != null) {
+                    mBtnChooseTargetFile.setText(mTargetFile.getName());
+                    mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
+                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                            mTargetFile.getParentFile().getAbsolutePath());
+                } else {
+                    mBtnChooseTargetFile.setText(Messages
+                            .getString("desc_save_as"));
+                    mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
+                }
+            }// actionPerformed()
+        });
         panel.add(mBtnChooseTargetFile);
 
         mBtnGenerateKeyfile = new JButton(
                 Messages.getString("generate_keyfile")); //$NON-NLS-1$
+        mBtnGenerateKeyfile.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validateFields())
+                    genKeyfile();
+            }// actionPerformed()
+        });
         panel.add(mBtnGenerateKeyfile);
 
         mTextPassword = new JPasswordField();
@@ -160,6 +210,7 @@ public class PanelKeygen extends JPanel {
         mSpinnerValidity.setBorder(new TitledBorder(null, Messages
                 .getString("validity"), TitledBorder.LEADING, TitledBorder.TOP,
                 null, null));
+        mSpinnerValidity.setValue(25);
         GridBagConstraints gbc_mSpinnerValidity = new GridBagConstraints();
         gbc_mSpinnerValidity.fill = GridBagConstraints.HORIZONTAL;
         gbc_mSpinnerValidity.insets = new Insets(3, 3, 3, 3);
@@ -244,6 +295,117 @@ public class PanelKeygen extends JPanel {
         gbc_mTextCountryCode.gridy = 7;
         add(mTextCountryCode, gbc_mTextCountryCode);
         mTextCountryCode.setColumns(10);
+
+        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }// PanelKeygen()
 
+    /**
+     * Validates all fields.
+     * 
+     * @return {@code true} or {@ode false}.
+     */
+    private boolean validateFields() {
+        if (mTargetFile == null || !mTargetFile.getParentFile().isDirectory()) {
+            Dlg.showInfoMsg(null, null,
+                    Messages.getString("msg_specify_target_file"));
+            mBtnChooseTargetFile.requestFocus();
+            return false;
+        }
+
+        if (mTextPassword.getPassword() == null
+                || mTextPassword.getPassword().length == 0) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_password_is_empty"));
+            mTextPassword.requestFocus();
+            return false;
+        }
+
+        if (!Arrays.equals(mTextPassword.getPassword(),
+                mTextPasswordConfirm.getPassword())) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_passwords_dont_match"));
+            mTextPassword.requestFocus();
+            return false;
+        }
+
+        if (mTextAlias.getText() == null
+                || mTextAlias.getText().trim().isEmpty()) {
+            Dlg.showErrMsg(null, null, Messages.getString("msg_alias_is_empty"));
+            mTextAlias.requestFocus();
+            return false;
+        }
+
+        if (mTextAliasPassword.getPassword() == null
+                || mTextAliasPassword.getPassword().length == 0) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_alias_password_is_empty"));
+            mTextAliasPassword.requestFocus();
+            return false;
+        }
+
+        if (!Arrays.equals(mTextAliasPassword.getPassword(),
+                mTextAliasPasswordConfirm.getPassword())) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_alias_passwords_dont_match"));
+            mTextAliasPassword.requestFocus();
+            return false;
+        }
+
+        if (!(mSpinnerValidity.getValue() instanceof Integer)
+                || (Integer) mSpinnerValidity.getValue() <= 0) {
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("msg_validity_must_be_larger_than_zero"));
+            mSpinnerValidity.requestFocus();
+            return false;
+        }
+
+        boolean okay = false;
+        for (JTextComponent comp : new JTextComponent[] { mTextName,
+                mTextOrganizationalUnit, mTextOrganization,
+                mTextCityOrLocality, mTextStateOrProvince, mTextCountryCode }) {
+            if (comp.getText() != null && !comp.getText().trim().isEmpty()) {
+                okay = true;
+                break;
+            }
+        }
+        if (!okay) {
+            Dlg.showErrMsg(
+                    null,
+                    null,
+                    Messages.getString("msg_at_least_one_certificate_issuer_field_is_required"));
+            mTextName.requestFocus();
+            return false;
+        }
+
+        return true;
+    }// validateFields()
+
+    /**
+     * Generates keyfile.
+     * <p>
+     * <b>Notes:</b> You should call {@link #validateFields()} first.
+     * </p>
+     */
+    private void genKeyfile() {
+        try {
+            if (mTargetFile.exists()) {
+                mTargetFile.delete();
+            }
+
+            KeyGen.genKey(Preferences.getInstance().getJdkPath(), mTargetFile,
+                    mTextPassword.getPassword(), mTextAlias.getText().trim(),
+                    mTextAliasPassword.getPassword(),
+                    (Integer) mSpinnerValidity.getValue() * 365, mTextName
+                            .getText().trim(), mTextOrganizationalUnit
+                            .getText().trim(), mTextOrganization.getText()
+                            .trim(), mTextCityOrLocality.getText().trim(),
+                    mTextStateOrProvince.getText().trim(), mTextCountryCode
+                            .getText().trim());
+            Dlg.showInfoMsg(null, null,
+                    Messages.getString("msg_keyfile_generated_successfully"));
+        } catch (Exception e) {
+            Dlg.showErrMsg(null, null, String.format(
+                    Messages.getString("pmsg_error_generating_keyfile"), e));
+        }
+    }// genKeyfile()
 }

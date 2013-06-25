@@ -31,7 +31,7 @@ public class Dlg {
      * @param comp
      *            the root component.
      * @param title
-     *            the title.
+     *            the title. If {@code null}, default will be used.
      * @param msg
      *            the message.
      */
@@ -47,7 +47,7 @@ public class Dlg {
      * @param comp
      *            the root component.
      * @param title
-     *            the title.
+     *            the title. If {@code null}, default will be used.
      * @param e
      *            the exception.
      */
@@ -63,7 +63,7 @@ public class Dlg {
      * @param comp
      *            the root component.
      * @param title
-     *            the title.
+     *            the title. If {@code null}, default will be used.
      * @param msg
      *            the message.
      */
@@ -80,7 +80,7 @@ public class Dlg {
      * @param comp
      *            the root component.
      * @param title
-     *            the title.
+     *            the title. If {@code null}, default will be used.
      * @param msg
      *            the message.
      * @param width

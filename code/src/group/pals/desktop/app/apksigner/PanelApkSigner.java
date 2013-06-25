@@ -9,6 +9,7 @@ package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ApkSigner;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Preferences;
@@ -190,6 +191,8 @@ public class PanelApkSigner extends JPanel {
         gbc_mBtnSign.gridx = 0;
         gbc_mBtnSign.gridy = 5;
         add(mBtnSign, gbc_mBtnSign);
+
+        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }// PanelApkSigner()
 
     /**

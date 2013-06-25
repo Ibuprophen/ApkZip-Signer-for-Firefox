@@ -169,7 +169,8 @@ public class Updater extends Thread {
             try {
                 if (Integer.parseInt(Messages.getString(KEY_APP_VERSION_CODE)) >= Integer
                         .parseInt(updateProperties
-                                .getProperty(KEY_APP_VERSION_CODE)))
+                                .getProperty(KEY_APP_VERSION_CODE))
+                        && !Sys.DEBUG)
                     return;
             } catch (Throwable t) {
                 /*

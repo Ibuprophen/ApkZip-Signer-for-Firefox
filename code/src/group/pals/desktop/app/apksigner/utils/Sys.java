@@ -21,7 +21,7 @@ public class Sys {
     /**
      * Debug flag.
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * Gets the startup directory.

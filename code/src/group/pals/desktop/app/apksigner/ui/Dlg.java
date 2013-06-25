@@ -132,7 +132,9 @@ public class Dlg {
      * @param msg
      *            the message.
      * @param defaultButton
-     *            the default suggested button.
+     *            the default suggested button. {@code 0} for "Yes", {@code 1}
+     *            for "No". Other than that, {@link IndexOutOfBoundsException}
+     *            will be thrown :-)
      * @return {@code true} if the user chose "yes", otherwise {@code false}.
      */
     public static boolean confirmYesNo(Component comp, String title,

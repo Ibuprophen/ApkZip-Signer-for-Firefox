@@ -19,6 +19,11 @@ import java.net.URLDecoder;
 public class Sys {
 
     /**
+     * Debug flag.
+     */
+    public static final boolean DEBUG = true;
+
+    /**
      * Gets the startup directory.
      * 
      * @return the startup directory, or {@code null} if any error occurred.

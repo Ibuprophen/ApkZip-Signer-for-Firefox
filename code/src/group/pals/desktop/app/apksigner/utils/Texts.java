@@ -78,4 +78,30 @@ public class Texts {
                 String.format("%s %%sB", digitGroups == 0 ? "%,.0f" : "%,.2f"),
                 size, units[digitGroups]);
     }// sizeToStr()
+
+    /**
+     * Converts a percentage to string.
+     * 
+     * @param percent
+     * @return
+     */
+    public static String percentToStr(float percent) {
+        return percentToStr((double) percent);
+    }// percentToStr()
+
+    /**
+     * Converts a percentage to string.
+     * 
+     * @param percent
+     * @return
+     */
+    public static String percentToStr(double percent) {
+        if (percent == 0) {
+            return "0%";
+        } else if (percent < 100) {
+            return String.format("%02.02f%%", percent);
+        } else {
+            return "100%";
+        }
+    }// percentToStr()
 }

@@ -10,6 +10,8 @@ package group.pals.desktop.app.apksigner.services;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.services.INotification.Message;
 import group.pals.desktop.app.apksigner.utils.Network;
+import group.pals.desktop.app.apksigner.utils.SpeedTracker;
+import group.pals.desktop.app.apksigner.utils.Sys;
 import group.pals.desktop.app.apksigner.utils.Texts;
 
 import java.io.File;
@@ -26,6 +28,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Application updater service.
@@ -34,6 +38,8 @@ import java.util.Properties;
  * @since v1.6 beta
  */
 public class Updater extends Thread {
+
+    private static final String CLASSNAME = Updater.class.getName();
 
     /**
      * The URL pointing to `update.properties` file.
@@ -68,7 +74,8 @@ public class Updater extends Thread {
     /**
      * Maximum filesize allowed for the new version.
      */
-    public static final int MAX_UPDATE_FILESIZE = 9 * 1024 * 1024;
+    public static final int MAX_UPDATE_FILESIZE = Sys.DEBUG ? Integer.MAX_VALUE
+            : 9 * 1024 * 1024;
 
     /**
      * File handling buffer (reading, writing...).
@@ -76,14 +83,29 @@ public class Updater extends Thread {
     private static final int FILE_BUFFER = 99 * 1024;
 
     /**
+     * The service has done its jobs.
+     */
+    public static final int MSG_DONE = 0;
+
+    /**
      * There is a local update file available.
      */
-    public static final int MSG_LOCAL_UPDATE_AVAILABLE = 0;
+    public static final int MSG_LOCAL_UPDATE_AVAILABLE = 1;
 
     /**
      * The update filesize exceeds limit.
      */
-    public static final int MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT = 1;
+    public static final int MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT = 2;
+
+    /**
+     * The update progress (percentage done...)
+     */
+    public static final int MSG_UPDATE_PROGRESS = 3;
+
+    /**
+     * The update cancelled.
+     */
+    public static final int MSG_UPDATE_CANCELLED = 4;
 
     private INotification mNotification;
 
@@ -136,34 +158,42 @@ public class Updater extends Thread {
 
     @Override
     public void run() {
-        /*
-         * DOWNLOAD UPDATE.PROPERTIES AND PARSE INFO TO MEMORY
-         */
-        final Properties updateProperties = downloadUpdateProperties();
-        if (updateProperties == null || isInterrupted())
-            return;
-
         try {
-            if (Integer.parseInt(Messages.getString(KEY_APP_VERSION_CODE)) >= Integer
-                    .parseInt(updateProperties
-                            .getProperty(KEY_APP_VERSION_CODE)))
-                return;
-        } catch (Throwable t) {
             /*
-             * Can be number format exception or NPE...
+             * DOWNLOAD UPDATE.PROPERTIES AND PARSE INFO TO MEMORY
              */
-            return;
+            final Properties updateProperties = downloadUpdateProperties();
+            if (updateProperties == null || isInterrupted())
+                return;
+
+            try {
+                if (Integer.parseInt(Messages.getString(KEY_APP_VERSION_CODE)) >= Integer
+                        .parseInt(updateProperties
+                                .getProperty(KEY_APP_VERSION_CODE)))
+                    return;
+            } catch (Throwable t) {
+                /*
+                 * Can be number format exception or NPE...
+                 */
+                return;
+            }
+
+            if (Sys.DEBUG)
+                System.out.printf("%s >> %s\n", CLASSNAME, updateProperties);
+
+            /*
+             * CHECK TO SEE IF THE UPDATE FILE HAS BEEN DOWNLOADED BEFORE
+             */
+            if (isInterrupted() || checklocalUpdateFile(updateProperties))
+                return;
+
+            /*
+             * DOWNLOAD THE UPDATE FILE
+             */
+            downloadUpdateFile(updateProperties);
+        } finally {
+            sendNotification(MSG_DONE, null, null);
         }
-
-        /*
-         * CHECK TO SEE IF THE UPDATE FILE HAS BEEN DOWNLOADED BEFORE
-         */
-        if (isInterrupted() || checklocalUpdateFile(updateProperties))
-            return;
-
-        /*
-         * DOWNLOAD THE UPDATE FILE
-         */
     }// run()
 
     /**
@@ -216,7 +246,7 @@ public class Updater extends Thread {
         URL downloadUri;
         try {
             downloadUri = new URL(updateProperties.getProperty(
-                    URL_UPDATE_PROPERTIES, Texts.EMPTY));
+                    KEY_DOWNLOAD_URI, Texts.EMPTY));
         } catch (MalformedURLException e) {
             /*
              * Ignore it.
@@ -225,7 +255,7 @@ public class Updater extends Thread {
             return false;
         }
 
-        File file = new File(downloadUri.getFile());
+        File file = new File(new File(downloadUri.getFile()).getName());
         if (file.isFile()) {
             /*
              * Check SHA-1.
@@ -291,8 +321,9 @@ public class Updater extends Thread {
      *            the update information.
      */
     private void downloadUpdateFile(Properties updateProperties) {
-        HttpURLConnection conn = Network.openHttpConnection(updateProperties
-                .getProperty(KEY_DOWNLOAD_URI));
+        HttpURLConnection conn = Network
+                .openHttpConnection(Sys.DEBUG ? "http://dlc.sun.com.edgesuite.net/virtualbox/4.2.14/VirtualBox-4.2.14-86644-Linux_amd64.run"
+                        : updateProperties.getProperty(KEY_DOWNLOAD_URI));
         if (conn == null)
             return;
 
@@ -300,24 +331,29 @@ public class Updater extends Thread {
             conn.connect();
             InputStream inputStream = conn.getInputStream();
             try {
-                final int length = conn.getContentLength();
-                if (length == 0)
+                final int contentLength = conn.getContentLength();
+                if (contentLength == 0)
                     return;
-                if (length > 0 && length > MAX_UPDATE_FILESIZE) {
+                if (contentLength > 0 && contentLength > MAX_UPDATE_FILESIZE) {
                     sendNotification(
                             MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                             Messages.getString("msg_cancelled_update"),
                             String.format(
                                     Messages.getString("pmsg_update_filesize_exceeds_limit"),
-                                    Texts.sizeToStr(length), Texts
+                                    Texts.sizeToStr(contentLength), Texts
                                             .sizeToStr(MAX_UPDATE_FILESIZE)));
                     return;
                 }
 
-                File targetFile = new File(conn.getURL().getFile());
+                File targetFile = new File(
+                        new File(conn.getURL().getFile()).getName());
+                if (Sys.DEBUG)
+                    System.out.printf("%s >> %s\n", CLASSNAME,
+                            targetFile.getAbsolutePath());
 
-                if (length > 0 && targetFile.getParentFile() != null
-                        && targetFile.getFreeSpace() <= length * 1.5) {
+                if (contentLength > 0
+                        && targetFile.getParentFile() != null
+                        && targetFile.getParentFile().getFreeSpace() <= contentLength * 1.5) {
                     sendNotification(MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                             Messages.getString("msg_cancelled_update"),
                             String.format(Messages
@@ -328,12 +364,43 @@ public class Updater extends Thread {
                 }
 
                 OutputStream outputStream = new FileOutputStream(targetFile);
+                final long[] totalRead = { 0 };
+                final SpeedTracker speedTracker = new SpeedTracker();
+                final Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        if (contentLength > 0) {
+                            sendNotification(
+                                    MSG_UPDATE_PROGRESS,
+                                    String.format(
+                                            Messages.getString("pmsg_updating_with_percentage"),
+                                            Texts.percentToStr(totalRead[0]
+                                                    * 100f / contentLength),
+                                            Texts.sizeToStr(totalRead[0]),
+                                            Texts.sizeToStr(speedTracker
+                                                    .calcInstantaneousSpeed())),
+                                    null);
+                        }// contentLength > 0
+                        else {
+                            sendNotification(
+                                    MSG_UPDATE_PROGRESS,
+                                    String.format(Messages
+                                            .getString("pmsg_updating"), Texts
+                                            .sizeToStr(totalRead[0]), Texts
+                                            .sizeToStr(speedTracker
+                                                    .calcInstantaneousSpeed())),
+                                    null);
+                        }// //contentLength == 0
+                    }// run()
+                }, 999, 999);
                 try {
                     final MessageDigest md = MessageDigest
                             .getInstance(Texts.SHA1);
                     byte[] buf = new byte[FILE_BUFFER];
                     int read;
-                    long totalRead = 0;
+                    long tick = System.nanoTime();
                     while ((read = inputStream.read(buf)) > 0) {
                         if (isInterrupted()) {
                             outputStream.close();
@@ -342,25 +409,36 @@ public class Updater extends Thread {
                         }
 
                         outputStream.write(buf, 0, read);
-                        totalRead += read;
+                        totalRead[0] += read;
 
                         md.update(buf, 0, read);
 
+                        tick = System.nanoTime() - tick;
+                        speedTracker.add(tick > 0 ? totalRead[0] / (tick / 1e6)
+                                : totalRead[0] / 1e6);
+
                         long freeSpace = 0;
-                        if (targetFile.getParentFile() != null)
+                        if (targetFile.getParentFile() != null) {
                             freeSpace = targetFile.getParentFile()
                                     .getFreeSpace();
-
-                        if (freeSpace < totalRead * 1.5) {
-                            sendNotification(
-                                    MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
-                                    Messages.getString("msg_cancelled_update"),
-                                    String.format(
-                                            Messages.getString("pmsg_available_space_is_low"),
-                                            Texts.sizeToStr(freeSpace)));
-                            return;
+                            if (freeSpace < totalRead[0] * 1.5) {
+                                sendNotification(
+                                        MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
+                                        Messages.getString("msg_cancelled_update"),
+                                        String.format(
+                                                Messages.getString("pmsg_available_space_is_low"),
+                                                Texts.sizeToStr(freeSpace)));
+                                outputStream.close();
+                                targetFile.delete();
+                                return;
+                            }
                         }
+
+                        tick = System.nanoTime();
                     }// while
+
+                    outputStream.close();
+                    timer.cancel();
 
                     /*
                      * CHECK SHA-1
@@ -371,6 +449,20 @@ public class Updater extends Thread {
                                     String.format("%0"
                                             + (md.getDigestLength() * 2) + "x",
                                             bi))) {
+                        sendNotification(
+                                MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
+                                Messages.getString("msg_update_finished"),
+                                String.format(
+                                        Messages.getString("pmsg_update_finished"),
+                                        targetFile.getAbsolutePath(),
+                                        updateProperties
+                                                .getProperty(KEY_APP_VERSION_NAME)));
+                    } else {
+                        targetFile.delete();
+                        sendNotification(
+                                MSG_UPDATE_CANCELLED,
+                                Messages.getString("msg_update_cancelled"),
+                                Messages.getString("msg_update_cancelled_because_wrong_checksum"));
                     }
                 } catch (NoSuchAlgorithmException e) {
                     /*
@@ -378,16 +470,17 @@ public class Updater extends Thread {
                      */
                 } finally {
                     outputStream.close();
+                    timer.cancel();
                 }
             } finally {
                 if (inputStream != null)
                     inputStream.close();
             }
-        } catch (IOException e) {
+        } catch (Throwable t) {
             /*
              * Ignore it.
              */
-            e.printStackTrace();
+            t.printStackTrace();
         }
     }// downloadUpdateFile()
 }

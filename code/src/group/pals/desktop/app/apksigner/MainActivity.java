@@ -14,6 +14,7 @@ import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.UI;
 
+import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -60,6 +62,7 @@ public class MainActivity {
     private static final String PKEY_LAST_WORKING_DIR = CLASSNAME
             + ".last_working_dir";
 
+    private JMenuItem mMenuItemNotification;
     private JFrame mMainFrame;
     private JTextField mTextJdkPath;
     private JTabbedPane mTabbedPane;
@@ -190,6 +193,14 @@ public class MainActivity {
             }// actionPerformed()
         });
         mMenuHelp.add(mMenuItemAbout);
+
+        mMenuBar.add(Box.createHorizontalGlue());
+
+        mMenuItemNotification = new JMenuItem("Test");
+        mMenuItemNotification
+                .setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        mMenuBar.add(mMenuItemNotification);
+
         SpringLayout springLayout = new SpringLayout();
         mMainFrame.getContentPane().setLayout(springLayout);
 

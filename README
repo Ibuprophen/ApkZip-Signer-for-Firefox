@@ -6,8 +6,13 @@ Feel free to contact us at:
 
 History:
 
++++ Version 1.6.1 +++
+ * Release: June 26, 2013
+
+ - Fix storing/ loading preferences.
+
 +++ Version 1.6 +++
- * Release: June 26,2013
+ * Release: June 26, 2013
 
  - Add auto-update feature.
  - Port entire project from NetBeans based to Eclipse WindowBuilder based.

@@ -46,7 +46,7 @@ public class Preferences {
      */
     private Preferences() {
         try {
-            FileReader reader = new FileReader(Sys.getStartupDir()
+            FileReader reader = new FileReader(Sys.getAppDir()
                     .getAbsolutePath() + File.separator + PREFS_FILENAME);
             try {
                 mProperties.load(reader);
@@ -64,7 +64,7 @@ public class Preferences {
      */
     public void store() {
         try {
-            FileWriter writer = new FileWriter(Sys.getStartupDir()
+            FileWriter writer = new FileWriter(Sys.getAppDir()
                     .getAbsolutePath() + File.separator + PREFS_FILENAME);
             try {
                 mProperties.store(writer, null);

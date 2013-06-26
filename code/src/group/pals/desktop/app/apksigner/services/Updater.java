@@ -9,6 +9,7 @@ package group.pals.desktop.app.apksigner.services;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.services.INotification.Message;
+import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Network;
 import group.pals.desktop.app.apksigner.utils.SpeedTracker;
 import group.pals.desktop.app.apksigner.utils.Sys;
@@ -30,6 +31,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Application updater service.
@@ -346,8 +349,31 @@ public class Updater extends Thread {
                     return;
                 }
 
-                File targetFile = new File(
-                        new File(conn.getURL().getFile()).getName());
+                /*
+                 * PARSE FILENAME FROM SERVER
+                 */
+                String fileName = null;
+                final String contentDisposition = conn
+                        .getHeaderField("Content-Disposition");
+                if (Texts.isEmpty(contentDisposition)
+                        || !contentDisposition.matches("(?si).*?attachment.+")) {
+                    fileName = Files.fixFilename(new File(conn.getURL()
+                            .getFile()).getName());
+                } else {
+                    Matcher m = Pattern.compile("(?si)filename=\"?.+?\"?$")
+                            .matcher(contentDisposition);
+                    if (m.find())
+                        fileName = Files.fixFilename(m.group()
+                                .replaceFirst("(?si)^filename=\"?", "")
+                                .replaceFirst("\"$", ""));
+                }
+                if (Texts.isEmpty(fileName))
+                    return;
+
+                File targetFile = new File(String.format("%s%s%s", Sys
+                        .getAppDir().getAbsolutePath(), File.separator,
+                        fileName));
+
                 if (Sys.DEBUG)
                     System.out.printf("%s >> %s\n", CLASSNAME,
                             targetFile.getAbsolutePath());
@@ -364,7 +390,8 @@ public class Updater extends Thread {
                     return;
                 }
 
-                OutputStream outputStream = new FileOutputStream(targetFile);
+                final OutputStream outputStream = new FileOutputStream(
+                        targetFile);
                 final long[] totalRead = { 0 };
                 final SpeedTracker speedTracker = new SpeedTracker();
                 final Timer timer = new Timer();

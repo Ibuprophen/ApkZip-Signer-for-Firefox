@@ -104,4 +104,15 @@ public class Texts {
             return "100%";
         }
     }// percentToStr()
+
+    /**
+     * Checks whether {@code s} is empty or {@code null}.
+     * 
+     * @param s
+     *            the string to check.
+     * @return {@code true} or {@code false}.
+     */
+    public static boolean isEmpty(CharSequence s) {
+        return s == null || s.length() == 0;
+    }// isEmpty()
 }

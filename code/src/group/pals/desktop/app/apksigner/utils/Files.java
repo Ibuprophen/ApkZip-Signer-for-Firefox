@@ -26,6 +26,18 @@ import javax.swing.filechooser.FileFilter;
 public class Files {
 
     /**
+     * Removes invalid characters...
+     * 
+     * @param name
+     *            the name to fix.
+     * @return the "fresh" name :-)
+     */
+    public static String fixFilename(String name) {
+        return name == null ? null : name.replaceAll("[\\\\/?%*:|\"<>]+", "")
+                .trim();
+    }// fixFilename()
+
+    /**
      * Opens a dialog to choose a file.
      * 
      * @param startupDir

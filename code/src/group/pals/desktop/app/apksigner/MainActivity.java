@@ -146,14 +146,21 @@ public class MainActivity {
             public void windowClosing(WindowEvent e) {
                 Preferences.getInstance().store();
 
-                if (mUpdater != null && mUpdater.isAlive()) {
+                /*
+                 * In case the updater service finished while the confirmation
+                 * dialog is still active...
+                 */
+                final Updater updater = mUpdater;
+                if (updater != null && updater.isAlive()) {
                     if (Dlg.confirmYesNo(
                             null,
                             null,
                             Messages.getString("msg_app_updating_confirm_exit"),
-                            1))
+                            1)) {
+                        updater.interrupt();
                         mMainFrame
                                 .setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
                 } else
                     mMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }// windowClosed()

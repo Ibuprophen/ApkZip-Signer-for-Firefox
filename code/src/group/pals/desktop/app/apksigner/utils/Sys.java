@@ -23,11 +23,11 @@ public class Sys {
     public static final boolean DEBUG = false;
 
     /**
-     * Gets the startup directory.
+     * Gets the app directory.
      * 
-     * @return the startup directory.
+     * @return the app directory.
      */
-    public static File getStartupDir() {
+    public static File getAppDir() {
         try {
             return new File(String.format("%s%s%s",
                     System.getProperty("user.dir"), File.separator,
@@ -36,5 +36,5 @@ public class Sys {
             t.printStackTrace();
             return null;
         }
-    }// getStartupDir()
+    }// getAppDir()
 }

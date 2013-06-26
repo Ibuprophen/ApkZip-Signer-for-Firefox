@@ -128,7 +128,7 @@ public class MainActivity {
          * INITIALIZE CONTROLS
          */
 
-        mMainFrame.setTitle(String.format(Messages.getString("pmsg_app_name"),
+        mMainFrame.setTitle(Messages.getString("pmsg_app_name",
                 Messages.getString("app_name"),
                 Messages.getString("app_version_name")));
 
@@ -137,7 +137,7 @@ public class MainActivity {
             mTextJdkPath.setText(jdkPath.getAbsolutePath());
 
         mTabbedPane.add(Messages.getString("key_generator"), new PanelKeyGen());
-        mTabbedPane.add(Messages.getString("apk_signer"), new PanelApkSigner());
+        mTabbedPane.add(Messages.getString("signer"), new PanelSigner());
         mTabbedPane.add(Messages.getString("key_tools"), new PanelKeyTools());
 
         mMainFrame.addWindowListener(new WindowAdapter() {
@@ -256,8 +256,7 @@ public class MainActivity {
                                 + "\n"
                                 + "And thanks to our friends who have been contributing to this project:\n"
                                 + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
-                                String.format(
-                                        Messages.getString("pmsg_app_name"),
+                                Messages.getString("pmsg_app_name",
                                         Messages.getString("app_name"),
                                         Messages.getString("app_version_name")));
                 Dlg.showHugeInfoMsg(null, null, msg, 630, 270);

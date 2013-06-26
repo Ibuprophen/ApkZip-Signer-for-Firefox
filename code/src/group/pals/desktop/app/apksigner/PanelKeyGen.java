@@ -404,8 +404,8 @@ public class PanelKeyGen extends JPanel {
             Dlg.showInfoMsg(null, null,
                     Messages.getString("msg_keyfile_generated_successfully"));
         } catch (Exception e) {
-            Dlg.showErrMsg(null, null, String.format(
-                    Messages.getString("pmsg_error_generating_keyfile"), e));
+            Dlg.showErrMsg(null, null,
+                    Messages.getString("pmsg_error_generating_keyfile", e));
         }
     }// genKeyfile()
 }

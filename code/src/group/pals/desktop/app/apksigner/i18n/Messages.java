@@ -54,4 +54,17 @@ public class Messages {
             return "!" + key + "!";
         }
     }// getString()
+
+    /**
+     * Gets a formattable string and format it with {@code args}.
+     * 
+     * @param key
+     *            the key.
+     * @param args
+     *            the format arguments.
+     * @return the formatted string.
+     */
+    public static String getString(String key, Object... args) {
+        return String.format(getString(key), args);
+    }// getString()
 }

@@ -6,6 +6,12 @@ Feel free to contact us at:
 
 History:
 
++++ Version 1.6.4 +++
+ * Release: June 26, 2013
+
+ - Fix some bugs.
+ - Panel Signer: adds file filters for APK/ JAR/ ZIP files.
+
 +++ Version 1.6.3 +++
  * Release: June 26, 2013
 

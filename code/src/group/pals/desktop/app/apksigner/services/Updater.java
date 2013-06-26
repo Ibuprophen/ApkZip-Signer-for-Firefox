@@ -288,8 +288,7 @@ public class Updater extends Thread {
                 if (result)
                     sendNotification(MSG_LOCAL_UPDATE_AVAILABLE,
                             Messages.getString("msg_local_update_available"),
-                            String.format(Messages
-                                    .getString("pmsg_local_update_available"),
+                            Messages.getString("pmsg_local_update_available",
                                     file.getAbsolutePath(), updateProperties
                                             .getProperty(KEY_APP_VERSION_NAME)));
                 return result;
@@ -339,13 +338,12 @@ public class Updater extends Thread {
                 if (contentLength == 0)
                     return;
                 if (contentLength > 0 && contentLength > MAX_UPDATE_FILESIZE) {
-                    sendNotification(
-                            MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
+                    sendNotification(MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                             Messages.getString("msg_cancelled_update"),
-                            String.format(
-                                    Messages.getString("pmsg_update_filesize_exceeds_limit"),
-                                    Texts.sizeToStr(contentLength), Texts
-                                            .sizeToStr(MAX_UPDATE_FILESIZE)));
+                            Messages.getString(
+                                    "pmsg_update_filesize_exceeds_limit",
+                                    Texts.sizeToStr(contentLength),
+                                    Texts.sizeToStr(MAX_UPDATE_FILESIZE)));
                     return;
                 }
 
@@ -370,9 +368,8 @@ public class Updater extends Thread {
                 if (Texts.isEmpty(fileName))
                     return;
 
-                File targetFile = new File(String.format("%s%s%s", Sys
-                        .getAppDir().getAbsolutePath(), File.separator,
-                        fileName));
+                File targetFile = new File(Sys.getAppDir().getAbsolutePath()
+                        + File.separator + fileName);
 
                 if (Sys.DEBUG)
                     System.out.printf("%s >> %s\n", CLASSNAME,
@@ -383,8 +380,7 @@ public class Updater extends Thread {
                         && targetFile.getParentFile().getFreeSpace() <= contentLength * 1.5) {
                     sendNotification(MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                             Messages.getString("msg_cancelled_update"),
-                            String.format(Messages
-                                    .getString("pmsg_available_space_is_low"),
+                            Messages.getString("pmsg_available_space_is_low",
                                     Texts.sizeToStr(targetFile.getParentFile()
                                             .getFreeSpace())));
                     return;
@@ -402,8 +398,8 @@ public class Updater extends Thread {
                         if (contentLength > 0) {
                             sendNotification(
                                     MSG_UPDATE_PROGRESS,
-                                    String.format(
-                                            Messages.getString("pmsg_updating_with_percentage"),
+                                    Messages.getString(
+                                            "pmsg_updating_with_percentage",
                                             Texts.percentToStr(totalRead[0]
                                                     * 100f / contentLength),
                                             Texts.sizeToStr(totalRead[0]),
@@ -414,8 +410,7 @@ public class Updater extends Thread {
                         else {
                             sendNotification(
                                     MSG_UPDATE_PROGRESS,
-                                    String.format(Messages
-                                            .getString("pmsg_updating"), Texts
+                                    Messages.getString("pmsg_updating", Texts
                                             .sizeToStr(totalRead[0]), Texts
                                             .sizeToStr(speedTracker
                                                     .calcInstantaneousSpeed())),
@@ -453,8 +448,8 @@ public class Updater extends Thread {
                                 sendNotification(
                                         MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                                         Messages.getString("msg_cancelled_update"),
-                                        String.format(
-                                                Messages.getString("pmsg_available_space_is_low"),
+                                        Messages.getString(
+                                                "pmsg_available_space_is_low",
                                                 Texts.sizeToStr(freeSpace)));
                                 outputStream.close();
                                 targetFile.delete();
@@ -480,8 +475,8 @@ public class Updater extends Thread {
                         sendNotification(
                                 MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
                                 Messages.getString("msg_update_finished"),
-                                String.format(
-                                        Messages.getString("pmsg_update_finished"),
+                                Messages.getString(
+                                        "pmsg_update_finished",
                                         targetFile.getAbsolutePath(),
                                         updateProperties
                                                 .getProperty(KEY_APP_VERSION_NAME)));

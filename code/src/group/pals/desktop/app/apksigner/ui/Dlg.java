@@ -52,8 +52,8 @@ public class Dlg {
      *            the exception.
      */
     public static void showException(Component comp, String title, Exception e) {
-        String msg = String.format(Messages.getString("pmsg_exception"), e
-                .getClass().getName(), e.getMessage());
+        String msg = Messages.getString("pmsg_exception", e.getClass()
+                .getName(), e.getMessage());
         showErrMsg(comp, title, msg);
     }// showException()
 

@@ -28,9 +28,11 @@ public class Sys {
      * @return the app directory.
      */
     public static File getAppDir() {
+        L.i("getAppDir() >> %s", ClassLoader.getSystemResource(Texts.EMPTY));
+
         try {
-            return new File(System.getProperty("java.class.path"))
-                    .getParentFile();
+            return new File(ClassLoader.getSystemResource(Texts.EMPTY)
+                    .getPath());
         } catch (Throwable t) {
             t.printStackTrace();
             return null;

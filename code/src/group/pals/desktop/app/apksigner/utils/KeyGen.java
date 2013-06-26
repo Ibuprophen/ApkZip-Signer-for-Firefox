@@ -67,9 +67,8 @@ public class KeyGen {
         String[] keys = { "CN", "OU", "O", "L", "S", "C" };
         String dname = "";
         for (int i = 0; i < values.length; i++) {
-            if (!values[i].isEmpty()) {
+            if (!values[i].isEmpty())
                 dname += String.format("%s=%s ", keys[i], values[i]);
-            }
         }
         dname = dname.trim();
 
@@ -92,13 +91,11 @@ public class KeyGen {
         try {
             int read;
             byte[] buf = new byte[1024 * 99];
-            while ((read = stream.read(buf)) > 0) {
+            while ((read = stream.read(buf)) > 0)
                 sb.append(new String(buf, 0, read));
-            }
         } finally {
-            if (stream != null) {
+            if (stream != null)
                 stream.close();
-            }
         }
 
         /*
@@ -107,8 +104,7 @@ public class KeyGen {
 
         p.waitFor();
 
-        if (!target.isFile()) {
+        if (!target.isFile())
             throw new IOException("Error: " + sb);
-        }
     }// genKey()
 }

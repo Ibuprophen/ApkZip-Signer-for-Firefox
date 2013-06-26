@@ -41,6 +41,16 @@ public class Texts {
     public static final String REGEX_KEYSTORE_FILES = "(?si).+\\.keystore";
 
     /**
+     * Regex to filter JAR files.
+     */
+    public static final String REGEX_JAR_FILES = "(?si).+\\.jar";
+
+    /**
+     * Regex to filter ZIP files.
+     */
+    public static final String REGEX_ZIP_FILES = "(?si).+\\.zip";
+
+    /**
      * File extension of APK files.
      */
     public static final String FILE_EXT_APK = ".apk";
@@ -96,13 +106,12 @@ public class Texts {
      * @return
      */
     public static String percentToStr(double percent) {
-        if (percent == 0) {
+        if (percent == 0)
             return "0%";
-        } else if (percent < 100) {
+        else if (percent < 100)
             return String.format("%02.02f%%", percent);
-        } else {
+        else
             return "100%";
-        }
     }// percentToStr()
 
     /**

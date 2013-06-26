@@ -7,6 +7,9 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
+import group.pals.desktop.app.apksigner.i18n.Messages;
+
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +20,7 @@ import java.util.regex.Matcher;
  * 
  * @author Hai Bison
  */
-public class ApkSigner {
+public class Signer {
 
     /**
      * Used to append to newly signed APK's file name.
@@ -29,8 +32,8 @@ public class ApkSigner {
      * 
      * @param jdkPath
      *            the path to JDK, can be {@code null} on Unix system.
-     * @param apkFile
-     *            the APK file.
+     * @param targetFile
+     *            the target file, can be an APK, JAR or ZIP.
      * @param keyFile
      *            the keystore file.
      * @param storepass
@@ -45,7 +48,7 @@ public class ApkSigner {
      * @throws InterruptedException
      *             if any occurred.
      */
-    public static String sign(File jdkPath, File apkFile, File keyFile,
+    public static String sign(File jdkPath, File targetFile, File keyFile,
             char[] storepass, String alias, char[] keypass) throws IOException,
             InterruptedException {
 
@@ -63,7 +66,7 @@ public class ApkSigner {
                 "-keystore", keyFile.getAbsolutePath(), "-sigalg",
                 "MD5withRSA", "-digestalg", "SHA1", "-storepass",
                 new String(storepass), "-keypass", new String(keypass),
-                apkFile.getAbsolutePath(), alias });
+                targetFile.getAbsolutePath(), alias });
         Process p = pb.start();
 
         StringBuilder console = new StringBuilder();
@@ -90,31 +93,32 @@ public class ApkSigner {
          * Renames newly signed file...
          */
 
-        if (console.toString().trim().isEmpty()) {
-            final String oldApkName = apkFile.getName();
-            String newApkName;
-            if (oldApkName.matches("(?si).*?unsigned.+")) {
-                newApkName = oldApkName.replaceFirst("(?si)unsigned",
+        final String result = console.toString().trim();
+        if (result.isEmpty()) {
+            final String oldName = targetFile.getName();
+            String newName;
+            if (oldName.matches("(?si).*?unsigned.+")) {
+                newName = oldName.replaceFirst("(?si)unsigned",
                         Matcher.quoteReplacement(SIGNED));
-            } else if (oldApkName.matches("(?si).+\\.apk$")) {
-                newApkName = oldApkName.replaceFirst("(?si)\\.apk$", Matcher
-                        .quoteReplacement(String.format("_%s.apk", SIGNED)));
+            } else if (oldName.matches("(?si).+\\.(apk|jar|zip)$")) {
+                final int iPeriod = oldName.lastIndexOf(KeyEvent.VK_PERIOD);
+                newName = oldName.substring(0, iPeriod) + '_' + SIGNED
+                        + (char) KeyEvent.VK_PERIOD
+                        + oldName.substring(iPeriod + 1);
             } else {
-                newApkName = String.format("%s_%s.apk", oldApkName, SIGNED);
+                newName = String.format("%s_%s", oldName, SIGNED);
             }
 
-            if (apkFile.renameTo(new File(apkFile.getParent() + File.separator
-                    + newApkName))) {
+            if (targetFile.renameTo(new File(targetFile.getParent()
+                    + File.separator + newName)))
                 return null;
-            }
-            return String.format("Can't rename source APK file to \"%s\"!\n\n",
-                    newApkName)
-                    + "The result of signing process was "
-                    + "(if empty, it means everything is OK):\n\n"
-                    + console.toString().trim();
+
+            return Messages.getString(
+                    "pmsg_file_is_signed_but_cannot_be_renamed_to_new_one",
+                    newName);
         }// results from console is empty
         else {
-            return console.toString().trim();
+            return result;
         }// results from console is NOT empty
     }// sign()
 }

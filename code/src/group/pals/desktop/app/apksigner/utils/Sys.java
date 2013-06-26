@@ -29,9 +29,8 @@ public class Sys {
      */
     public static File getAppDir() {
         try {
-            return new File(String.format("%s%s%s",
-                    System.getProperty("user.dir"), File.separator,
-                    System.getProperty("java.class.path"))).getParentFile();
+            return new File(System.getProperty("java.class.path"))
+                    .getParentFile();
         } catch (Throwable t) {
             t.printStackTrace();
             return null;

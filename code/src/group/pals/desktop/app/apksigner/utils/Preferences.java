@@ -39,15 +39,17 @@ public class Preferences {
 
     public static final String PREFS_FILENAME = "apk-signer.preferences";
 
+    private final File mPropertiesFile = new File(Sys.getAppDir()
+            .getAbsolutePath() + File.separator + PREFS_FILENAME);
     private final Properties mProperties = new Properties();
 
     /**
      * Creates new instance.
      */
     private Preferences() {
+        L.d("Preferences() >> file = %s", mPropertiesFile);
         try {
-            FileReader reader = new FileReader(Sys.getAppDir()
-                    .getAbsolutePath() + File.separator + PREFS_FILENAME);
+            FileReader reader = new FileReader(mPropertiesFile);
             try {
                 mProperties.load(reader);
             } finally {
@@ -64,8 +66,7 @@ public class Preferences {
      */
     public void store() {
         try {
-            FileWriter writer = new FileWriter(Sys.getAppDir()
-                    .getAbsolutePath() + File.separator + PREFS_FILENAME);
+            FileWriter writer = new FileWriter(mPropertiesFile);
             try {
                 mProperties.store(writer, null);
             } finally {

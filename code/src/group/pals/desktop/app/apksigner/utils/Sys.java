@@ -8,7 +8,6 @@
 package group.pals.desktop.app.apksigner.utils;
 
 import java.io.File;
-import java.net.URLDecoder;
 
 /**
  * System utilities.
@@ -26,15 +25,15 @@ public class Sys {
     /**
      * Gets the startup directory.
      * 
-     * @return the startup directory, or {@code null} if any error occurred.
+     * @return the startup directory.
      */
     public static File getStartupDir() {
         try {
-            String file = Sys.class.getProtectionDomain().getCodeSource()
-                    .getLocation().getFile();
-            return new File(URLDecoder.decode(file, Texts.UTF8))
-                    .getParentFile();
-        } catch (Exception e) {
+            return new File(String.format("%s%s%s",
+                    System.getProperty("user.dir"), File.separator,
+                    System.getProperty("java.class.path"))).getParentFile();
+        } catch (Throwable t) {
+            t.printStackTrace();
             return null;
         }
     }// getStartupDir()

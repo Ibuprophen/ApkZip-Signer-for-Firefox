@@ -46,12 +46,12 @@ public class Preferences {
      */
     private Preferences() {
         try {
-            FileReader r = new FileReader(Sys.getStartupDir().getAbsolutePath()
-                    + "/" + PREFS_FILENAME);
+            FileReader reader = new FileReader(Sys.getStartupDir()
+                    .getAbsolutePath() + File.separator + PREFS_FILENAME);
             try {
-                mProperties.load(r);
+                mProperties.load(reader);
             } finally {
-                r.close();
+                reader.close();
             }
         } catch (Exception e) {
             System.err.printf("[%s] Error loading preferences: %s\n",
@@ -64,12 +64,12 @@ public class Preferences {
      */
     public void store() {
         try {
-            FileWriter w = new FileWriter(Sys.getStartupDir().getAbsolutePath()
-                    + "/" + PREFS_FILENAME);
+            FileWriter writer = new FileWriter(Sys.getStartupDir()
+                    .getAbsolutePath() + File.separator + PREFS_FILENAME);
             try {
-                mProperties.store(w, null);
+                mProperties.store(writer, null);
             } finally {
-                w.close();
+                writer.close();
             }
         } catch (Exception e) {
             System.err.printf("[%s] Error storing preferences: %s\n",

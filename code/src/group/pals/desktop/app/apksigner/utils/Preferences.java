@@ -56,8 +56,7 @@ public class Preferences {
                 reader.close();
             }
         } catch (Exception e) {
-            System.err.printf("[%s] Error loading preferences: %s\n",
-                    CLASSNAME, e);
+            L.e("[%s] Error loading preferences: %s", CLASSNAME, e);
         }
     }// Preferences()
 
@@ -73,8 +72,7 @@ public class Preferences {
                 writer.close();
             }
         } catch (Exception e) {
-            System.err.printf("[%s] Error storing preferences: %s\n",
-                    CLASSNAME, e);
+            L.e("[%s] Error storing preferences: %s", CLASSNAME, e);
         }
     }// store()
 

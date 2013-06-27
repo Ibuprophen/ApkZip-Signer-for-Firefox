@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner.utils;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -113,9 +114,10 @@ public class Signer {
                     + File.separator + newName)))
                 return null;
 
-            return Messages.getString(
-                    "pmsg_file_is_signed_but_cannot_be_renamed_to_new_one",
-                    newName);
+            return Messages
+                    .getString(
+                            R.string.pmsg_file_is_signed_but_cannot_be_renamed_to_new_one,
+                            newName);
         }// results from console is empty
         else {
             return result;

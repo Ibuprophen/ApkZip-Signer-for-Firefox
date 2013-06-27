@@ -33,7 +33,7 @@ public class Network {
      * @return the connection. Or {@code null} if an error occurred.
      */
     public static HttpURLConnection openHttpConnection(String url) {
-        if (url == null || url.isEmpty())
+        if (Texts.isEmpty(url))
             return null;
 
         try {

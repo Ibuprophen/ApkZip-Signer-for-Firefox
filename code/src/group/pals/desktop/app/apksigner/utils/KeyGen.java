@@ -67,7 +67,7 @@ public class KeyGen {
         String[] keys = { "CN", "OU", "O", "L", "S", "C" };
         String dname = "";
         for (int i = 0; i < values.length; i++) {
-            if (!values[i].isEmpty())
+            if (!Texts.isEmpty(values[i]))
                 dname += String.format("%s=%s ", keys[i], values[i]);
         }
         dname = dname.trim();

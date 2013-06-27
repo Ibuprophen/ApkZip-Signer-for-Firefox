@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner.utils;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 
 import javax.swing.text.JTextComponent;
@@ -67,12 +68,11 @@ public class UI {
     public static void setEditorPopupMenu(Container container,
             JEditorPopupMenu epm) {
         for (int i = 0; i < container.getComponentCount(); i++) {
-            if (container.getComponent(i) instanceof JTextComponent) {
-                ((JTextComponent) container.getComponent(i))
-                        .setComponentPopupMenu(epm);
-            } else if (container.getComponent(i) instanceof Container) {
-                setEditorPopupMenu((Container) container.getComponent(i), epm);
-            }
+            final Component comp = container.getComponent(i);
+            if (comp instanceof JTextComponent)
+                ((JTextComponent) comp).setComponentPopupMenu(epm);
+            else if (comp instanceof Container)
+                setEditorPopupMenu((Container) comp, epm);
         }
     }// setEditorPopupMenu()
 }

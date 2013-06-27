@@ -6,6 +6,12 @@ Feel free to contact us at:
 
 History:
 
++++ Version: 1.6.5 +++
+ * Release: June 27, 2013
+
+ - Fix module Updater.
+ - Optimize code.
+
 +++ Version 1.6.4 +++
  * Release: June 26, 2013
 

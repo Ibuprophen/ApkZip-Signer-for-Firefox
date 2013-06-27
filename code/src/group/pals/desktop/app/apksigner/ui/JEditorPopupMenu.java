@@ -8,8 +8,12 @@
 package group.pals.desktop.app.apksigner.ui;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
+import group.pals.desktop.app.apksigner.utils.Texts;
 
 import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
@@ -87,14 +91,16 @@ public class JEditorPopupMenu extends JPopupMenu {
      */
     private void initMenuItems() {
         final String itemSeparator = "-";
-        final String[] itemTitles = { Messages.getString("context_menu_cut"),
-                Messages.getString("context_menu_copy"),
-                Messages.getString("context_menu_copy_all"),
-                Messages.getString("context_menu_paste"), itemSeparator,
-                Messages.getString("context_menu_clear_and_paste"),
-                Messages.getString("context_menu_clear"),
-                Messages.getString("context_menu_delete"), itemSeparator,
-                Messages.getString("context_menu_select_all") };
+        final String[] itemTitles = {
+                Messages.getString(R.string.context_menu_cut),
+                Messages.getString(R.string.context_menu_copy),
+                Messages.getString(R.string.context_menu_copy_all),
+                Messages.getString(R.string.context_menu_paste), itemSeparator,
+                Messages.getString(R.string.context_menu_clear_and_paste),
+                Messages.getString(R.string.context_menu_clear),
+                Messages.getString(R.string.context_menu_delete),
+                itemSeparator,
+                Messages.getString(R.string.context_menu_select_all) };
         final Action[] itemActions = { new CutAction(itemTitles[0]),
                 new CopyAction(itemTitles[1]),
                 new CopyAllAction(itemTitles[2]),
@@ -132,6 +138,7 @@ public class JEditorPopupMenu extends JPopupMenu {
     /*
      * EDITOR ACTIONS
      */
+
     /**
      * The CUT action.
      */
@@ -173,7 +180,8 @@ public class JEditorPopupMenu extends JPopupMenu {
         @Override
         boolean isEnabledWith(JTextComponent component) {
             return !(component instanceof JPasswordField)
-                    && component.isEnabled() && component.isEditable();
+                    && component.isEnabled() && component.isEditable()
+                    && !Texts.isEmpty(component.getSelectedText());
         }// isEnabledWith()
     }// CutAction
 
@@ -218,7 +226,8 @@ public class JEditorPopupMenu extends JPopupMenu {
         @Override
         boolean isEnabledWith(JTextComponent component) {
             return !(component instanceof JPasswordField)
-                    && component.isEnabled();
+                    && component.isEnabled()
+                    && !Texts.isEmpty(component.getSelectedText());
         }// isEnabledWith()
     }// CopyAction
 
@@ -264,10 +273,16 @@ public class JEditorPopupMenu extends JPopupMenu {
         @Override
         boolean isEnabledWith(JTextComponent component) {
             return !(component instanceof JPasswordField)
-                    && component.isEnabled();
+                    && component.isEnabled()
+                    && !Texts.isEmpty(component.getText());
         }// isEnabledWith()
     }// CopyAllAction
 
+    /**
+     * PASTE action.
+     * 
+     * @author Hai Bison
+     */
     private class PasteAction extends TextActionEx {
 
         /**
@@ -305,10 +320,27 @@ public class JEditorPopupMenu extends JPopupMenu {
 
         @Override
         boolean isEnabledWith(JTextComponent component) {
-            return component.isEnabled() && component.isEditable();
+            if (component.isEnabled() && component.isEditable()) {
+                CharSequence clipboard = null;
+                try {
+                    clipboard = Toolkit.getDefaultToolkit()
+                            .getSystemClipboard()
+                            .getData(DataFlavor.stringFlavor).toString();
+                } catch (Throwable t) {
+                    clipboard = null;
+                }
+
+                return !Texts.isEmpty(clipboard);
+            } else
+                return false;
         }// isEnabledWith()
     }// PasteAction
 
+    /**
+     * CLEAR action.
+     * 
+     * @author Hai Bison
+     */
     private class ClearAction extends TextActionEx {
 
         /**
@@ -346,10 +378,16 @@ public class JEditorPopupMenu extends JPopupMenu {
 
         @Override
         boolean isEnabledWith(JTextComponent component) {
-            return component.isEnabled() && component.isEditable();
+            return component.isEnabled() && component.isEditable()
+                    && !Texts.isEmpty(component.getText());
         }// isEnabledWith()
     }// ClearAction
 
+    /**
+     * DELETE action.
+     * 
+     * @author Hai Bison
+     */
     private class DeleteAction extends TextActionEx {
 
         /**
@@ -401,10 +439,16 @@ public class JEditorPopupMenu extends JPopupMenu {
 
         @Override
         boolean isEnabledWith(JTextComponent component) {
-            return component.isEnabled() && component.isEditable();
+            return component.isEnabled() && component.isEditable()
+                    && !Texts.isEmpty(component.getSelectedText());
         }// isEnabledWith()
     }// DeleteAction
 
+    /**
+     * CLEAR AND PASTE action.
+     * 
+     * @author Hai Bison
+     */
     private class ClearAndPasteAction extends TextActionEx {
 
         /**
@@ -447,6 +491,11 @@ public class JEditorPopupMenu extends JPopupMenu {
         }// isEnabledWith()
     }// ClearAndPasteAction
 
+    /**
+     * SELECT ALL action.
+     * 
+     * @author Hai Bison
+     */
     private class SelectAllAction extends TextActionEx {
 
         /**
@@ -484,7 +533,7 @@ public class JEditorPopupMenu extends JPopupMenu {
 
         @Override
         boolean isEnabledWith(JTextComponent component) {
-            return component.isEnabled();
+            return component.isEnabled() && !Texts.isEmpty(component.getText());
         }// isEnabledWith()
     }// SelectAllAction()
 
@@ -501,7 +550,7 @@ public class JEditorPopupMenu extends JPopupMenu {
                 if (comp instanceof JMenuItem) {
                     TextActionEx action = (TextActionEx) ((JMenuItem) comp)
                             .getAction();
-                    comp.setEnabled(action
+                    action.setEnabled(action
                             .isEnabledWith((JTextComponent) invoker));
                 }
             }// for

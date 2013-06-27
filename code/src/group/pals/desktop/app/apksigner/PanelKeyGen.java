@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
@@ -99,7 +100,7 @@ public class PanelKeyGen extends JPanel {
 
         panel = new JPanel();
         panel.setBorder(new TitledBorder(null, Messages
-                .getString("target_file"), TitledBorder.LEADING,
+                .getString(R.string.target_file), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_panel = new GridBagConstraints();
         gbc_panel.gridwidth = 2;
@@ -110,7 +111,8 @@ public class PanelKeyGen extends JPanel {
         add(panel, gbc_panel);
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        mBtnChooseTargetFile = new JButton(Messages.getString("desc_save_as"));
+        mBtnChooseTargetFile = new JButton(
+                Messages.getString(R.string.desc_save_as));
         mBtnChooseTargetFile.addActionListener(new ActionListener() {
 
             @Override
@@ -118,7 +120,7 @@ public class PanelKeyGen extends JPanel {
                 mTargetFile = Files.chooseFileToSave(new File(Preferences
                         .getInstance().get(PKEY_LAST_WORKING_DIR, "/")),
                         Texts.FILE_EXT_KEYSTORE, Texts.REGEX_KEYSTORE_FILES,
-                        Messages.getString("desc_keystore_files"));
+                        Messages.getString(R.string.desc_keystore_files));
                 if (mTargetFile != null) {
                     mBtnChooseTargetFile.setText(mTargetFile.getName());
                     mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
@@ -126,7 +128,7 @@ public class PanelKeyGen extends JPanel {
                             mTargetFile.getParentFile().getAbsolutePath());
                 } else {
                     mBtnChooseTargetFile.setText(Messages
-                            .getString("desc_save_as"));
+                            .getString(R.string.desc_save_as));
                     mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
                 }
             }// actionPerformed()
@@ -134,7 +136,7 @@ public class PanelKeyGen extends JPanel {
         panel.add(mBtnChooseTargetFile);
 
         mBtnGenerateKeyfile = new JButton(
-                Messages.getString("generate_keyfile")); //$NON-NLS-1$
+                Messages.getString(R.string.generate_keyfile)); //$NON-NLS-1$
         mBtnGenerateKeyfile.addActionListener(new ActionListener() {
 
             @Override
@@ -148,8 +150,8 @@ public class PanelKeyGen extends JPanel {
         mTextPassword = new JPasswordField();
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
-                .getString("password"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.password), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
         gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
         gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
@@ -160,8 +162,8 @@ public class PanelKeyGen extends JPanel {
         mTextPasswordConfirm = new JPasswordField();
         mTextPasswordConfirm.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPasswordConfirm.setBorder(new TitledBorder(null, Messages
-                .getString("confirm"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.confirm), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextPasswordConfirm = new GridBagConstraints();
         gbc_mTextPasswordConfirm.insets = new Insets(3, 3, 3, 3);
         gbc_mTextPasswordConfirm.fill = GridBagConstraints.HORIZONTAL;
@@ -171,8 +173,8 @@ public class PanelKeyGen extends JPanel {
 
         mTextAlias = new JTextField();
         mTextAlias.setHorizontalAlignment(SwingConstants.CENTER);
-        mTextAlias.setBorder(new TitledBorder(null,
-                Messages.getString("alias"), TitledBorder.LEADING,
+        mTextAlias.setBorder(new TitledBorder(null, Messages
+                .getString(R.string.alias), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAlias = new GridBagConstraints();
         gbc_mTextAlias.insets = new Insets(3, 3, 3, 3);
@@ -185,7 +187,7 @@ public class PanelKeyGen extends JPanel {
         mTextAliasPassword = new JPasswordField();
         mTextAliasPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAliasPassword.setBorder(new TitledBorder(null, Messages
-                .getString("alias_password"), TitledBorder.LEADING,
+                .getString(R.string.alias_password), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAliasPassword = new GridBagConstraints();
         gbc_mTextAliasPassword.insets = new Insets(3, 3, 3, 3);
@@ -197,8 +199,8 @@ public class PanelKeyGen extends JPanel {
         mTextAliasPasswordConfirm = new JPasswordField();
         mTextAliasPasswordConfirm.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAliasPasswordConfirm.setBorder(new TitledBorder(null, Messages
-                .getString("confirm"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.confirm), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAliasPasswordConfirm = new GridBagConstraints();
         gbc_mTextAliasPasswordConfirm.insets = new Insets(5, 5, 5, 0);
         gbc_mTextAliasPasswordConfirm.fill = GridBagConstraints.HORIZONTAL;
@@ -208,8 +210,8 @@ public class PanelKeyGen extends JPanel {
 
         mSpinnerValidity = new JSpinner();
         mSpinnerValidity.setBorder(new TitledBorder(null, Messages
-                .getString("validity"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.validity), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         mSpinnerValidity.setValue(25);
         GridBagConstraints gbc_mSpinnerValidity = new GridBagConstraints();
         gbc_mSpinnerValidity.fill = GridBagConstraints.HORIZONTAL;
@@ -221,7 +223,7 @@ public class PanelKeyGen extends JPanel {
         mTextName = new JTextField();
         mTextName.setHorizontalAlignment(SwingConstants.CENTER);
         mTextName.setBorder(new TitledBorder(null, Messages
-                .getString("first_and_last_name"), TitledBorder.LEADING,
+                .getString(R.string.first_and_last_name), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextName = new GridBagConstraints();
         gbc_mTextName.insets = new Insets(3, 3, 3, 3);
@@ -234,7 +236,7 @@ public class PanelKeyGen extends JPanel {
         mTextOrganizationalUnit = new JTextField();
         mTextOrganizationalUnit.setHorizontalAlignment(SwingConstants.CENTER);
         mTextOrganizationalUnit.setBorder(new TitledBorder(null, Messages
-                .getString("organizational_unit"), TitledBorder.LEADING,
+                .getString(R.string.organizational_unit), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextOrganizationalUnit = new GridBagConstraints();
         gbc_mTextOrganizationalUnit.insets = new Insets(5, 5, 5, 0);
@@ -247,7 +249,7 @@ public class PanelKeyGen extends JPanel {
         mTextOrganization = new JTextField();
         mTextOrganization.setHorizontalAlignment(SwingConstants.CENTER);
         mTextOrganization.setBorder(new TitledBorder(null, Messages
-                .getString("organization"), TitledBorder.LEADING,
+                .getString(R.string.organization), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextOrganization = new GridBagConstraints();
         gbc_mTextOrganization.insets = new Insets(3, 3, 3, 3);
@@ -260,7 +262,7 @@ public class PanelKeyGen extends JPanel {
         mTextCityOrLocality = new JTextField();
         mTextCityOrLocality.setHorizontalAlignment(SwingConstants.CENTER);
         mTextCityOrLocality.setBorder(new TitledBorder(null, Messages
-                .getString("city_or_locality"), TitledBorder.LEADING,
+                .getString(R.string.city_or_locality), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextCityOrLocality = new GridBagConstraints();
         gbc_mTextCityOrLocality.insets = new Insets(5, 5, 5, 0);
@@ -273,7 +275,7 @@ public class PanelKeyGen extends JPanel {
         mTextStateOrProvince = new JTextField();
         mTextStateOrProvince.setHorizontalAlignment(SwingConstants.CENTER);
         mTextStateOrProvince.setBorder(new TitledBorder(null, Messages
-                .getString("state_or_province"), TitledBorder.LEADING,
+                .getString(R.string.state_or_province), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextStateOrProvince = new GridBagConstraints();
         gbc_mTextStateOrProvince.insets = new Insets(3, 3, 3, 3);
@@ -286,7 +288,7 @@ public class PanelKeyGen extends JPanel {
         mTextCountryCode = new JTextField();
         mTextCountryCode.setHorizontalAlignment(SwingConstants.CENTER);
         mTextCountryCode.setBorder(new TitledBorder(null, Messages
-                .getString("country_code"), TitledBorder.LEADING,
+                .getString(R.string.country_code), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextCountryCode = new GridBagConstraints();
         gbc_mTextCountryCode.insets = new Insets(3, 3, 3, 3);
@@ -307,7 +309,7 @@ public class PanelKeyGen extends JPanel {
     private boolean validateFields() {
         if (mTargetFile == null || !mTargetFile.getParentFile().isDirectory()) {
             Dlg.showInfoMsg(null, null,
-                    Messages.getString("msg_specify_target_file"));
+                    Messages.getString(R.string.msg_specify_target_file));
             mBtnChooseTargetFile.requestFocus();
             return false;
         }
@@ -315,7 +317,7 @@ public class PanelKeyGen extends JPanel {
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_password_is_empty"));
+                    Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }
@@ -323,14 +325,15 @@ public class PanelKeyGen extends JPanel {
         if (!Arrays.equals(mTextPassword.getPassword(),
                 mTextPasswordConfirm.getPassword())) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_passwords_dont_match"));
+                    Messages.getString(R.string.msg_passwords_dont_match));
             mTextPassword.requestFocus();
             return false;
         }
 
         if (mTextAlias.getText() == null
                 || mTextAlias.getText().trim().isEmpty()) {
-            Dlg.showErrMsg(null, null, Messages.getString("msg_alias_is_empty"));
+            Dlg.showErrMsg(null, null,
+                    Messages.getString(R.string.msg_alias_is_empty));
             mTextAlias.requestFocus();
             return false;
         }
@@ -338,7 +341,7 @@ public class PanelKeyGen extends JPanel {
         if (mTextAliasPassword.getPassword() == null
                 || mTextAliasPassword.getPassword().length == 0) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_alias_password_is_empty"));
+                    Messages.getString(R.string.msg_alias_password_is_empty));
             mTextAliasPassword.requestFocus();
             return false;
         }
@@ -346,15 +349,15 @@ public class PanelKeyGen extends JPanel {
         if (!Arrays.equals(mTextAliasPassword.getPassword(),
                 mTextAliasPasswordConfirm.getPassword())) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_alias_passwords_dont_match"));
+                    Messages.getString(R.string.msg_alias_passwords_dont_match));
             mTextAliasPassword.requestFocus();
             return false;
         }
 
         if (!(mSpinnerValidity.getValue() instanceof Integer)
                 || (Integer) mSpinnerValidity.getValue() <= 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_validity_must_be_larger_than_zero"));
+            Dlg.showErrMsg(null, null, Messages
+                    .getString(R.string.msg_validity_must_be_larger_than_zero));
             mSpinnerValidity.requestFocus();
             return false;
         }
@@ -372,7 +375,7 @@ public class PanelKeyGen extends JPanel {
             Dlg.showErrMsg(
                     null,
                     null,
-                    Messages.getString("msg_at_least_one_certificate_issuer_field_is_required"));
+                    Messages.getString(R.string.msg_at_least_one_certificate_issuer_field_is_required));
             mTextName.requestFocus();
             return false;
         }
@@ -401,11 +404,11 @@ public class PanelKeyGen extends JPanel {
                             .trim(), mTextCityOrLocality.getText().trim(),
                     mTextStateOrProvince.getText().trim(), mTextCountryCode
                             .getText().trim());
-            Dlg.showInfoMsg(null, null,
-                    Messages.getString("msg_keyfile_generated_successfully"));
+            Dlg.showInfoMsg(null, null, Messages
+                    .getString(R.string.msg_keyfile_generated_successfully));
         } catch (Exception e) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString("pmsg_error_generating_keyfile", e));
+            Dlg.showErrMsg(null, null, Messages.getString(
+                    R.string.pmsg_error_generating_keyfile, e));
         }
     }// genKeyfile()
 }

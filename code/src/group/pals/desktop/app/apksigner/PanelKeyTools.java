@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
@@ -84,7 +85,7 @@ public class PanelKeyTools extends JPanel {
         setLayout(gridBagLayout);
 
         mBtnChooseKeyfile = new JButton(
-                Messages.getString("desc_load_key_file"));
+                Messages.getString(R.string.desc_load_key_file));
         mBtnChooseKeyfile.addActionListener(new ActionListener() {
 
             @Override
@@ -92,7 +93,7 @@ public class PanelKeyTools extends JPanel {
                 mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
                         .get(PKEY_LAST_WORKING_DIR, "/")),
                         Texts.REGEX_KEYSTORE_FILES, Messages
-                                .getString("desc_keystore_files"));
+                                .getString(R.string.desc_keystore_files));
                 if (mKeyfile != null) {
                     mBtnChooseKeyfile.setText(mKeyfile.getName());
                     mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
@@ -100,7 +101,7 @@ public class PanelKeyTools extends JPanel {
                             mKeyfile.getParentFile().getAbsolutePath());
                 } else {
                     mBtnChooseKeyfile.setText(Messages
-                            .getString("desc_load_key_file"));
+                            .getString(R.string.desc_load_key_file));
                     mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
                 }
             }// actionPerformed()
@@ -114,8 +115,8 @@ public class PanelKeyTools extends JPanel {
         mTextPassword = new JPasswordField();
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
-                .getString("password"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.password), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
         gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
         gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
@@ -123,7 +124,7 @@ public class PanelKeyTools extends JPanel {
         gbc_mTextPassword.gridy = 1;
         add(mTextPassword, gbc_mTextPassword);
 
-        mBtnListEntries = new JButton(Messages.getString("list_entries"));
+        mBtnListEntries = new JButton(Messages.getString(R.string.list_entries));
         mBtnListEntries.addActionListener(new ActionListener() {
 
             @Override
@@ -165,7 +166,7 @@ public class PanelKeyTools extends JPanel {
     private boolean validateFields() {
         if (mKeyfile == null || !mKeyfile.isFile() || !mKeyfile.canRead()) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_keyfile_doesnt_exist"));
+                    Messages.getString(R.string.msg_keyfile_doesnt_exist));
             mBtnChooseKeyfile.requestFocus();
             return false;
         }
@@ -173,7 +174,7 @@ public class PanelKeyTools extends JPanel {
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_password_is_empty"));
+                    Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }

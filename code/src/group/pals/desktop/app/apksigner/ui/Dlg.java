@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner.ui;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,7 +38,7 @@ public class Dlg {
      */
     public static void showErrMsg(Component comp, String title, Object msg) {
         JOptionPane.showMessageDialog(comp, msg,
-                title == null ? Messages.getString("error") : title,
+                title == null ? Messages.getString(R.string.error) : title,
                 JOptionPane.ERROR_MESSAGE);
     }// showErrMsg()
 
@@ -52,7 +53,7 @@ public class Dlg {
      *            the exception.
      */
     public static void showException(Component comp, String title, Exception e) {
-        String msg = Messages.getString("pmsg_exception", e.getClass()
+        String msg = Messages.getString(R.string.pmsg_exception, e.getClass()
                 .getName(), e.getMessage());
         showErrMsg(comp, title, msg);
     }// showException()
@@ -69,8 +70,8 @@ public class Dlg {
      */
     public static void showInfoMsg(Component comp, String title, Object msg) {
         JOptionPane.showMessageDialog(comp, msg,
-                (title == null ? Messages.getString("information") : title),
-                JOptionPane.INFORMATION_MESSAGE);
+                (title == null ? Messages.getString(R.string.information)
+                        : title), JOptionPane.INFORMATION_MESSAGE);
     }// showInfoMsg()
 
     /**
@@ -118,7 +119,7 @@ public class Dlg {
      */
     public static void showWarningMsg(Component comp, String title, Object msg) {
         JOptionPane.showMessageDialog(comp, msg,
-                title == null ? Messages.getString("warning") : title,
+                title == null ? Messages.getString(R.string.warning) : title,
                 JOptionPane.WARNING_MESSAGE);
     }// showWarningMsg()
 
@@ -131,20 +132,20 @@ public class Dlg {
      *            the title.
      * @param msg
      *            the message.
-     * @param defaultButton
-     *            the default suggested button. {@code 0} for "Yes", {@code 1}
-     *            for "No". Other than that, {@link IndexOutOfBoundsException}
-     *            will be thrown :-)
-     * @return {@code true} if the user chose "yes", otherwise {@code false}.
+     * @param defaultYes
+     *            {@code true} to make button "Yes" selected as default.
+     *            {@code false} for button "No".
+     * @return {@code true} if the user chose "Yes", otherwise {@code false}.
      */
     public static boolean confirmYesNo(Component comp, String title,
-            Object msg, int defaultButton) {
-        Object[] options = { Messages.getString("yes"),
-                Messages.getString("no") };
+            Object msg, boolean defaultYes) {
+        Object[] options = { Messages.getString(R.string.yes),
+                Messages.getString(R.string.no) };
         int opt = JOptionPane.showOptionDialog(comp, msg,
-                title == null ? Messages.getString("confirmation") : title,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                options, options[defaultButton]);
+                title == null ? Messages.getString(R.string.confirmation)
+                        : title, JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE, null, options,
+                options[defaultYes ? 0 : 1]);
         return opt == 0;
     }// confirmYesNo()
 }

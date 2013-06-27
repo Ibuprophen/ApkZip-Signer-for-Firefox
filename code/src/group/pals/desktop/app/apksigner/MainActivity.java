@@ -8,12 +8,14 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.services.INotification;
 import group.pals.desktop.app.apksigner.services.Updater;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Preferences;
+import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 
 import java.awt.Color;
@@ -117,8 +119,9 @@ public class MainActivity {
                 }
             }
         } catch (UnsupportedLookAndFeelException ex) {
-            // Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE,
-            // // null, ex);
+            /*
+             * Ignore it.
+             */
         }
 
         UI.setWindowCenterScreen(mMainFrame, 59);
@@ -128,17 +131,19 @@ public class MainActivity {
          * INITIALIZE CONTROLS
          */
 
-        mMainFrame.setTitle(Messages.getString("pmsg_app_name",
-                Messages.getString("app_name"),
-                Messages.getString("app_version_name")));
+        mMainFrame.setTitle(Messages.getString(R.string.pmsg_app_name,
+                Messages.getString(R.string.app_name),
+                Messages.getString(R.string.app_version_name)));
 
         File jdkPath = Preferences.getInstance().getJdkPath();
         if (jdkPath != null && jdkPath.isDirectory())
             mTextJdkPath.setText(jdkPath.getAbsolutePath());
 
-        mTabbedPane.add(Messages.getString("key_generator"), new PanelKeyGen());
-        mTabbedPane.add(Messages.getString("signer"), new PanelSigner());
-        mTabbedPane.add(Messages.getString("key_tools"), new PanelKeyTools());
+        mTabbedPane.add(Messages.getString(R.string.key_generator),
+                new PanelKeyGen());
+        mTabbedPane.add(Messages.getString(R.string.signer), new PanelSigner());
+        mTabbedPane.add(Messages.getString(R.string.key_tools),
+                new PanelKeyTools());
 
         mMainFrame.addWindowListener(new WindowAdapter() {
 
@@ -152,11 +157,9 @@ public class MainActivity {
                  */
                 final Updater updater = mUpdater;
                 if (updater != null && updater.isAlive()) {
-                    if (Dlg.confirmYesNo(
-                            null,
-                            null,
-                            Messages.getString("msg_app_updating_confirm_exit"),
-                            1)) {
+                    if (Dlg.confirmYesNo(null, null, Messages
+                            .getString(R.string.msg_app_updating_confirm_exit),
+                            false)) {
                         updater.interrupt();
                         mMainFrame
                                 .setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -193,8 +196,7 @@ public class MainActivity {
 
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            if (msg.detailedMessage != null
-                                    && !msg.detailedMessage.isEmpty())
+                            if (!Texts.isEmpty(msg.detailedMessage))
                                 Dlg.showInfoMsg(null, null, msg.detailedMessage);
                         }// actionPerformed()
                     });
@@ -219,10 +221,11 @@ public class MainActivity {
         JMenuBar mMenuBar = new JMenuBar();
         mMainFrame.setJMenuBar(mMenuBar);
 
-        JMenu mMenuFile = new JMenu(Messages.getString("file")); //$NON-NLS-1$
+        JMenu mMenuFile = new JMenu(Messages.getString(R.string.file)); //$NON-NLS-1$
         mMenuBar.add(mMenuFile);
 
-        JMenuItem mMenuItemExit = new JMenuItem(Messages.getString("exit")); //$NON-NLS-1$
+        JMenuItem mMenuItemExit = new JMenuItem(
+                Messages.getString(R.string.exit)); //$NON-NLS-1$
         mMenuItemExit.addActionListener(new ActionListener() {
 
             @Override
@@ -235,10 +238,11 @@ public class MainActivity {
                 InputEvent.CTRL_MASK));
         mMenuFile.add(mMenuItemExit);
 
-        JMenu mMenuHelp = new JMenu(Messages.getString("help")); //$NON-NLS-1$
+        JMenu mMenuHelp = new JMenu(Messages.getString(R.string.help)); //$NON-NLS-1$
         mMenuBar.add(mMenuHelp);
 
-        JMenuItem mMenuItemAbout = new JMenuItem(Messages.getString("about")); //$NON-NLS-1$nuItem(Messages.getString("about"));
+        JMenuItem mMenuItemAbout = new JMenuItem(
+                Messages.getString(R.string.about)); //$NON-NLS-1$
         mMenuItemAbout.addActionListener(new ActionListener() {
 
             @Override
@@ -256,9 +260,10 @@ public class MainActivity {
                                 + "\n"
                                 + "And thanks to our friends who have been contributing to this project:\n"
                                 + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
-                                Messages.getString("pmsg_app_name",
-                                        Messages.getString("app_name"),
-                                        Messages.getString("app_version_name")));
+                                Messages.getString(
+                                        R.string.pmsg_app_name,
+                                        Messages.getString(R.string.app_name),
+                                        Messages.getString(R.string.app_version_name)));
                 Dlg.showHugeInfoMsg(null, null, msg, 630, 270);
             }// actionPerformed()
         });
@@ -274,7 +279,7 @@ public class MainActivity {
         mTextJdkPath = new JTextField();
         mTextJdkPath.setEditable(false);
         mTextJdkPath.setBorder(new TitledBorder(null, Messages
-                .getString("desc_jdk_path"), TitledBorder.LEADING,
+                .getString(R.string.desc_jdk_path), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         springLayout.putConstraint(SpringLayout.NORTH, mTextJdkPath, 10,
                 SpringLayout.NORTH, mMainFrame.getContentPane());
@@ -283,7 +288,7 @@ public class MainActivity {
         mMainFrame.getContentPane().add(mTextJdkPath);
 
         JButton mBtnChooseJdkPath = new JButton(
-                Messages.getString("choose_jdk_path")); //$NON-NLS-1$
+                Messages.getString(R.string.choose_jdk_path)); //$NON-NLS-1$
         mBtnChooseJdkPath.addActionListener(new ActionListener() {
 
             @Override

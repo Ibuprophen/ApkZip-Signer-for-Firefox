@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
@@ -70,11 +71,13 @@ public class PanelSigner extends JPanel {
      */
     private static final List<FileFilter> TARGET_FILE_FILTERS = Arrays.asList(
             Files.newFileFilter(JFileChooser.FILES_ONLY, Texts.REGEX_APK_FILES,
-                    Messages.getString("desc_apk_files")), Files.newFileFilter(
-                    JFileChooser.FILES_ONLY, Texts.REGEX_JAR_FILES,
-                    Messages.getString("desc_jar_files")), Files.newFileFilter(
-                    JFileChooser.FILES_ONLY, Texts.REGEX_ZIP_FILES,
-                    Messages.getString("desc_zip_files")));
+                    Messages.getString(R.string.desc_apk_files)), Files
+                    .newFileFilter(JFileChooser.FILES_ONLY,
+                            Texts.REGEX_JAR_FILES,
+                            Messages.getString(R.string.desc_jar_files)), Files
+                    .newFileFilter(JFileChooser.FILES_ONLY,
+                            Texts.REGEX_ZIP_FILES,
+                            Messages.getString(R.string.desc_zip_files)));
 
     /*
      * FIELDS
@@ -107,7 +110,7 @@ public class PanelSigner extends JPanel {
         setLayout(gridBagLayout);
 
         mBtnChooseKeyfile = new JButton(
-                Messages.getString("desc_load_key_file"));
+                Messages.getString(R.string.desc_load_key_file));
         mBtnChooseKeyfile.addActionListener(new ActionListener() {
 
             @Override
@@ -115,7 +118,7 @@ public class PanelSigner extends JPanel {
                 mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
                         .get(PKEY_LAST_WORKING_DIR, "/")),
                         Texts.REGEX_KEYSTORE_FILES, Messages
-                                .getString("desc_keystore_files"));
+                                .getString(R.string.desc_keystore_files));
                 if (mKeyfile != null) {
                     mBtnChooseKeyfile.setText(mKeyfile.getName());
                     mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
@@ -123,7 +126,7 @@ public class PanelSigner extends JPanel {
                             mKeyfile.getParentFile().getAbsolutePath());
                 } else {
                     mBtnChooseKeyfile.setText(Messages
-                            .getString("desc_load_key_file"));
+                            .getString(R.string.desc_load_key_file));
                     mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
                 }
             }// actionPerformed()
@@ -137,8 +140,8 @@ public class PanelSigner extends JPanel {
         mTextPassword = new JPasswordField();
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
-                .getString("password"), TitledBorder.LEADING, TitledBorder.TOP,
-                null, null));
+                .getString(R.string.password), TitledBorder.LEADING,
+                TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
         gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
         gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
@@ -148,8 +151,8 @@ public class PanelSigner extends JPanel {
 
         mTextAlias = new JTextField();
         mTextAlias.setHorizontalAlignment(SwingConstants.CENTER);
-        mTextAlias.setBorder(new TitledBorder(null,
-                Messages.getString("alias"), TitledBorder.LEADING,
+        mTextAlias.setBorder(new TitledBorder(null, Messages
+                .getString(R.string.alias), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAlias = new GridBagConstraints();
         gbc_mTextAlias.insets = new Insets(3, 3, 3, 3);
@@ -162,7 +165,7 @@ public class PanelSigner extends JPanel {
         mTextAliasPassword = new JPasswordField();
         mTextAliasPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextAliasPassword.setBorder(new TitledBorder(null, Messages
-                .getString("alias_password"), TitledBorder.LEADING,
+                .getString(R.string.alias_password), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAliasPassword = new GridBagConstraints();
         gbc_mTextAliasPassword.insets = new Insets(3, 3, 3, 3);
@@ -172,7 +175,7 @@ public class PanelSigner extends JPanel {
         add(mTextAliasPassword, gbc_mTextAliasPassword);
 
         mBtnChooseTargetFile = new JButton(
-                Messages.getString("desc_load_target_file"));
+                Messages.getString(R.string.desc_load_target_file));
         mBtnChooseTargetFile.addActionListener(new ActionListener() {
 
             @Override
@@ -182,7 +185,8 @@ public class PanelSigner extends JPanel {
                 final JFileChooserEx fileChooser = new JFileChooserEx(new File(
                         Preferences.getInstance().get(PKEY_LAST_WORKING_DIR,
                                 "/")));
-                fileChooser.setDialogTitle(Messages.getString("choose_file"));
+                fileChooser.setDialogTitle(Messages
+                        .getString(R.string.choose_file));
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
                 for (int i = 0; i < TARGET_FILE_FILTERS.size(); i++) {
@@ -213,7 +217,7 @@ public class PanelSigner extends JPanel {
                     mTargetFile = null;
 
                     mBtnChooseTargetFile.setText(Messages
-                            .getString("desc_load_target_file"));
+                            .getString(R.string.desc_load_target_file));
                     mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
 
                     break;
@@ -227,7 +231,7 @@ public class PanelSigner extends JPanel {
         gbc_mBtnChooseApkFile.gridy = 4;
         add(mBtnChooseTargetFile, gbc_mBtnChooseApkFile);
 
-        mBtnSign = new JButton(Messages.getString("sign"));
+        mBtnSign = new JButton(Messages.getString(R.string.sign));
         mBtnSign.addActionListener(new ActionListener() {
 
             @Override
@@ -253,7 +257,7 @@ public class PanelSigner extends JPanel {
     private boolean validateFields() {
         if (mKeyfile == null || !mKeyfile.isFile() || !mKeyfile.canRead()) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_keyfile_doesnt_exist"));
+                    Messages.getString(R.string.msg_keyfile_doesnt_exist));
             mBtnChooseKeyfile.requestFocus();
             return false;
         }
@@ -261,14 +265,15 @@ public class PanelSigner extends JPanel {
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_password_is_empty"));
+                    Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }
 
         if (mTextAlias.getText() == null
                 || mTextAlias.getText().trim().isEmpty()) {
-            Dlg.showErrMsg(null, null, Messages.getString("msg_alias_is_empty"));
+            Dlg.showErrMsg(null, null,
+                    Messages.getString(R.string.msg_alias_is_empty));
             mTextAlias.requestFocus();
             return false;
         }
@@ -276,7 +281,7 @@ public class PanelSigner extends JPanel {
         if (mTextAliasPassword.getPassword() == null
                 || mTextAliasPassword.getPassword().length == 0) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("msg_alias_password_is_empty"));
+                    Messages.getString(R.string.msg_alias_password_is_empty));
             mTextAliasPassword.requestFocus();
             return false;
         }
@@ -284,7 +289,7 @@ public class PanelSigner extends JPanel {
         if (mTargetFile == null || !mTargetFile.isFile()
                 || !mTargetFile.canWrite()) {
             Dlg.showInfoMsg(null, null,
-                    Messages.getString("msg_load_a_file_to_sign"));
+                    Messages.getString(R.string.msg_load_a_file_to_sign));
             mBtnChooseTargetFile.requestFocus();
             return false;
         }
@@ -304,15 +309,15 @@ public class PanelSigner extends JPanel {
                     mTargetFile, mKeyfile, mTextPassword.getPassword(),
                     mTextAlias.getText().trim(),
                     mTextAliasPassword.getPassword());
-            if (info == null || info.isEmpty())
+            if (Texts.isEmpty(info))
                 Dlg.showInfoMsg(null, null,
-                        Messages.getString("msg_file_is_signed"));
+                        Messages.getString(R.string.msg_file_is_signed));
             else
-                Dlg.showErrMsg(null, null,
-                        Messages.getString("pmsg_error_signing_file", info));
+                Dlg.showErrMsg(null, null, Messages.getString(
+                        R.string.pmsg_error_signing_file, info));
         } catch (Exception e) {
             Dlg.showErrMsg(null, null,
-                    Messages.getString("pmsg_error_signing_file", e));
+                    Messages.getString(R.string.pmsg_error_signing_file, e));
         }
     }// signTargetFile()
 }

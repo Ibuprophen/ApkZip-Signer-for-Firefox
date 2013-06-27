@@ -8,8 +8,10 @@
 package group.pals.desktop.app.apksigner.services;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.services.INotification.Message;
 import group.pals.desktop.app.apksigner.utils.Files;
+import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Network;
 import group.pals.desktop.app.apksigner.utils.SpeedTracker;
 import group.pals.desktop.app.apksigner.utils.Sys;
@@ -24,8 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
@@ -63,6 +63,11 @@ public class Updater extends Thread {
      * The download URI.
      */
     public static final String KEY_DOWNLOAD_URI = "download_uri";
+
+    /**
+     * The download filename.
+     */
+    public static final String KEY_DOWNLOAD_FILENAME = "download_filename";
 
     /**
      * The SHA-1 of new file.
@@ -182,8 +187,7 @@ public class Updater extends Thread {
                 return;
             }
 
-            if (Sys.DEBUG)
-                System.out.printf("%s >> %s\n", CLASSNAME, updateProperties);
+            L.d("%s >> %s", CLASSNAME, updateProperties);
 
             /*
              * CHECK TO SEE IF THE UPDATE FILE HAS BEEN DOWNLOADED BEFORE
@@ -247,19 +251,10 @@ public class Updater extends Thread {
      * @return {@code true} or {@code false}.
      */
     private boolean checklocalUpdateFile(Properties updateProperties) {
-        URL downloadUri;
-        try {
-            downloadUri = new URL(updateProperties.getProperty(
-                    KEY_DOWNLOAD_URI, Texts.EMPTY));
-        } catch (MalformedURLException e) {
-            /*
-             * Ignore it.
-             */
-            e.printStackTrace();
-            return false;
-        }
-
-        File file = new File(new File(downloadUri.getFile()).getName());
+        File file = new File(Sys.getAppDir().getAbsolutePath()
+                + File.separator
+                + Files.fixFilename(updateProperties
+                        .getProperty(KEY_DOWNLOAD_FILENAME)));
         if (file.isFile()) {
             /*
              * Check SHA-1.
@@ -286,10 +281,13 @@ public class Updater extends Thread {
                                 String.format("%0" + (md.getDigestLength() * 2)
                                         + "x", bi));
                 if (result)
-                    sendNotification(MSG_LOCAL_UPDATE_AVAILABLE,
-                            Messages.getString("msg_local_update_available"),
-                            Messages.getString("pmsg_local_update_available",
-                                    file.getAbsolutePath(), updateProperties
+                    sendNotification(
+                            MSG_LOCAL_UPDATE_AVAILABLE,
+                            Messages.getString(R.string.msg_local_update_available),
+                            Messages.getString(
+                                    R.string.pmsg_local_update_available, file
+                                            .getAbsolutePath(),
+                                    updateProperties
                                             .getProperty(KEY_APP_VERSION_NAME)));
                 return result;
             } catch (NoSuchAlgorithmException e) {
@@ -338,10 +336,11 @@ public class Updater extends Thread {
                 if (contentLength == 0)
                     return;
                 if (contentLength > 0 && contentLength > MAX_UPDATE_FILESIZE) {
-                    sendNotification(MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
-                            Messages.getString("msg_cancelled_update"),
+                    sendNotification(
+                            MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
+                            Messages.getString(R.string.msg_cancelled_update),
                             Messages.getString(
-                                    "pmsg_update_filesize_exceeds_limit",
+                                    R.string.pmsg_update_filesize_exceeds_limit,
                                     Texts.sizeToStr(contentLength),
                                     Texts.sizeToStr(MAX_UPDATE_FILESIZE)));
                     return;
@@ -350,13 +349,14 @@ public class Updater extends Thread {
                 /*
                  * PARSE FILENAME FROM SERVER
                  */
+
                 String fileName = null;
                 final String contentDisposition = conn
                         .getHeaderField("Content-Disposition");
                 if (Texts.isEmpty(contentDisposition)
                         || !contentDisposition.matches("(?si).*?attachment.+")) {
-                    fileName = Files.fixFilename(new File(conn.getURL()
-                            .getFile()).getName());
+                    fileName = Files.fixFilename(updateProperties
+                            .getProperty(KEY_DOWNLOAD_FILENAME));
                 } else {
                     Matcher m = Pattern.compile("(?si)filename=\"?.+?\"?$")
                             .matcher(contentDisposition);
@@ -371,20 +371,24 @@ public class Updater extends Thread {
                 File targetFile = new File(Sys.getAppDir().getAbsolutePath()
                         + File.separator + fileName);
 
-                if (Sys.DEBUG)
-                    System.out.printf("%s >> %s\n", CLASSNAME,
-                            targetFile.getAbsolutePath());
+                L.d("%s >> %s", CLASSNAME, targetFile.getAbsolutePath());
 
                 if (contentLength > 0
                         && targetFile.getParentFile() != null
                         && targetFile.getParentFile().getFreeSpace() <= contentLength * 1.5) {
                     sendNotification(MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
-                            Messages.getString("msg_cancelled_update"),
-                            Messages.getString("pmsg_available_space_is_low",
-                                    Texts.sizeToStr(targetFile.getParentFile()
-                                            .getFreeSpace())));
+                            Messages.getString(R.string.msg_cancelled_update),
+                            Messages.getString(
+                                    R.string.pmsg_available_space_is_low, Texts
+                                            .sizeToStr(targetFile
+                                                    .getParentFile()
+                                                    .getFreeSpace())));
                     return;
                 }
+
+                /*
+                 * START DOWNLOADING
+                 */
 
                 final OutputStream outputStream = new FileOutputStream(
                         targetFile);
@@ -399,7 +403,7 @@ public class Updater extends Thread {
                             sendNotification(
                                     MSG_UPDATE_PROGRESS,
                                     Messages.getString(
-                                            "pmsg_updating_with_percentage",
+                                            R.string.pmsg_updating_with_percentage,
                                             Texts.percentToStr(totalRead[0]
                                                     * 100f / contentLength),
                                             Texts.sizeToStr(totalRead[0]),
@@ -410,9 +414,9 @@ public class Updater extends Thread {
                         else {
                             sendNotification(
                                     MSG_UPDATE_PROGRESS,
-                                    Messages.getString("pmsg_updating", Texts
-                                            .sizeToStr(totalRead[0]), Texts
-                                            .sizeToStr(speedTracker
+                                    Messages.getString(R.string.pmsg_updating,
+                                            Texts.sizeToStr(totalRead[0]),
+                                            Texts.sizeToStr(speedTracker
                                                     .calcInstantaneousSpeed())),
                                     null);
                         }// //contentLength == 0
@@ -447,9 +451,9 @@ public class Updater extends Thread {
                             if (freeSpace < totalRead[0] * 1.5) {
                                 sendNotification(
                                         MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
-                                        Messages.getString("msg_cancelled_update"),
+                                        Messages.getString(R.string.msg_cancelled_update),
                                         Messages.getString(
-                                                "pmsg_available_space_is_low",
+                                                R.string.pmsg_available_space_is_low,
                                                 Texts.sizeToStr(freeSpace)));
                                 outputStream.close();
                                 targetFile.delete();
@@ -474,9 +478,9 @@ public class Updater extends Thread {
                                             bi))) {
                         sendNotification(
                                 MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
-                                Messages.getString("msg_update_finished"),
+                                Messages.getString(R.string.msg_update_finished),
                                 Messages.getString(
-                                        "pmsg_update_finished",
+                                        R.string.pmsg_update_finished,
                                         targetFile.getAbsolutePath(),
                                         updateProperties
                                                 .getProperty(KEY_APP_VERSION_NAME)));
@@ -484,8 +488,8 @@ public class Updater extends Thread {
                         targetFile.delete();
                         sendNotification(
                                 MSG_UPDATE_CANCELLED,
-                                Messages.getString("msg_update_cancelled"),
-                                Messages.getString("msg_update_cancelled_because_wrong_checksum"));
+                                Messages.getString(R.string.msg_update_cancelled),
+                                Messages.getString(R.string.msg_update_cancelled_because_wrong_checksum));
                     }
                 } catch (NoSuchAlgorithmException e) {
                     /*

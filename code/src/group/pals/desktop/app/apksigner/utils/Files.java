@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner.utils;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 
 import java.io.File;
@@ -46,7 +47,7 @@ public class Files {
      */
     public static File chooseFile(File startupDir) {
         JFileChooserEx fc = new JFileChooserEx(startupDir);
-        fc.setDialogTitle(Messages.getString("choose_file"));
+        fc.setDialogTitle(Messages.getString(R.string.choose_file));
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         switch (fc.showOpenDialog(null)) {
@@ -71,7 +72,7 @@ public class Files {
     public static File chooseFile(File startupDir, String regexFilenameFilter,
             String description) {
         JFileChooserEx fc = new JFileChooserEx(startupDir);
-        fc.setDialogTitle(Messages.getString("choose_file"));
+        fc.setDialogTitle(Messages.getString(R.string.choose_file));
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.addFilenameFilter(regexFilenameFilter, description, true);
 
@@ -92,7 +93,7 @@ public class Files {
      */
     public static File chooseDir(File startupDir) {
         JFileChooserEx fc = new JFileChooserEx(startupDir);
-        fc.setDialogTitle(Messages.getString("choose_directory"));
+        fc.setDialogTitle(Messages.getString(R.string.choose_directory));
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         switch (fc.showOpenDialog(null)) {
@@ -130,7 +131,7 @@ public class Files {
     public static File chooseFileToSave(File startupDir, String defaultFileExt,
             String regexFilenameFilter, String description) {
         JFileChooserEx fc = new JFileChooserEx(startupDir);
-        fc.setDialogTitle(Messages.getString("save_as"));
+        fc.setDialogTitle(Messages.getString(R.string.save_as));
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fc.setDefaultFileExt(defaultFileExt);
         if (regexFilenameFilter != null)
@@ -274,8 +275,8 @@ public class Files {
             case SAVE_DIALOG: {
                 if (getCurrentDirectory() == null
                         || !getCurrentDirectory().canWrite()) {
-                    Dlg.showErrMsg(null, null,
-                            Messages.getString("msg_cannot_save_a_file_here"));
+                    Dlg.showErrMsg(null, null, Messages
+                            .getString(R.string.msg_cannot_save_a_file_here));
                     return;
                 }
 
@@ -289,12 +290,13 @@ public class Files {
                     }
                 }
                 if ((file != null) && file.exists()) {
-                    final String[] userOptions = { "Yes", "No" };
-                    int usrOption = JOptionPane.showOptionDialog(
-                            this,
-                            Messages.getString("pmsg_override_file",
-                                    file.getName()),
-                            Messages.getString("confirmation"),
+                    final String[] userOptions = {
+                            Messages.getString(R.string.yes),
+                            Messages.getString(R.string.no) };
+                    int usrOption = JOptionPane.showOptionDialog(this, Messages
+                            .getString(R.string.pmsg_override_file,
+                                    file.getName()), Messages
+                            .getString(R.string.confirmation),
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE, null, userOptions,
                             userOptions[1]);
@@ -307,13 +309,10 @@ public class Files {
 
             case OPEN_DIALOG: {
                 File file = getSelectedFile();
-                if ((file == null) || !file.exists()) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            Messages.getString("pmsg_file_not_exist",
-                                    file.getName()),
-                            Messages.getString("error"),
-                            JOptionPane.ERROR_MESSAGE);
+                if (file == null || !file.exists()) {
+                    Dlg.showErrMsg(null, null, Messages.getString(
+                            R.string.pmsg_file_not_exist, file == null ? ""
+                                    : file.getName()));
                     return;
                 }
                 break;

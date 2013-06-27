@@ -6,7 +6,7 @@
 #  permission.
 
 '''
-This tool parse messages.properties and generate all strings to their
+This tool parses `messages.properties` and generates all strings to their
 respective IDs, which can be put into class R.string.
 '''
 

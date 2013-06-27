@@ -115,6 +115,11 @@ public class Updater extends Thread {
      */
     public static final int MSG_UPDATE_CANCELLED = 4;
 
+    /**
+     * The update finished.
+     */
+    public static final int MSG_UPDATE_FINISHED = 5;
+
     private INotification mNotification;
 
     /**
@@ -278,7 +283,7 @@ public class Updater extends Thread {
                 BigInteger bi = new BigInteger(1, md.digest());
                 final boolean result = updateProperties.getProperty(KEY_SHA1)
                         .equalsIgnoreCase(
-                                String.format("%0" + (md.getDigestLength() * 2)
+                                String.format("%0" + (md.digest().length * 2)
                                         + "x", bi));
                 if (result)
                     sendNotification(
@@ -474,10 +479,10 @@ public class Updater extends Thread {
                     if (updateProperties.getProperty(KEY_SHA1)
                             .equalsIgnoreCase(
                                     String.format("%0"
-                                            + (md.getDigestLength() * 2) + "x",
+                                            + (md.digest().length * 2) + "x",
                                             bi))) {
                         sendNotification(
-                                MSG_UPDATE_FILESIZE_EXCEEDS_LIMIT,
+                                MSG_UPDATE_FINISHED,
                                 Messages.getString(R.string.msg_update_finished),
                                 Messages.getString(
                                         R.string.pmsg_update_finished,

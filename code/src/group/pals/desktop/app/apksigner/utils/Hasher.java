@@ -26,6 +26,8 @@ public class Hasher {
      *            the algorithm.
      * @param data
      *            the input data.
+     * @param formatAsFingerprint
+     *            {@code true} to format the result as a digital fingerprint.
      * @return the hash string, or an empty string if {@code algorithm} is not
      *         supported.
      */

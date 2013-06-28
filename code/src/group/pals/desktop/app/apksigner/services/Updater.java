@@ -180,10 +180,8 @@ public class Updater extends Thread {
                 return;
 
             try {
-                if (Integer.parseInt(Messages.getString(KEY_APP_VERSION_CODE)) >= Integer
-                        .parseInt(updateProperties
-                                .getProperty(KEY_APP_VERSION_CODE))
-                        && !Sys.DEBUG)
+                if (Sys.APP_VERSION_CODE >= Integer.parseInt(updateProperties
+                        .getProperty(KEY_APP_VERSION_CODE)) && !Sys.DEBUG)
                     return;
             } catch (Throwable t) {
                 /*

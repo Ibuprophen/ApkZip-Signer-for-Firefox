@@ -7,6 +7,9 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 /**
  * Text utilities.
  * 
@@ -134,4 +137,15 @@ public class Texts {
     public static boolean isEmpty(CharSequence s) {
         return s == null || s.length() == 0;
     }// isEmpty()
+
+    /**
+     * Formats {@code date} based on current locale.
+     * 
+     * @param date
+     *            the date.
+     * @return the formatted string of {@code date}.
+     */
+    public static String formatDate(Date date) {
+        return DateFormat.getInstance().format(date);
+    }// formatDate()
 }

@@ -7,6 +7,8 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
+import group.pals.desktop.app.apksigner.i18n.Messages;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -37,7 +39,7 @@ public class Preferences {
         return mInstance;
     }// getInstance()
 
-    public static final String PREFS_FILENAME = "apk-signer.preferences";
+    public static final String PREFS_FILENAME = Sys.APP_NAME + ".preferences";
 
     private final File mPropertiesFile = new File(Sys.getAppDir()
             .getAbsolutePath() + File.separator + PREFS_FILENAME);
@@ -119,6 +121,7 @@ public class Preferences {
      */
 
     public static final String KEY_JDK_PATH = "JDK_PATH";
+    public static final String KEY_LOCALE_TAG = "locale_tag";
 
     /**
      * Gets JDK path.
@@ -142,4 +145,26 @@ public class Preferences {
         else
             mProperties.remove(KEY_JDK_PATH);
     }// setJdkPath()
+
+    /**
+     * Gets the locale.
+     * 
+     * @return the locale tag, default is {@link Messages#DEFAULT_LOCALE}.
+     */
+    public String getLocaleTag() {
+        return get(KEY_LOCALE_TAG, Messages.DEFAULT_LOCALE);
+    }// getLocaleTag()
+
+    /**
+     * Sets the locale tag.
+     * 
+     * @param tag
+     *            the locale tag.
+     */
+    public void setLocaleTag(String tag) {
+        if (Texts.isEmpty(tag))
+            mProperties.remove(KEY_LOCALE_TAG);
+        else
+            set(KEY_LOCALE_TAG, tag);
+    }// setLocaleTag()
 }

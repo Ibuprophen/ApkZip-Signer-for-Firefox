@@ -12,7 +12,7 @@ respective IDs, which can be put into class R.string.
 
 import re
 
-SOURCE_FILE = '../code/src/group/pals/desktop/app/apksigner/i18n/messages.properties'
+SOURCE_FILE = '../code/src/group/pals/desktop/app/apksigner/i18n/messages_en.properties'
 
 # PARSE SOURCE FILE
 

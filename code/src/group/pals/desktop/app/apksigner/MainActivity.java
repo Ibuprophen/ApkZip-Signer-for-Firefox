@@ -14,7 +14,9 @@ import group.pals.desktop.app.apksigner.services.Updater;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
+import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Preferences;
+import group.pals.desktop.app.apksigner.utils.Sys;
 import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 
@@ -27,13 +29,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Locale;
 
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -80,11 +85,18 @@ public class MainActivity {
     private JFrame mMainFrame;
     private JTextField mTextJdkPath;
     private JTabbedPane mTabbedPane;
+    private JMenu mMenuLanguage;
 
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
+        L.i(Messages.getString(R.string.pmsg_app_name, Sys.APP_NAME,
+                Sys.APP_VERSION_NAME));
+
+        Locale.setDefault(Locale.forLanguageTag(Preferences.getInstance()
+                .getLocaleTag()));
+
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -132,8 +144,39 @@ public class MainActivity {
          */
 
         mMainFrame.setTitle(Messages.getString(R.string.pmsg_app_name,
-                Messages.getString(R.string.app_name),
-                Messages.getString(R.string.app_version_name)));
+                Sys.APP_NAME, Sys.APP_VERSION_NAME));
+
+        /*
+         * LANGUAGES
+         */
+        String localeTag = Preferences.getInstance().getLocaleTag();
+        if (!Messages.AVAILABLE_LOCALES.containsKey(localeTag)) {
+            Preferences.getInstance().setLocaleTag(Messages.DEFAULT_LOCALE);
+            localeTag = Messages.DEFAULT_LOCALE;
+        }
+        ButtonGroup group = new ButtonGroup();
+        for (final String tag : Messages.AVAILABLE_LOCALES.keySet()) {
+            JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(
+                    Messages.AVAILABLE_LOCALES.get(tag));
+            menuItem.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Preferences.getInstance().setLocaleTag(tag);
+                    Dlg.showInfoMsg(
+                            null,
+                            null,
+                            Messages.getString(R.string.msg_restart_app_to_apply_new_language));
+                }// actionPerformed()
+            });
+
+            if (localeTag.equals(tag))
+                menuItem.setSelected(true);
+
+            group.add(menuItem);
+
+            mMenuLanguage.add(menuItem);
+        }// for
 
         File jdkPath = Preferences.getInstance().getJdkPath();
         if (jdkPath != null && jdkPath.isDirectory())
@@ -260,14 +303,15 @@ public class MainActivity {
                                 + "\n"
                                 + "And thanks to our friends who have been contributing to this project:\n"
                                 + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
-                                Messages.getString(
-                                        R.string.pmsg_app_name,
-                                        Messages.getString(R.string.app_name),
-                                        Messages.getString(R.string.app_version_name)));
+                                Messages.getString(R.string.pmsg_app_name,
+                                        Sys.APP_NAME, Sys.APP_VERSION_NAME));
                 Dlg.showHugeInfoMsg(null, null, msg, 630, 270);
             }// actionPerformed()
         });
         mMenuHelp.add(mMenuItemAbout);
+
+        mMenuLanguage = new JMenu(Messages.getString(R.string.language));
+        mMenuBar.add(mMenuLanguage);
 
         mMenuItemNotification = new JMenuItem();
         mMenuBar.add(mMenuItemNotification);

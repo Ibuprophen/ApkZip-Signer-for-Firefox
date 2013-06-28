@@ -163,7 +163,7 @@ public class KeyTools {
                             Messages.getString(R.string.alias_name), alias));
                     result.append(String.format("%s: %s\n",
                             Messages.getString(R.string.creation_date),
-                            keyStore.getCreationDate(alias)));
+                            Texts.formatDate(keyStore.getCreationDate(alias))));
                     result.append(String.format("%s: %s\n",
                             Messages.getString(R.string.entry_type),
                             cert.getType()));
@@ -180,29 +180,27 @@ public class KeyTools {
                                     i + 1));
 
                             if (certChain[i] instanceof X509Certificate) {
+                                X509Certificate x509Cert = (X509Certificate) certChain[i];
+
                                 result.append(String.format("\t\t%s: %s\n",
                                         Messages.getString(R.string.owner),
-                                        ((X509Certificate) certChain[i])
-                                                .getIssuerX500Principal()
+                                        x509Cert.getIssuerX500Principal()
                                                 .getName()));
                                 result.append(String.format("\t\t%s: %s\n",
                                         Messages.getString(R.string.issuer),
-                                        ((X509Certificate) certChain[i])
-                                                .getIssuerX500Principal()
+                                        x509Cert.getIssuerX500Principal()
                                                 .getName()));
                                 result.append(String.format(
                                         "\t\t%s: %x\n",
                                         Messages.getString(R.string.serial_number),
-                                        ((X509Certificate) certChain[i])
-                                                .getSerialNumber()));
+                                        x509Cert.getSerialNumber()));
                                 result.append("\t\t")
-                                        .append(Messages
-                                                .getString(
-                                                        R.string.pmsg_valid_from_until,
-                                                        ((X509Certificate) certChain[i])
-                                                                .getNotBefore(),
-                                                        ((X509Certificate) certChain[i])
-                                                                .getNotAfter()))
+                                        .append(Messages.getString(
+                                                R.string.pmsg_valid_from_until,
+                                                Texts.formatDate(x509Cert
+                                                        .getNotBefore()), Texts
+                                                        .formatDate(x509Cert
+                                                                .getNotAfter())))
                                         .append('\n');
                             }
 

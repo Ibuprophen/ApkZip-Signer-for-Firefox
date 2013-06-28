@@ -23,6 +23,21 @@ public class Sys {
     public static final boolean DEBUG = false;
 
     /**
+     * The app name.
+     */
+    public static final String APP_NAME = "apk-signer";
+
+    /**
+     * The app version code.
+     */
+    public static final int APP_VERSION_CODE = 17;
+
+    /**
+     * The app version name.
+     */
+    public static final String APP_VERSION_NAME = "1.6.8";
+
+    /**
      * Gets the app directory.
      * 
      * @return the app directory.

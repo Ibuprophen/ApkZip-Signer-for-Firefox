@@ -7,10 +7,14 @@
 
 package group.pals.desktop.app.apksigner.i18n;
 
+import group.pals.desktop.app.apksigner.utils.Preferences;
+
 import java.beans.Beans;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -23,32 +27,38 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
-    // //////////////////////////////////////////////////////////////////////////
-    //
-    // Constructor
-    //
-    // //////////////////////////////////////////////////////////////////////////
+    /**
+     * Default locale.
+     */
+    public static final String DEFAULT_LOCALE = "en";
+
+    /**
+     * Map of available locale tags to their human readable names.
+     */
+    public static final Map<String, String> AVAILABLE_LOCALES = new LinkedHashMap<String, String>();
+
+    static {
+        AVAILABLE_LOCALES.put(DEFAULT_LOCALE, "English (Default)");
+        AVAILABLE_LOCALES.put("vi", "Vietnamese (Tiếng Việt)");
+    }// static
+
     private Messages() {
         // do not instantiate
     }// Message()
 
-    // //////////////////////////////////////////////////////////////////////////
-    //
-    // Bundle access
-    //
-    // //////////////////////////////////////////////////////////////////////////
     private static final String BUNDLE_NAME = "group.pals.desktop.app.apksigner.i18n.messages"; //$NON-NLS-1$
     private static final ResourceBundle RESOURCE_BUNDLE = loadBundle();
 
     private static ResourceBundle loadBundle() {
-        return ResourceBundle.getBundle(BUNDLE_NAME);
+        String localeTag = Preferences.getInstance().getLocaleTag();
+        if (!AVAILABLE_LOCALES.containsKey(localeTag)) {
+            Preferences.getInstance().setLocaleTag(DEFAULT_LOCALE);
+            localeTag = DEFAULT_LOCALE;
+        }
+        return ResourceBundle.getBundle(BUNDLE_NAME,
+                Locale.forLanguageTag(localeTag));
     }// loadBundle()
 
-    // //////////////////////////////////////////////////////////////////////////
-    //
-    // Strings access
-    //
-    // //////////////////////////////////////////////////////////////////////////
     public static String getString(String key) {
         try {
             ResourceBundle bundle = Beans.isDesignTime() ? loadBundle()

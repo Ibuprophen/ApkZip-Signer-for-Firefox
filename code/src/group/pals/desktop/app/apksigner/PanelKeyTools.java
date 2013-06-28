@@ -31,6 +31,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -71,6 +72,7 @@ public class PanelKeyTools extends JPanel {
     private JButton mBtnChooseKeyfile;
     private JButton mBtnListEntries;
     private JTextArea mTextInfo;
+    private JScrollPane mTextInfoScrollPane;
 
     /**
      * Create the panel.
@@ -140,13 +142,13 @@ public class PanelKeyTools extends JPanel {
         gbc_mBtnListEntries.gridy = 2;
         add(mBtnListEntries, gbc_mBtnListEntries);
 
-        JScrollPane scrollPane = new JScrollPane();
+        mTextInfoScrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.insets = new Insets(3, 3, 3, 3);
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 3;
-        add(scrollPane, gbc_scrollPane);
+        add(mTextInfoScrollPane, gbc_scrollPane);
 
         mTextInfo = new JTextArea();
         mTextInfo.setEditable(false);
@@ -154,7 +156,7 @@ public class PanelKeyTools extends JPanel {
                 mTextInfo.getFont().getStyle(), mTextInfo.getFont().getSize()));
         mTextInfo.setMargin(new Insets(9, 9, 9, 9));
         mTextInfo.setTabSize(4);
-        scrollPane.setViewportView(mTextInfo);
+        mTextInfoScrollPane.setViewportView(mTextInfo);
 
         UI.setEditorPopupMenu(this, new JEditorPopupMenu());
     }// PanelKeyTools()
@@ -193,6 +195,14 @@ public class PanelKeyTools extends JPanel {
         CharSequence result = KeyTools.listEntries(mKeyfile,
                 mTextPassword.getPassword());
         mTextInfo.setText(result.toString().trim());
-        mTextInfo.setCaretPosition(0);
+
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                mTextInfoScrollPane.getHorizontalScrollBar().setValue(0);
+                mTextInfoScrollPane.getVerticalScrollBar().setValue(0);
+            }// run()
+        });
     }// listEntries()
 }

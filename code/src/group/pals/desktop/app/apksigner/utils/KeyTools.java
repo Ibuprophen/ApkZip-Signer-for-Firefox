@@ -8,7 +8,12 @@
 package group.pals.desktop.app.apksigner.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Utilities for keystore files.
@@ -16,6 +21,11 @@ import java.io.InputStream;
  * @author Hai Bison
  */
 public class KeyTools {
+
+    /**
+     * Default keystore type.
+     */
+    public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
     /**
      * Lists entries in a keystore file.
@@ -71,4 +81,37 @@ public class KeyTools {
 
         return console;
     }// listEntries()
+
+    /**
+     * Gets all alias names from {@code keyFile}.
+     * 
+     * @param keyFile
+     *            the keyfile.
+     * @param storepass
+     *            the password.
+     * @return list of alias names, can be empty.
+     */
+    public static List<String> getAliases(File keyFile, char[] storepass) {
+        final List<String> result = new ArrayList<String>();
+
+        try {
+            InputStream inputStream = new FileInputStream(keyFile);
+            try {
+                KeyStore ks = KeyStore.getInstance(DEFAULT_KEYSTORE_TYPE);
+                ks.load(inputStream, storepass);
+
+                Enumeration<String> aliases = ks.aliases();
+                while (aliases.hasMoreElements())
+                    result.add(aliases.nextElement());
+            } finally {
+                inputStream.close();
+            }
+        } catch (Exception e) {
+            /*
+             * Ignore it.
+             */
+        }
+
+        return result;
+    }// getAliases()
 }

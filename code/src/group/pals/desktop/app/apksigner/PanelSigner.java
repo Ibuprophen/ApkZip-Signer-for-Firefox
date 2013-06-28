@@ -36,8 +36,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -96,7 +94,7 @@ public class PanelSigner extends JPanel {
      * Delay time to load keystore's aliases after the user stopped typying the
      * keystore's password, in milliseconds.
      */
-    private static final int DELAY_TIME_TO_LOAD_KEY_ALIASES = 999;
+    private static final int DELAY_TIME_TO_LOAD_KEY_ALIASES = 499;
 
     /*
      * FIELDS
@@ -151,7 +149,7 @@ public class PanelSigner extends JPanel {
 
                     if (mTimer != null)
                         mTimer.cancel();
-                    mTimer = createTimerTastKeyAliasesLoader();
+                    mTimer = createAndScheduleKeyAliasesLoader();
 
                     mTextPassword.requestFocus();
                 } else {
@@ -183,7 +181,7 @@ public class PanelSigner extends JPanel {
                     if (action.equals(e.getPropertyName())) {
                         if (mTimer != null)
                             mTimer.cancel();
-                        mTimer = createTimerTastKeyAliasesLoader();
+                        mTimer = createAndScheduleKeyAliasesLoader();
                         break;
                     }
                 }
@@ -197,7 +195,7 @@ public class PanelSigner extends JPanel {
             public void keyTyped(KeyEvent e) {
                 if (mTimer != null)
                     mTimer.cancel();
-                mTimer = createTimerTastKeyAliasesLoader();
+                mTimer = createAndScheduleKeyAliasesLoader();
             }// keyTyped()
         });
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
@@ -339,7 +337,9 @@ public class PanelSigner extends JPanel {
      * 
      * @return the timer.
      */
-    private Timer createTimerTastKeyAliasesLoader() {
+    private Timer createAndScheduleKeyAliasesLoader() {
+        final boolean[] cancelled = { false };
+
         TimerTask timerTask = new TimerTask() {
 
             @SuppressWarnings("unchecked")
@@ -348,50 +348,41 @@ public class PanelSigner extends JPanel {
                 if (mKeyfile != null && mKeyfile.isFile() && mKeyfile.canRead()) {
                     char[] pwd = mTextPassword.getPassword();
                     if (pwd != null && pwd.length > 0) {
-                        final CharSequence console = KeyTools.listEntries(
-                                Preferences.getInstance().getJdkPath(),
-                                mKeyfile, pwd);
-                        if (Pattern
-                                .matches(
-                                        "(?sim).+Your keystore contains [0-9,.]+ entry.+",
-                                        console)) {
-                            DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(
-                                    new Object[] { "" });
+                        DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(
+                                new Object[] { "" });
 
-                            Matcher matcher = Pattern
-                                    .compile(
-                                            "(?sim)^Alias name:.+?[\r\n]+Creation date:")
-                                    .matcher(console);
-                            while (matcher.find()) {
-                                final String alias = console
-                                        .subSequence(matcher.start(),
-                                                matcher.end())
-                                        .toString()
-                                        .replaceAll(
-                                                "(?sim)(^Alias name:)|([\r\n].*)",
-                                                "").trim();
-                                model.addElement(new Object() {
+                        for (final String alias : KeyTools.getAliases(mKeyfile,
+                                pwd)) {
+                            model.addElement(new Object() {
 
-                                    @Override
-                                    public String toString() {
-                                        return alias;
-                                    }// toString()
-                                });
-                            }// while
+                                @Override
+                                public String toString() {
+                                    return alias;
+                                }// toString()
+                            });
+                        }// for
 
+                        if (!cancelled[0]) {
                             mCbxAlias.setModel(model);
                             if (model.getSize() > 1)
                                 mCbxAlias.setSelectedIndex(1);
-                        }// if
+                        }
                     }// if
                 }// if
             }// run()
         };
 
-        Timer timer = new Timer();
+        Timer timer = new Timer() {
+
+            @Override
+            public void cancel() {
+                cancelled[0] = true;
+                super.cancel();
+            }// cancel()
+        };
         timer.schedule(timerTask, DELAY_TIME_TO_LOAD_KEY_ALIASES);
         return timer;
-    }// createTimerTastKeyAliasesLoader()
+    }// createAndScheduleKeyAliasesLoader()
 
     /**
      * Validates all fields.

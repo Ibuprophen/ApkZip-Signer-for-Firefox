@@ -26,7 +26,7 @@ public class KeyTools {
      *            the keystore file.
      * @param storepass
      *            the keystore password.
-     * @return the information.
+     * @return the information, never be {@code null}.
      */
     public static CharSequence listEntries(File jdkPath, File keyFile,
             char[] storepass) {
@@ -36,7 +36,7 @@ public class KeyTools {
         String keytool = jdkPath != null && jdkPath.isDirectory() ? jdkPath
                 .getAbsolutePath() + "/keytool.exe" : "keytool";
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder console = new StringBuilder();
 
         /*
          * keytool -list -v -keystore aaa.keystore -storepass XXX
@@ -52,7 +52,7 @@ public class KeyTools {
                 int read = 0;
                 byte[] buf = new byte[1024 * 99];
                 while ((read = stream.read(buf)) > 0) {
-                    sb.append(new String(buf, 0, read));
+                    console.append(new String(buf, 0, read));
                 }
             } finally {
                 if (stream != null) {
@@ -66,9 +66,9 @@ public class KeyTools {
 
             p.waitFor();
         } catch (Throwable t) {
-            sb.append("*** ERROR ***\n\n").append(t);
+            console.append("*** ERROR ***\n\n").append(t);
         }
 
-        return sb;
+        return console;
     }// listEntries()
 }

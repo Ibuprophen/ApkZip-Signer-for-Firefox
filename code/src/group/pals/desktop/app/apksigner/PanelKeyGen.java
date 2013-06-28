@@ -126,6 +126,7 @@ public class PanelKeyGen extends JPanel {
                     mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
                     Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                             mTargetFile.getParentFile().getAbsolutePath());
+                    mTextPassword.requestFocus();
                 } else {
                     mBtnChooseTargetFile.setText(Messages
                             .getString(R.string.desc_save_as));

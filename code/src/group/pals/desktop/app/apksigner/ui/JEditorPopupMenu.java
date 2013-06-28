@@ -36,14 +36,73 @@ public class JEditorPopupMenu extends JPopupMenu {
      */
     private static final long serialVersionUID = 5578010916105435603L;
 
-    public final static String ACTION_NAME_CUT = "cut";
-    public final static String ACTION_NAME_COPY = "copy";
-    public final static String ACTION_NAME_COPY_ALL = "copy-all";
-    public final static String ACTION_NAME_PASTE = "paste";
-    public final static String ACTION_NAME_CLEAR_AND_PASTE = "clear-and-paste";
-    public final static String ACTION_NAME_CLEAR = "clear";
-    public final static String ACTION_NAME_DELETE = "delete";
-    public final static String ACTION_NAME_SELECT_ALL = "select-all";
+    private static final String CLASSNAME = JEditorPopupMenu.class.getName();
+
+    /**
+     * Action CUT.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_CUT = CLASSNAME + ".cut";
+
+    /**
+     * Action COPY.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_COPY = CLASSNAME + ".copy";
+
+    /**
+     * Action COPY ALL.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_COPY_ALL = CLASSNAME + ".copy-all";
+
+    /**
+     * Action PASTE.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_PASTE = CLASSNAME + ".paste";
+
+    /**
+     * Action CLEAR AND PASTE.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_CLEAR_AND_PASTE = CLASSNAME
+            + ".clear-and-paste";
+
+    /**
+     * Action CLEAR.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_CLEAR = CLASSNAME + ".clear";
+
+    /**
+     * Action DELETE.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_DELETE = CLASSNAME + ".delete";
+
+    /**
+     * Action SELECT ALL.
+     * <p>
+     * Used in {@link Component#firePropertyChange(String, long, long)}.
+     * </p>
+     */
+    public final static String ACTION_NAME_SELECT_ALL = CLASSNAME
+            + ".select-all";
 
     /**
      * Extended class of {@link TextAction}.

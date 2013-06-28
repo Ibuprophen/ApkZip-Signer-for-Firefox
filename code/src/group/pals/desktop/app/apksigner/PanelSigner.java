@@ -13,25 +13,38 @@ import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Files.JFileChooserEx;
+import group.pals.desktop.app.apksigner.utils.KeyTools;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Signer;
 import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -79,6 +92,12 @@ public class PanelSigner extends JPanel {
                             Texts.REGEX_ZIP_FILES,
                             Messages.getString(R.string.desc_zip_files)));
 
+    /**
+     * Delay time to load keystore's aliases after the user stopped typying the
+     * keystore's password, in milliseconds.
+     */
+    private static final int DELAY_TIME_TO_LOAD_KEY_ALIASES = 999;
+
     /*
      * FIELDS
      */
@@ -91,15 +110,18 @@ public class PanelSigner extends JPanel {
      */
 
     private JPasswordField mTextPassword;
-    private JTextField mTextAlias;
+    @SuppressWarnings("rawtypes")
+    private JComboBox mCbxAlias;
     private JPasswordField mTextAliasPassword;
     private JButton mBtnChooseKeyfile;
     private JButton mBtnChooseTargetFile;
     private JButton mBtnSign;
+    private JPanel panel;
 
     /**
      * Create the panel.
      */
+    @SuppressWarnings({ "rawtypes" })
     public PanelSigner() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 0, 0 };
@@ -113,6 +135,8 @@ public class PanelSigner extends JPanel {
                 Messages.getString(R.string.desc_load_key_file));
         mBtnChooseKeyfile.addActionListener(new ActionListener() {
 
+            Timer mTimer;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
@@ -124,6 +148,12 @@ public class PanelSigner extends JPanel {
                     mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
                     Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                             mKeyfile.getParentFile().getAbsolutePath());
+
+                    if (mTimer != null)
+                        mTimer.cancel();
+                    mTimer = createTimerTastKeyAliasesLoader();
+
+                    mTextPassword.requestFocus();
                 } else {
                     mBtnChooseKeyfile.setText(Messages
                             .getString(R.string.desc_load_key_file));
@@ -132,35 +162,89 @@ public class PanelSigner extends JPanel {
             }// actionPerformed()
         });
         GridBagConstraints gbc_mBtnChooseKeyfile = new GridBagConstraints();
-        gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 3, 3);
+        gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 5, 3);
         gbc_mBtnChooseKeyfile.gridx = 0;
         gbc_mBtnChooseKeyfile.gridy = 0;
         add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
 
         mTextPassword = new JPasswordField();
+        mTextPassword.addPropertyChangeListener(new PropertyChangeListener() {
+
+            final String[] mActionNames = {
+                    JEditorPopupMenu.ACTION_NAME_CLEAR_AND_PASTE,
+                    JEditorPopupMenu.ACTION_NAME_CUT,
+                    JEditorPopupMenu.ACTION_NAME_DELETE,
+                    JEditorPopupMenu.ACTION_NAME_PASTE };
+            Timer mTimer;
+
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                for (String action : mActionNames) {
+                    if (action.equals(e.getPropertyName())) {
+                        if (mTimer != null)
+                            mTimer.cancel();
+                        mTimer = createTimerTastKeyAliasesLoader();
+                        break;
+                    }
+                }
+            }// propertyChange()
+        });
+        mTextPassword.addKeyListener(new KeyAdapter() {
+
+            Timer mTimer;
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (mTimer != null)
+                    mTimer.cancel();
+                mTimer = createTimerTastKeyAliasesLoader();
+            }// keyTyped()
+        });
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
                 .getString(R.string.password), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
-        gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
+        gbc_mTextPassword.insets = new Insets(3, 3, 5, 3);
         gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
         gbc_mTextPassword.gridx = 0;
         gbc_mTextPassword.gridy = 1;
         add(mTextPassword, gbc_mTextPassword);
 
-        mTextAlias = new JTextField();
-        mTextAlias.setHorizontalAlignment(SwingConstants.CENTER);
-        mTextAlias.setBorder(new TitledBorder(null, Messages
+        panel = new JPanel();
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.insets = new Insets(0, 0, 5, 0);
+        gbc_panel.gridx = 0;
+        gbc_panel.gridy = 2;
+        add(panel, gbc_panel);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[] { 0, 0 };
+        gbl_panel.rowHeights = new int[] { 0, 0 };
+        gbl_panel.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gbl_panel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+        panel.setLayout(gbl_panel);
+        panel.setBorder(new TitledBorder(null, Messages
                 .getString(R.string.alias), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_mTextAlias = new GridBagConstraints();
-        gbc_mTextAlias.insets = new Insets(3, 3, 3, 3);
-        gbc_mTextAlias.fill = GridBagConstraints.HORIZONTAL;
-        gbc_mTextAlias.gridx = 0;
-        gbc_mTextAlias.gridy = 2;
-        add(mTextAlias, gbc_mTextAlias);
-        mTextAlias.setColumns(10);
+
+        mCbxAlias = new JComboBox();
+        mCbxAlias.setMinimumSize(new Dimension(199, 24));
+        mCbxAlias.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (mCbxAlias.getSelectedItem() != null
+                        && !Texts.isEmpty(mCbxAlias.getSelectedItem()
+                                .toString()))
+                    mTextAliasPassword.requestFocus();
+            }// itemStateChanged()
+        });
+        GridBagConstraints gbc_mCbxAlias = new GridBagConstraints();
+        gbc_mCbxAlias.gridx = 0;
+        gbc_mCbxAlias.gridy = 0;
+        panel.add(mCbxAlias, gbc_mCbxAlias);
+        mCbxAlias.setEditable(true);
 
         mTextAliasPassword = new JPasswordField();
         mTextAliasPassword.setHorizontalAlignment(SwingConstants.CENTER);
@@ -168,7 +252,7 @@ public class PanelSigner extends JPanel {
                 .getString(R.string.alias_password), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAliasPassword = new GridBagConstraints();
-        gbc_mTextAliasPassword.insets = new Insets(3, 3, 3, 3);
+        gbc_mTextAliasPassword.insets = new Insets(3, 3, 5, 3);
         gbc_mTextAliasPassword.fill = GridBagConstraints.HORIZONTAL;
         gbc_mTextAliasPassword.gridx = 0;
         gbc_mTextAliasPassword.gridy = 3;
@@ -226,7 +310,7 @@ public class PanelSigner extends JPanel {
             }// actionPerformed()
         });
         GridBagConstraints gbc_mBtnChooseApkFile = new GridBagConstraints();
-        gbc_mBtnChooseApkFile.insets = new Insets(3, 3, 3, 3);
+        gbc_mBtnChooseApkFile.insets = new Insets(3, 3, 5, 3);
         gbc_mBtnChooseApkFile.gridx = 0;
         gbc_mBtnChooseApkFile.gridy = 4;
         add(mBtnChooseTargetFile, gbc_mBtnChooseApkFile);
@@ -250,6 +334,66 @@ public class PanelSigner extends JPanel {
     }// PanelSigner()
 
     /**
+     * Creates new {@link Timer} which automatically schedules a
+     * {@link TimerTask} to load current keystore's aliases.
+     * 
+     * @return the timer.
+     */
+    private Timer createTimerTastKeyAliasesLoader() {
+        TimerTask timerTask = new TimerTask() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void run() {
+                if (mKeyfile != null && mKeyfile.isFile() && mKeyfile.canRead()) {
+                    char[] pwd = mTextPassword.getPassword();
+                    if (pwd != null && pwd.length > 0) {
+                        final CharSequence console = KeyTools.listEntries(
+                                Preferences.getInstance().getJdkPath(),
+                                mKeyfile, pwd);
+                        if (Pattern
+                                .matches(
+                                        "(?sim).+Your keystore contains [0-9,.]+ entry.+",
+                                        console)) {
+                            DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(
+                                    new Object[] { "" });
+
+                            Matcher matcher = Pattern
+                                    .compile(
+                                            "(?sim)^Alias name:.+?[\r\n]+Creation date:")
+                                    .matcher(console);
+                            while (matcher.find()) {
+                                final String alias = console
+                                        .subSequence(matcher.start(),
+                                                matcher.end())
+                                        .toString()
+                                        .replaceAll(
+                                                "(?sim)(^Alias name:)|([\r\n].*)",
+                                                "").trim();
+                                model.addElement(new Object() {
+
+                                    @Override
+                                    public String toString() {
+                                        return alias;
+                                    }// toString()
+                                });
+                            }// while
+
+                            mCbxAlias.setModel(model);
+                            if (model.getSize() > 1)
+                                mCbxAlias.setSelectedIndex(1);
+                        }// if
+                    }// if
+                }// if
+            }// run()
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(timerTask, DELAY_TIME_TO_LOAD_KEY_ALIASES);
+        return timer;
+    }// createTimerTastKeyAliasesLoader()
+
+    /**
      * Validates all fields.
      * 
      * @return {@code true} or {@code false}.
@@ -270,11 +414,11 @@ public class PanelSigner extends JPanel {
             return false;
         }
 
-        if (mTextAlias.getText() == null
-                || mTextAlias.getText().trim().isEmpty()) {
+        if (mCbxAlias.getSelectedIndex() < 0
+                || Texts.isEmpty(String.valueOf(mCbxAlias.getSelectedItem()))) {
             Dlg.showErrMsg(null, null,
                     Messages.getString(R.string.msg_alias_is_empty));
-            mTextAlias.requestFocus();
+            mCbxAlias.requestFocus();
             return false;
         }
 
@@ -307,7 +451,7 @@ public class PanelSigner extends JPanel {
         try {
             String info = Signer.sign(Preferences.getInstance().getJdkPath(),
                     mTargetFile, mKeyfile, mTextPassword.getPassword(),
-                    mTextAlias.getText().trim(),
+                    String.valueOf(mCbxAlias.getSelectedItem()),
                     mTextAliasPassword.getPassword());
             if (Texts.isEmpty(info))
                 Dlg.showInfoMsg(null, null,

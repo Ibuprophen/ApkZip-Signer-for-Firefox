@@ -351,15 +351,25 @@ public class PanelSigner extends JPanel {
                         DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(
                                 new Object[] { "" });
 
-                        for (final String alias : KeyTools.getAliases(mKeyfile,
-                                pwd)) {
-                            model.addElement(new Object() {
+                        for (String keystoreType : new String[] {
+                                KeyTools.KEYSTORE_TYPE_JKS,
+                                KeyTools.KEYSTORE_TYPE_JCEKS,
+                                KeyTools.KEYSTORE_TYPE_PKCS12 }) {
+                            final List<String> aliases = KeyTools.getAliases(
+                                    mKeyfile, keystoreType, pwd);
 
-                                @Override
-                                public String toString() {
-                                    return alias;
-                                }// toString()
-                            });
+                            for (final String alias : aliases) {
+                                model.addElement(new Object() {
+
+                                    @Override
+                                    public String toString() {
+                                        return alias;
+                                    }// toString()
+                                });
+                            }// for
+
+                            if (!aliases.isEmpty())
+                                break;
                         }// for
 
                         if (!cancelled[0]) {

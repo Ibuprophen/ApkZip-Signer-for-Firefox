@@ -17,19 +17,23 @@ import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
@@ -73,21 +77,33 @@ public class PanelKeyTools extends JPanel {
     private JButton mBtnListEntries;
     private JTextArea mTextInfo;
     private JScrollPane mTextInfoScrollPane;
+    private JPanel panel;
+    private JPanel panel_1;
+    private JPanel panel_2;
+    @SuppressWarnings("rawtypes")
+    private JComboBox mCbxKeystoreType;
 
     /**
      * Create the panel.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public PanelKeyTools() {
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] { 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0 };
-        gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0,
-                Double.MIN_VALUE };
-        setLayout(gridBagLayout);
+        SpringLayout springLayout = new SpringLayout();
+        setLayout(springLayout);
+
+        panel = new JPanel();
+        springLayout.putConstraint(SpringLayout.NORTH, panel, 5,
+                SpringLayout.NORTH, this);
+        springLayout.putConstraint(SpringLayout.WEST, panel, 3,
+                SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.EAST, panel, -3,
+                SpringLayout.EAST, this);
+        add(panel);
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         mBtnChooseKeyfile = new JButton(
                 Messages.getString(R.string.desc_load_key_file));
+        panel.add(mBtnChooseKeyfile);
         mBtnChooseKeyfile.addActionListener(new ActionListener() {
 
             @Override
@@ -109,25 +125,69 @@ public class PanelKeyTools extends JPanel {
                 }
             }// actionPerformed()
         });
-        GridBagConstraints gbc_mBtnChooseKeyfile = new GridBagConstraints();
-        gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 3, 3);
-        gbc_mBtnChooseKeyfile.gridx = 0;
-        gbc_mBtnChooseKeyfile.gridy = 0;
-        add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
+
+        panel_1 = new JPanel();
+        springLayout.putConstraint(SpringLayout.NORTH, panel_1, 3,
+                SpringLayout.SOUTH, panel);
+        springLayout.putConstraint(SpringLayout.WEST, panel_1, 3,
+                SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.EAST, panel_1, -3,
+                SpringLayout.EAST, this);
+        add(panel_1);
+        panel_1.setLayout(new BorderLayout(10, 5));
 
         mTextPassword = new JPasswordField();
+        panel_1.add(mTextPassword);
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
                 .getString(R.string.password), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_mTextPassword = new GridBagConstraints();
-        gbc_mTextPassword.insets = new Insets(3, 3, 3, 3);
-        gbc_mTextPassword.fill = GridBagConstraints.HORIZONTAL;
-        gbc_mTextPassword.gridx = 0;
-        gbc_mTextPassword.gridy = 1;
-        add(mTextPassword, gbc_mTextPassword);
+
+        panel_2 = new JPanel();
+        springLayout.putConstraint(SpringLayout.NORTH, panel_2, 5,
+                SpringLayout.SOUTH, panel_1);
+
+        JPanel panel_3 = new JPanel();
+        panel_1.add(panel_3, BorderLayout.WEST);
+        panel_3.setLayout(new BorderLayout(3, 3));
+
+        JLabel lblNewLabel = new JLabel(
+                Messages.getString(R.string.keystore_type));
+        panel_3.add(lblNewLabel, BorderLayout.NORTH);
+
+        mCbxKeystoreType = new JComboBox();
+        lblNewLabel.setLabelFor(mCbxKeystoreType);
+        mCbxKeystoreType.setModel(new DefaultComboBoxModel(new Object[] {
+                new Object() {
+
+                    @Override
+                    public String toString() {
+                        return KeyTools.KEYSTORE_TYPE_JKS;
+                    }
+                }, new Object() {
+
+                    @Override
+                    public String toString() {
+                        return KeyTools.KEYSTORE_TYPE_JCEKS;
+                    }
+                }, new Object() {
+
+                    @Override
+                    public String toString() {
+                        return KeyTools.KEYSTORE_TYPE_PKCS12;
+                    }
+                } }));
+        panel_3.add(mCbxKeystoreType);
+
+        springLayout.putConstraint(SpringLayout.WEST, panel_2, 3,
+                SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.EAST, panel_2, -3,
+                SpringLayout.EAST, this);
+        add(panel_2);
+        panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         mBtnListEntries = new JButton(Messages.getString(R.string.list_entries));
+        panel_2.add(mBtnListEntries);
         mBtnListEntries.addActionListener(new ActionListener() {
 
             @Override
@@ -136,19 +196,17 @@ public class PanelKeyTools extends JPanel {
                     listEntries();
             }// actionPerformed()
         });
-        GridBagConstraints gbc_mBtnListEntries = new GridBagConstraints();
-        gbc_mBtnListEntries.insets = new Insets(3, 3, 3, 3);
-        gbc_mBtnListEntries.gridx = 0;
-        gbc_mBtnListEntries.gridy = 2;
-        add(mBtnListEntries, gbc_mBtnListEntries);
 
         mTextInfoScrollPane = new JScrollPane();
-        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-        gbc_scrollPane.insets = new Insets(3, 3, 3, 3);
-        gbc_scrollPane.fill = GridBagConstraints.BOTH;
-        gbc_scrollPane.gridx = 0;
-        gbc_scrollPane.gridy = 3;
-        add(mTextInfoScrollPane, gbc_scrollPane);
+        springLayout.putConstraint(SpringLayout.NORTH, mTextInfoScrollPane, 5,
+                SpringLayout.SOUTH, panel_2);
+        springLayout.putConstraint(SpringLayout.WEST, mTextInfoScrollPane, 3,
+                SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.SOUTH, mTextInfoScrollPane, -3,
+                SpringLayout.SOUTH, this);
+        springLayout.putConstraint(SpringLayout.EAST, mTextInfoScrollPane, -3,
+                SpringLayout.EAST, this);
+        add(mTextInfoScrollPane);
 
         mTextInfo = new JTextArea();
         mTextInfo.setEditable(false);
@@ -193,6 +251,7 @@ public class PanelKeyTools extends JPanel {
      */
     private void listEntries() {
         CharSequence result = KeyTools.listEntries(mKeyfile,
+                String.valueOf(mCbxKeystoreType.getSelectedItem()),
                 mTextPassword.getPassword());
         mTextInfo.setText(result.toString().trim());
 

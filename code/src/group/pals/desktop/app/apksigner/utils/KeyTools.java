@@ -30,9 +30,24 @@ import java.util.List;
 public class KeyTools {
 
     /**
+     * "JKS"
+     */
+    public static final String KEYSTORE_TYPE_JKS = "JKS";
+
+    /**
+     * "JCEKS"
+     */
+    public static final String KEYSTORE_TYPE_JCEKS = "JCEKS";
+
+    /**
+     * "PKCS12"
+     */
+    public static final String KEYSTORE_TYPE_PKCS12 = "PKCS12";
+
+    /**
      * Default keystore type.
      */
-    public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
+    public static final String DEFAULT_KEYSTORE_TYPE = KEYSTORE_TYPE_JKS;
 
     /**
      * Lists entries in a keystore file.
@@ -44,7 +59,7 @@ public class KeyTools {
      * @param storepass
      *            the keystore password.
      * @return the information, never be {@code null}.
-     * @deprecated Use {@link #listEntries(File, char[])} instead.
+     * @deprecated Use {@link #listEntries(File, String, char[])} instead.
      */
     @Deprecated
     public static CharSequence listEntries(File jdkPath, File keyFile,
@@ -96,17 +111,20 @@ public class KeyTools {
      * 
      * @param keyFile
      *            the keystore file.
+     * @param keystoreType
+     *            the keystore type.
      * @param storepass
      *            the keystore password.
      * @return the information, never be {@code null}.
      */
-    public static CharSequence listEntries(File keyFile, char[] storepass) {
+    public static CharSequence listEntries(File keyFile, String keystoreType,
+            char[] storepass) {
         final StringBuilder result = new StringBuilder();
 
         try {
             InputStream inputStream = new FileInputStream(keyFile);
             try {
-                KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEYSTORE_TYPE);
+                KeyStore keyStore = KeyStore.getInstance(keystoreType);
                 keyStore.load(inputStream, storepass);
 
                 /*
@@ -225,17 +243,20 @@ public class KeyTools {
      * 
      * @param keyFile
      *            the keyfile.
+     * @param keystoreType
+     *            the keystore type.
      * @param storepass
      *            the password.
      * @return list of alias names, can be empty.
      */
-    public static List<String> getAliases(File keyFile, char[] storepass) {
+    public static List<String> getAliases(File keyFile, String keystoreType,
+            char[] storepass) {
         final List<String> result = new ArrayList<String>();
 
         try {
             InputStream inputStream = new FileInputStream(keyFile);
             try {
-                KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEYSTORE_TYPE);
+                KeyStore keyStore = KeyStore.getInstance(keystoreType);
                 keyStore.load(inputStream, storepass);
 
                 Enumeration<String> aliases = keyStore.aliases();

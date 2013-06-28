@@ -190,8 +190,9 @@ public class PanelKeyTools extends JPanel {
      * </p>
      */
     private void listEntries() {
-        CharSequence result = KeyTools.listEntries(Preferences.getInstance()
-                .getJdkPath(), mKeyfile, mTextPassword.getPassword());
+        CharSequence result = KeyTools.listEntries(mKeyfile,
+                mTextPassword.getPassword());
         mTextInfo.setText(result.toString().trim());
+        mTextInfo.setCaretPosition(0);
     }// listEntries()
 }

@@ -21,9 +21,19 @@ public class Texts {
     public static final String UTF8 = "UTF-8";
 
     /**
+     * "MD5"
+     */
+    public static final String MD5 = "MD5";
+
+    /**
      * "SHA-1"
      */
     public static final String SHA1 = "SHA-1";
+
+    /**
+     * "SHA-256"
+     */
+    public static final String SHA256 = "SHA-256";
 
     /**
      * An empty string.

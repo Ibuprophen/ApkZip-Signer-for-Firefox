@@ -284,55 +284,53 @@ public class PanelKeyGen extends JPanel {
      */
     private boolean validateFields() {
         if (mTargetFile == null || !mTargetFile.getParentFile().isDirectory()) {
-            Dlg.showInfoMsg(null, null,
-                    Messages.getString(R.string.msg_specify_target_file));
+            Dlg.showInfoMsg(Messages
+                    .getString(R.string.msg_specify_target_file));
             mBtnChooseTargetFile.requestFocus();
             return false;
         }
 
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_password_is_empty));
+            Dlg.showErrMsg(Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }
 
         if (!Arrays.equals(mTextPassword.getPassword(),
                 mTextPasswordConfirm.getPassword())) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_passwords_dont_match));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_passwords_dont_match));
             mTextPassword.requestFocus();
             return false;
         }
 
         if (mTextAlias.getText() == null
                 || mTextAlias.getText().trim().isEmpty()) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_alias_is_empty));
+            Dlg.showErrMsg(Messages.getString(R.string.msg_alias_is_empty));
             mTextAlias.requestFocus();
             return false;
         }
 
         if (mTextAliasPassword.getPassword() == null
                 || mTextAliasPassword.getPassword().length == 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_alias_password_is_empty));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_alias_password_is_empty));
             mTextAliasPassword.requestFocus();
             return false;
         }
 
         if (!Arrays.equals(mTextAliasPassword.getPassword(),
                 mTextAliasPasswordConfirm.getPassword())) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_alias_passwords_dont_match));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_alias_passwords_dont_match));
             mTextAliasPassword.requestFocus();
             return false;
         }
 
         if (!(mSpinnerValidity.getValue() instanceof Integer)
                 || (Integer) mSpinnerValidity.getValue() <= 0) {
-            Dlg.showErrMsg(null, null, Messages
+            Dlg.showErrMsg(Messages
                     .getString(R.string.msg_validity_must_be_larger_than_zero));
             mSpinnerValidity.requestFocus();
             return false;
@@ -348,10 +346,8 @@ public class PanelKeyGen extends JPanel {
             }
         }
         if (!okay) {
-            Dlg.showErrMsg(
-                    null,
-                    null,
-                    Messages.getString(R.string.msg_at_least_one_certificate_issuer_field_is_required));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_at_least_one_certificate_issuer_field_is_required));
             mTextName.requestFocus();
             return false;
         }
@@ -380,10 +376,10 @@ public class PanelKeyGen extends JPanel {
                             .trim(), mTextCityOrLocality.getText().trim(),
                     mTextStateOrProvince.getText().trim(), mTextCountryCode
                             .getText().trim());
-            Dlg.showInfoMsg(null, null, Messages
+            Dlg.showInfoMsg(Messages
                     .getString(R.string.msg_keyfile_generated_successfully));
         } catch (Exception e) {
-            Dlg.showErrMsg(null, null, Messages.getString(
+            Dlg.showErrMsg(Messages.getString(
                     R.string.pmsg_error_generating_keyfile, e));
         }
     }// genKeyfile()

@@ -27,6 +27,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.regex.Matcher;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -137,14 +138,21 @@ public class PanelApkAlignment extends JPanel {
     }// enableCommands()
 
     /**
+     * Resets output fields.
+     */
+    private void resetOutputFields() {
+        mProgressBar.setValue(0);
+        mTextInfo.setText(null);
+    }// resetOutputFields()
+
+    /**
      * Validates all fields.
      * 
      * @return {@code true} or {@code false}.
      */
     private boolean validateFields() {
         if (mApkFile == null || !mApkFile.isFile()) {
-            Dlg.showInfoMsg(null, null,
-                    Messages.getString(R.string.msg_load_apk_file));
+            Dlg.showInfoMsg(Messages.getString(R.string.msg_load_apk_file));
             return false;
         }
 
@@ -174,6 +182,8 @@ public class PanelApkAlignment extends JPanel {
                         .getString(R.string.desc_load_apk_file));
                 mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);
             }
+
+            resetOutputFields();
         }// actionPerformed()
     };// mBtnLoadApkFileActionListener
 
@@ -184,8 +194,7 @@ public class PanelApkAlignment extends JPanel {
             if (!validateFields())
                 return;
 
-            mTextInfo.setText(null);
-            mProgressBar.setValue(0);
+            resetOutputFields();
             enableCommands(false);
 
             final ZipAlignmentVerifier verifier = new ZipAlignmentVerifier(
@@ -257,19 +266,34 @@ public class PanelApkAlignment extends JPanel {
             if (!validateFields())
                 return;
 
+            if (!mApkFile.getName().matches(Texts.REGEX_APK_FILES)) {
+                if (!Dlg.confirmYesNo(Messages.getString(
+                        R.string.pmsg_confirm_aligning_file_not_apk,
+                        mApkFile.getName()), false))
+                    return;
+            }
+
+            /*
+             * Build output file name.
+             */
+            final String srcName = mApkFile.getName();
+            String newName;
+            if (srcName.matches("(?si).*?unaligned.+"))
+                newName = srcName.replaceFirst("(?si)unaligned",
+                        Matcher.quoteReplacement(ZipAlign.ALIGNED));
+            else
+                newName = Files.appendFilename(srcName, "_" + ZipAlign.ALIGNED);
+
             final File outputFile = new File(mApkFile.getParent()
-                    + File.separator
-                    + Files.appendFilename(mApkFile.getName(), "_"
-                            + ZipAlign.ALIGNED));
+                    + File.separator + newName);
             if (outputFile.isFile()) {
-                if (!Dlg.confirmYesNo(null, null, Messages.getString(
+                if (!Dlg.confirmYesNo(Messages.getString(
                         R.string.pmsg_override_file, outputFile.getName()),
                         false))
                     return;
             }
 
-            mTextInfo.setText(null);
-            mProgressBar.setValue(0);
+            resetOutputFields();
             enableCommands(false);
 
             final ZipAligner zipAligner = new ZipAligner(mApkFile, outputFile);

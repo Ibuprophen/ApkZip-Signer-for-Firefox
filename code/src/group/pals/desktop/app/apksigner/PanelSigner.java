@@ -282,40 +282,38 @@ public class PanelSigner extends JPanel {
      */
     private boolean validateFields() {
         if (mKeyfile == null || !mKeyfile.isFile() || !mKeyfile.canRead()) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_keyfile_doesnt_exist));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_keyfile_doesnt_exist));
             mBtnChooseKeyfile.requestFocus();
             return false;
         }
 
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_password_is_empty));
+            Dlg.showErrMsg(Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }
 
         if (mCbxAlias.getSelectedIndex() < 0
                 || Texts.isEmpty(String.valueOf(mCbxAlias.getSelectedItem()))) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_alias_is_empty));
+            Dlg.showErrMsg(Messages.getString(R.string.msg_alias_is_empty));
             mCbxAlias.requestFocus();
             return false;
         }
 
         if (mTextAliasPassword.getPassword() == null
                 || mTextAliasPassword.getPassword().length == 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_alias_password_is_empty));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_alias_password_is_empty));
             mTextAliasPassword.requestFocus();
             return false;
         }
 
         if (mTargetFile == null || !mTargetFile.isFile()
                 || !mTargetFile.canWrite()) {
-            Dlg.showInfoMsg(null, null,
-                    Messages.getString(R.string.msg_load_a_file_to_sign));
+            Dlg.showInfoMsg(Messages
+                    .getString(R.string.msg_load_a_file_to_sign));
             mBtnChooseTargetFile.requestFocus();
             return false;
         }
@@ -336,14 +334,13 @@ public class PanelSigner extends JPanel {
                     String.valueOf(mCbxAlias.getSelectedItem()),
                     mTextAliasPassword.getPassword());
             if (Texts.isEmpty(info))
-                Dlg.showInfoMsg(null, null,
-                        Messages.getString(R.string.msg_file_is_signed));
+                Dlg.showInfoMsg(Messages.getString(R.string.msg_file_is_signed));
             else
-                Dlg.showErrMsg(null, null, Messages.getString(
+                Dlg.showErrMsg(Messages.getString(
                         R.string.pmsg_error_signing_file, info));
         } catch (Exception e) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.pmsg_error_signing_file, e));
+            Dlg.showErrMsg(Messages.getString(R.string.pmsg_error_signing_file,
+                    e));
         }
     }// signTargetFile()
 

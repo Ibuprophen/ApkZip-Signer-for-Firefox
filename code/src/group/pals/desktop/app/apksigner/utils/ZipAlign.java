@@ -70,6 +70,10 @@ import java.util.zip.ZipOutputStream;
  * <li>Only the "extra" fields in local file headers are modified. The ones in
  * central directory are not touched.</li>
  * </p>
+ * <p>
+ * See <a href="http://en.wikipedia.org/wiki/Zip_(file_format)">Zip (file
+ * format) - Wikipedia</a> for further information..
+ * </p>
  * 
  * @author Hai Bison
  * @since v1.6.9 beta
@@ -78,11 +82,6 @@ public class ZipAlign {
 
     /**
      * The minimum size of a ZIP entry's header.
-     * <p>
-     * See <a
-     * href="http://en.wikipedia.org/wiki/Zip_(file_format)#File_headers">Zip
-     * (file format) - Wikipedia</a>.
-     * </p>
      */
     public static final int ZIP_ENTRY_HEADER_LEN = 30;
 
@@ -90,6 +89,16 @@ public class ZipAlign {
      * Default version to work with ZIP files.
      */
     public static final int ZIP_ENTRY_VERSION = 20;
+
+    /**
+     * The offset of extra field length in a ZIP entry's header.
+     */
+    public static final int ZIP_ENTRY_OFFSET_EXTRA_LEN = 28;
+
+    /**
+     * The size of field extra length, in a ZIP entry's header.
+     */
+    public static final int ZIP_ENTRY_FIELD_EXTRA_LEN_SIZE = 2;
 
     /**
      * @see <a
@@ -287,7 +296,6 @@ public class ZipAlign {
                 openFiles();
                 copyAllEntries();
                 buildCentralDirectory();
-                closeFiles();
             } catch (Exception e) {
                 mOutputFile.delete();
                 sendNotification(
@@ -295,6 +303,17 @@ public class ZipAlign {
                         Texts.NULL,
                         Messages.getString(R.string.pmsg_error_details,
                                 e.getMessage(), L.printStackTrace(e)));
+            } finally {
+                try {
+                    closeFiles();
+                } catch (Exception e) {
+                    mOutputFile.delete();
+                    sendNotification(
+                            MSG_ERROR,
+                            Texts.NULL,
+                            Messages.getString(R.string.pmsg_error_details,
+                                    e.getMessage(), L.printStackTrace(e)));
+                }
             }
 
             sendNotification(MSG_DONE);
@@ -692,13 +711,22 @@ public class ZipAlign {
             try {
                 openFiles();
                 verify();
-                closeFiles();
             } catch (Exception e) {
                 sendNotification(
                         MSG_ERROR,
                         Texts.NULL,
                         Messages.getString(R.string.pmsg_error_details,
                                 e.getMessage(), L.printStackTrace(e)));
+            } finally {
+                try {
+                    closeFiles();
+                } catch (Exception e) {
+                    sendNotification(
+                            MSG_ERROR,
+                            Texts.NULL,
+                            Messages.getString(R.string.pmsg_error_details,
+                                    e.getMessage(), L.printStackTrace(e)));
+                }
             }
 
             sendNotification(MSG_DONE);
@@ -746,11 +774,8 @@ public class ZipAlign {
             while (entries.hasMoreElements()) {
                 final ZipEntry entry = entries.nextElement();
 
-                /*
-                 * #28 is extra field length (2 bytes)
-                 */
-                mRafInput.seek(dataOffset + 28);
-                byte[] buf = new byte[2];
+                mRafInput.seek(dataOffset + ZIP_ENTRY_OFFSET_EXTRA_LEN);
+                final byte[] buf = new byte[ZIP_ENTRY_FIELD_EXTRA_LEN_SIZE];
                 if (mRafInput.read(buf) != buf.length)
                     throw new IOException("Reading extra field length failed");
                 /*
@@ -814,10 +839,10 @@ public class ZipAlign {
                     dataSize = entry.isDirectory() ? 0 : entry
                             .getCompressedSize();
 
-                L.d("\tsize = %,8d, compressed = %,8d, crc32 = %08x, data mHeaderOffset = %,8d >> %,8d"
+                L.d("size = %,8d, compressed = %,8d, crc32 = %08x, data mHeaderOffset = %,8d >> %,8d"
                         + " >> Entry '%s'", entry.getSize(),
                         entry.getCompressedSize(), entry.getCrc(), dataOffset,
-                        dataOffset + dataSize, entry.getName());
+                        dataOffset + headerSize, entry.getName());
 
                 dataOffset += headerSize + dataSize;
             }// while

@@ -166,10 +166,8 @@ public class MainActivity {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Preferences.getInstance().setLocaleTag(tag);
-                    Dlg.showInfoMsg(
-                            null,
-                            null,
-                            Messages.getString(R.string.msg_restart_app_to_apply_new_language));
+                    Dlg.showInfoMsg(Messages
+                            .getString(R.string.msg_restart_app_to_apply_new_language));
                 }// actionPerformed()
             });
 
@@ -310,8 +308,6 @@ public class MainActivity {
                     serviceNames.append(" - ").append(thread.getName())
                             .append('\n');
                 if (Dlg.confirmYesNo(
-                        null,
-                        null,
                         String.format(
                                 "%s\n\n%s\n%s",
                                 Messages.getString(
@@ -352,7 +348,7 @@ public class MainActivity {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (!Texts.isEmpty(msg.detailedMessage))
-                            Dlg.showInfoMsg(null, null, msg.detailedMessage);
+                            Dlg.showInfoMsg(msg.detailedMessage);
                     }// actionPerformed()
                 });
                 break;
@@ -382,7 +378,7 @@ public class MainActivity {
                             + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
                             Messages.getString(R.string.pmsg_app_name,
                                     Sys.APP_NAME, Sys.APP_VERSION_NAME));
-            Dlg.showHugeInfoMsg(null, null, msg, 630, 270);
+            Dlg.showHugeInfoMsg(msg, 630, 270);
         }// actionPerformed()
     };// mMenuItemAboutActionListener
 

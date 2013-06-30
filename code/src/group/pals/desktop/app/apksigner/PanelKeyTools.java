@@ -180,16 +180,15 @@ public class PanelKeyTools extends JPanel {
      */
     private boolean validateFields() {
         if (mKeyfile == null || !mKeyfile.isFile() || !mKeyfile.canRead()) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_keyfile_doesnt_exist));
+            Dlg.showErrMsg(Messages
+                    .getString(R.string.msg_keyfile_doesnt_exist));
             mBtnChooseKeyfile.requestFocus();
             return false;
         }
 
         if (mTextPassword.getPassword() == null
                 || mTextPassword.getPassword().length == 0) {
-            Dlg.showErrMsg(null, null,
-                    Messages.getString(R.string.msg_password_is_empty));
+            Dlg.showErrMsg(Messages.getString(R.string.msg_password_is_empty));
             mTextPassword.requestFocus();
             return false;
         }

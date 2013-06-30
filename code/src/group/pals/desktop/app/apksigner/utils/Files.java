@@ -297,7 +297,7 @@ public class Files {
             case SAVE_DIALOG: {
                 if (getCurrentDirectory() == null
                         || !getCurrentDirectory().canWrite()) {
-                    Dlg.showErrMsg(null, null, Messages
+                    Dlg.showErrMsg(Messages
                             .getString(R.string.msg_cannot_save_a_file_here));
                     return;
                 }
@@ -331,7 +331,7 @@ public class Files {
             case OPEN_DIALOG: {
                 File file = getSelectedFile();
                 if (file == null || !file.exists()) {
-                    Dlg.showErrMsg(null, null, Messages.getString(
+                    Dlg.showErrMsg(Messages.getString(
                             R.string.pmsg_file_not_exist, file == null ? ""
                                     : file.getName()));
                     return;

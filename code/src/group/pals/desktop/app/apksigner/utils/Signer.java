@@ -25,7 +25,7 @@ public class Signer {
     /**
      * Used to append to newly signed target's file name.
      */
-    private static final String SIGNED = "SIGNED";
+    private static final String SIGNED_UNALIGNED = "SIGNED_UNALIGNED";
 
     /**
      * Signs an APK file.
@@ -99,11 +99,11 @@ public class Signer {
             String newName;
             if (oldName.matches("(?si).*?unsigned.+"))
                 newName = oldName.replaceFirst("(?si)unsigned",
-                        Matcher.quoteReplacement(SIGNED));
+                        Matcher.quoteReplacement(SIGNED_UNALIGNED));
             else if (oldName.matches("(?si).+\\.(apk|jar|zip)$"))
-                newName = Files.appendFilename(oldName, '_' + SIGNED);
+                newName = Files.appendFilename(oldName, '_' + SIGNED_UNALIGNED);
             else
-                newName = String.format("%s_%s", oldName, SIGNED);
+                newName = String.format("%s_%s", oldName, SIGNED_UNALIGNED);
 
             if (targetFile.renameTo(new File(targetFile.getParent()
                     + File.separator + newName)))

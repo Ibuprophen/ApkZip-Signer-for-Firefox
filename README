@@ -6,6 +6,13 @@ Feel free to contact us at:
 
 History:
 
++++ Version 1.7 +++
+ * Release: July 01, 2013
+
+ - Add new tab `APK Alignment` which helps you align APKs and verify aligned
+   APKs.
+ - Optimize code and UI reactions.
+
 +++ Version 1.6.8 +++
  * Release: June 28, 2013
 

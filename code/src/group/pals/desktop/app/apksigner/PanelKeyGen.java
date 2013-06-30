@@ -113,39 +113,14 @@ public class PanelKeyGen extends JPanel {
 
         mBtnChooseTargetFile = new JButton(
                 Messages.getString(R.string.desc_save_as));
-        mBtnChooseTargetFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mTargetFile = Files.chooseFileToSave(new File(Preferences
-                        .getInstance().get(PKEY_LAST_WORKING_DIR, "/")),
-                        Texts.FILE_EXT_KEYSTORE, Texts.REGEX_KEYSTORE_FILES,
-                        Messages.getString(R.string.desc_keystore_files));
-                if (mTargetFile != null) {
-                    mBtnChooseTargetFile.setText(mTargetFile.getName());
-                    mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
-                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                            mTargetFile.getParentFile().getAbsolutePath());
-                    mTextPassword.requestFocus();
-                } else {
-                    mBtnChooseTargetFile.setText(Messages
-                            .getString(R.string.desc_save_as));
-                    mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
-                }
-            }// actionPerformed()
-        });
+        mBtnChooseTargetFile
+                .addActionListener(mBtnChooseTargetFileActionListener);
         panel.add(mBtnChooseTargetFile);
 
         mBtnGenerateKeyfile = new JButton(
                 Messages.getString(R.string.generate_keyfile)); //$NON-NLS-1$
-        mBtnGenerateKeyfile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (validateFields())
-                    genKeyfile();
-            }// actionPerformed()
-        });
+        mBtnGenerateKeyfile
+                .addActionListener(mBtnGenerateKeyfileActionListener);
         panel.add(mBtnGenerateKeyfile);
 
         mTextPassword = new JPasswordField();
@@ -412,4 +387,40 @@ public class PanelKeyGen extends JPanel {
                     R.string.pmsg_error_generating_keyfile, e));
         }
     }// genKeyfile()
+
+    /*
+     * LISTENERS
+     */
+
+    private final ActionListener mBtnChooseTargetFileActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mTargetFile = Files.chooseFileToSave(new File(Preferences
+                    .getInstance().get(PKEY_LAST_WORKING_DIR, "/")),
+                    Texts.FILE_EXT_KEYSTORE, Texts.REGEX_KEYSTORE_FILES,
+                    Messages.getString(R.string.desc_keystore_files));
+            if (mTargetFile != null) {
+                mBtnChooseTargetFile.setText(mTargetFile.getName());
+                mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
+                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                        mTargetFile.getParentFile().getAbsolutePath());
+                mTextPassword.requestFocus();
+            } else {
+                mBtnChooseTargetFile.setText(Messages
+                        .getString(R.string.desc_save_as));
+                mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
+            }
+        }// actionPerformed()
+    };// mBtnChooseTargetFileActionListener
+
+    private final ActionListener mBtnGenerateKeyfileActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (validateFields())
+                genKeyfile();
+        }// actionPerformed()
+    };// mBtnGenerateKeyfileActionListener
+
 }

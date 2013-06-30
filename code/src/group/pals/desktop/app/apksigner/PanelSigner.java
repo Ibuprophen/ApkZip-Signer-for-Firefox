@@ -131,34 +131,7 @@ public class PanelSigner extends JPanel {
 
         mBtnChooseKeyfile = new JButton(
                 Messages.getString(R.string.desc_load_key_file));
-        mBtnChooseKeyfile.addActionListener(new ActionListener() {
-
-            Timer mTimer;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
-                        .get(PKEY_LAST_WORKING_DIR, "/")),
-                        Texts.REGEX_KEYSTORE_FILES, Messages
-                                .getString(R.string.desc_keystore_files));
-                if (mKeyfile != null) {
-                    mBtnChooseKeyfile.setText(mKeyfile.getName());
-                    mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
-                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                            mKeyfile.getParentFile().getAbsolutePath());
-
-                    if (mTimer != null)
-                        mTimer.cancel();
-                    mTimer = createAndScheduleKeyAliasesLoader();
-
-                    mTextPassword.requestFocus();
-                } else {
-                    mBtnChooseKeyfile.setText(Messages
-                            .getString(R.string.desc_load_key_file));
-                    mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
-                }
-            }// actionPerformed()
-        });
+        mBtnChooseKeyfile.addActionListener(mBtnChooseKeyfileActionListener);
         GridBagConstraints gbc_mBtnChooseKeyfile = new GridBagConstraints();
         gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 5, 3);
         gbc_mBtnChooseKeyfile.gridx = 0;
@@ -166,38 +139,9 @@ public class PanelSigner extends JPanel {
         add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
 
         mTextPassword = new JPasswordField();
-        mTextPassword.addPropertyChangeListener(new PropertyChangeListener() {
-
-            final String[] mActionNames = {
-                    JEditorPopupMenu.ACTION_NAME_CLEAR_AND_PASTE,
-                    JEditorPopupMenu.ACTION_NAME_CUT,
-                    JEditorPopupMenu.ACTION_NAME_DELETE,
-                    JEditorPopupMenu.ACTION_NAME_PASTE };
-            Timer mTimer;
-
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                for (String action : mActionNames) {
-                    if (action.equals(e.getPropertyName())) {
-                        if (mTimer != null)
-                            mTimer.cancel();
-                        mTimer = createAndScheduleKeyAliasesLoader();
-                        break;
-                    }
-                }
-            }// propertyChange()
-        });
-        mTextPassword.addKeyListener(new KeyAdapter() {
-
-            Timer mTimer;
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (mTimer != null)
-                    mTimer.cancel();
-                mTimer = createAndScheduleKeyAliasesLoader();
-            }// keyTyped()
-        });
+        mTextPassword
+                .addPropertyChangeListener(mTextPasswordPropertyChangeListener);
+        mTextPassword.addKeyListener(mTextPasswordKeyAdapter);
         mTextPassword.setHorizontalAlignment(SwingConstants.CENTER);
         mTextPassword.setBorder(new TitledBorder(null, Messages
                 .getString(R.string.password), TitledBorder.LEADING,
@@ -228,16 +172,7 @@ public class PanelSigner extends JPanel {
 
         mCbxAlias = new JComboBox();
         mCbxAlias.setMinimumSize(new Dimension(199, 24));
-        mCbxAlias.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (mCbxAlias.getSelectedItem() != null
-                        && !Texts.isEmpty(mCbxAlias.getSelectedItem()
-                                .toString()))
-                    mTextAliasPassword.requestFocus();
-            }// itemStateChanged()
-        });
+        mCbxAlias.addItemListener(mCbxAliasItemListener);
         GridBagConstraints gbc_mCbxAlias = new GridBagConstraints();
         gbc_mCbxAlias.gridx = 0;
         gbc_mCbxAlias.gridy = 0;
@@ -258,55 +193,8 @@ public class PanelSigner extends JPanel {
 
         mBtnChooseTargetFile = new JButton(
                 Messages.getString(R.string.desc_load_target_file));
-        mBtnChooseTargetFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String lastFileFilterId = Preferences.getInstance().get(
-                        PKEY_LAST_TARGET_FILE_FILTER_ID);
-                final JFileChooserEx fileChooser = new JFileChooserEx(new File(
-                        Preferences.getInstance().get(PKEY_LAST_WORKING_DIR,
-                                "/")));
-                fileChooser.setDialogTitle(Messages
-                        .getString(R.string.choose_file));
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-                for (int i = 0; i < TARGET_FILE_FILTERS.size(); i++) {
-                    FileFilter filter = TARGET_FILE_FILTERS.get(i);
-                    fileChooser.addChoosableFileFilter(filter);
-                    if ((Texts.isEmpty(lastFileFilterId) && i == 0)
-                            || Integer.toString(i).equals(lastFileFilterId))
-                        fileChooser.setFileFilter(filter);
-                }
-
-                switch (fileChooser.showOpenDialog(null)) {
-                case JFileChooser.APPROVE_OPTION: {
-                    mTargetFile = fileChooser.getSelectedFile();
-
-                    mBtnChooseTargetFile.setText(mTargetFile.getName());
-                    mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
-                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                            mTargetFile.getParentFile().getAbsolutePath());
-                    Preferences.getInstance().set(
-                            PKEY_LAST_TARGET_FILE_FILTER_ID,
-                            Integer.toString(TARGET_FILE_FILTERS
-                                    .indexOf(fileChooser.getFileFilter())));
-
-                    break;
-                }// APPROVE_OPTION
-
-                default: {
-                    mTargetFile = null;
-
-                    mBtnChooseTargetFile.setText(Messages
-                            .getString(R.string.desc_load_target_file));
-                    mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
-
-                    break;
-                }// default
-                }
-            }// actionPerformed()
-        });
+        mBtnChooseTargetFile
+                .addActionListener(mBtnChooseTargetFileActionListener);
         GridBagConstraints gbc_mBtnChooseApkFile = new GridBagConstraints();
         gbc_mBtnChooseApkFile.insets = new Insets(3, 3, 5, 3);
         gbc_mBtnChooseApkFile.gridx = 0;
@@ -314,14 +202,7 @@ public class PanelSigner extends JPanel {
         add(mBtnChooseTargetFile, gbc_mBtnChooseApkFile);
 
         mBtnSign = new JButton(Messages.getString(R.string.sign));
-        mBtnSign.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (validateFields())
-                    signTargetFile();
-            }// actionPerformed()
-        });
+        mBtnSign.addActionListener(mBtnSignActionListener);
         GridBagConstraints gbc_mBtnSign = new GridBagConstraints();
         gbc_mBtnSign.insets = new Insets(10, 10, 10, 10);
         gbc_mBtnSign.gridx = 0;
@@ -465,4 +346,141 @@ public class PanelSigner extends JPanel {
                     Messages.getString(R.string.pmsg_error_signing_file, e));
         }
     }// signTargetFile()
+
+    /*
+     * LISTENERS
+     */
+
+    private final ActionListener mBtnChooseKeyfileActionListener = new ActionListener() {
+
+        Timer mTimer;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mKeyfile = Files.chooseFile(
+                    new File(Preferences.getInstance().get(
+                            PKEY_LAST_WORKING_DIR, "/")),
+                    Texts.REGEX_KEYSTORE_FILES,
+                    Messages.getString(R.string.desc_keystore_files));
+            if (mKeyfile != null) {
+                mBtnChooseKeyfile.setText(mKeyfile.getName());
+                mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
+                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                        mKeyfile.getParentFile().getAbsolutePath());
+
+                if (mTimer != null)
+                    mTimer.cancel();
+                mTimer = createAndScheduleKeyAliasesLoader();
+
+                mTextPassword.requestFocus();
+            } else {
+                mBtnChooseKeyfile.setText(Messages
+                        .getString(R.string.desc_load_key_file));
+                mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
+            }
+        }// actionPerformed()
+    };// mBtnChooseKeyfileActionListener
+
+    private final PropertyChangeListener mTextPasswordPropertyChangeListener = new PropertyChangeListener() {
+
+        final String[] mActionNames = {
+                JEditorPopupMenu.ACTION_NAME_CLEAR_AND_PASTE,
+                JEditorPopupMenu.ACTION_NAME_CUT,
+                JEditorPopupMenu.ACTION_NAME_DELETE,
+                JEditorPopupMenu.ACTION_NAME_PASTE };
+        Timer mTimer;
+
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            for (String action : mActionNames) {
+                if (action.equals(e.getPropertyName())) {
+                    if (mTimer != null)
+                        mTimer.cancel();
+                    mTimer = createAndScheduleKeyAliasesLoader();
+                    break;
+                }
+            }
+        }// propertyChange()
+    };// mTextPasswordPropertyChangeListener
+
+    private final KeyAdapter mTextPasswordKeyAdapter = new KeyAdapter() {
+
+        Timer mTimer;
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            if (mTimer != null)
+                mTimer.cancel();
+            mTimer = createAndScheduleKeyAliasesLoader();
+        }// keyTyped()
+    };// mTextPasswordKeyAdapter
+
+    private final ItemListener mCbxAliasItemListener = new ItemListener() {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (mCbxAlias.getSelectedItem() != null
+                    && !Texts.isEmpty(mCbxAlias.getSelectedItem().toString()))
+                mTextAliasPassword.requestFocus();
+        }// itemStateChanged()
+    };// mCbxAliasItemListener
+
+    private final ActionListener mBtnChooseTargetFileActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final String lastFileFilterId = Preferences.getInstance().get(
+                    PKEY_LAST_TARGET_FILE_FILTER_ID);
+            final JFileChooserEx fileChooser = new JFileChooserEx(new File(
+                    Preferences.getInstance().get(PKEY_LAST_WORKING_DIR, "/")));
+            fileChooser
+                    .setDialogTitle(Messages.getString(R.string.choose_file));
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            for (int i = 0; i < TARGET_FILE_FILTERS.size(); i++) {
+                FileFilter filter = TARGET_FILE_FILTERS.get(i);
+                fileChooser.addChoosableFileFilter(filter);
+                if ((Texts.isEmpty(lastFileFilterId) && i == 0)
+                        || Integer.toString(i).equals(lastFileFilterId))
+                    fileChooser.setFileFilter(filter);
+            }
+
+            switch (fileChooser.showOpenDialog(null)) {
+            case JFileChooser.APPROVE_OPTION: {
+                mTargetFile = fileChooser.getSelectedFile();
+
+                mBtnChooseTargetFile.setText(mTargetFile.getName());
+                mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
+                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                        mTargetFile.getParentFile().getAbsolutePath());
+                Preferences.getInstance().set(
+                        PKEY_LAST_TARGET_FILE_FILTER_ID,
+                        Integer.toString(TARGET_FILE_FILTERS
+                                .indexOf(fileChooser.getFileFilter())));
+
+                break;
+            }// APPROVE_OPTION
+
+            default: {
+                mTargetFile = null;
+
+                mBtnChooseTargetFile.setText(Messages
+                        .getString(R.string.desc_load_target_file));
+                mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
+
+                break;
+            }// default
+            }
+        }// actionPerformed()
+    };// mBtnChooseTargetFileActionListener
+
+    private final ActionListener mBtnSignActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (validateFields())
+                signTargetFile();
+        }// actionPerformed()
+    };// mBtnSignActionListener
+
 }

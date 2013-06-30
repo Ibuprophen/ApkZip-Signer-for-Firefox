@@ -92,29 +92,11 @@ public class PanelApkAlignment extends JPanel {
 
         mBtnLoadApkFile = new JButton(
                 Messages.getString(R.string.desc_load_apk_file));
-        mBtnLoadApkFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mApkFile = Files.chooseFile(new File(Preferences.getInstance()
-                        .get(PKEY_LAST_WORKING_DIR, "/")),
-                        Texts.REGEX_APK_FILES, Messages
-                                .getString(R.string.desc_apk_files));
-                if (mApkFile != null) {
-                    mBtnLoadApkFile.setText(mApkFile.getName());
-                    mBtnLoadApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
-                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                            mApkFile.getParentFile().getAbsolutePath());
-                } else {
-                    mBtnLoadApkFile.setText(Messages
-                            .getString(R.string.desc_load_apk_file));
-                    mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);
-                }
-            }// actionPerformed()
-        });
+        mBtnLoadApkFile.addActionListener(mBtnLoadApkFileActionListener);
         panel_1.add(mBtnLoadApkFile);
 
         mBtnVerify = new JButton(Messages.getString(R.string.verify));
+        mBtnVerify.addActionListener(mBtnVerifyActionListener);
         panel_1.add(mBtnVerify);
 
         mBtnAlign = new JButton(Messages.getString(R.string.align));
@@ -156,6 +138,36 @@ public class PanelApkAlignment extends JPanel {
     /*
      * LISTENERS
      */
+
+    private final ActionListener mBtnLoadApkFileActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mApkFile = Files.chooseFile(
+                    new File(Preferences.getInstance().get(
+                            PKEY_LAST_WORKING_DIR, "/")),
+                    Texts.REGEX_APK_FILES,
+                    Messages.getString(R.string.desc_apk_files));
+            if (mApkFile != null) {
+                mBtnLoadApkFile.setText(mApkFile.getName());
+                mBtnLoadApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
+                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                        mApkFile.getParentFile().getAbsolutePath());
+            } else {
+                mBtnLoadApkFile.setText(Messages
+                        .getString(R.string.desc_load_apk_file));
+                mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);
+            }
+        }// actionPerformed()
+    };// mBtnLoadApkFileActionListener
+
+    private final ActionListener mBtnVerifyActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+        }// actionPerformed()
+    };// mBtnVerifyActionListener
 
     private final ActionListener mBtnAlignActionListener = new ActionListener() {
 

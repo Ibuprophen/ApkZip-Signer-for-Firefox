@@ -104,27 +104,7 @@ public class PanelKeyTools extends JPanel {
         mBtnChooseKeyfile = new JButton(
                 Messages.getString(R.string.desc_load_key_file));
         panel.add(mBtnChooseKeyfile);
-        mBtnChooseKeyfile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mKeyfile = Files.chooseFile(new File(Preferences.getInstance()
-                        .get(PKEY_LAST_WORKING_DIR, "/")),
-                        Texts.REGEX_KEYSTORE_FILES, Messages
-                                .getString(R.string.desc_keystore_files));
-                if (mKeyfile != null) {
-                    mBtnChooseKeyfile.setText(mKeyfile.getName());
-                    mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
-                    Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                            mKeyfile.getParentFile().getAbsolutePath());
-                    mTextPassword.requestFocus();
-                } else {
-                    mBtnChooseKeyfile.setText(Messages
-                            .getString(R.string.desc_load_key_file));
-                    mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
-                }
-            }// actionPerformed()
-        });
+        mBtnChooseKeyfile.addActionListener(mBtnChooseKeyfileActionListener);
 
         panel_1 = new JPanel();
         springLayout.putConstraint(SpringLayout.NORTH, panel_1, 3,
@@ -157,26 +137,7 @@ public class PanelKeyTools extends JPanel {
 
         mCbxKeystoreType = new JComboBox();
         lblNewLabel.setLabelFor(mCbxKeystoreType);
-        mCbxKeystoreType.setModel(new DefaultComboBoxModel(new Object[] {
-                new Object() {
-
-                    @Override
-                    public String toString() {
-                        return KeyTools.KEYSTORE_TYPE_JKS;
-                    }
-                }, new Object() {
-
-                    @Override
-                    public String toString() {
-                        return KeyTools.KEYSTORE_TYPE_JCEKS;
-                    }
-                }, new Object() {
-
-                    @Override
-                    public String toString() {
-                        return KeyTools.KEYSTORE_TYPE_PKCS12;
-                    }
-                } }));
+        mCbxKeystoreType.setModel(mCbxKeystoreTypeModel);
         panel_3.add(mCbxKeystoreType);
 
         springLayout.putConstraint(SpringLayout.WEST, panel_2, 3,
@@ -188,14 +149,7 @@ public class PanelKeyTools extends JPanel {
 
         mBtnListEntries = new JButton(Messages.getString(R.string.list_entries));
         panel_2.add(mBtnListEntries);
-        mBtnListEntries.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (validateFields())
-                    listEntries();
-            }// actionPerformed()
-        });
+        mBtnListEntries.addActionListener(mBtnListEntriesActionListener);
 
         mTextInfoScrollPane = new JScrollPane();
         springLayout.putConstraint(SpringLayout.NORTH, mTextInfoScrollPane, 5,
@@ -264,4 +218,63 @@ public class PanelKeyTools extends JPanel {
             }// run()
         });
     }// listEntries()
+
+    /*
+     * LISTENERS & DATA
+     */
+
+    private final ActionListener mBtnChooseKeyfileActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mKeyfile = Files.chooseFile(
+                    new File(Preferences.getInstance().get(
+                            PKEY_LAST_WORKING_DIR, "/")),
+                    Texts.REGEX_KEYSTORE_FILES,
+                    Messages.getString(R.string.desc_keystore_files));
+            if (mKeyfile != null) {
+                mBtnChooseKeyfile.setText(mKeyfile.getName());
+                mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
+                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                        mKeyfile.getParentFile().getAbsolutePath());
+                mTextPassword.requestFocus();
+            } else {
+                mBtnChooseKeyfile.setText(Messages
+                        .getString(R.string.desc_load_key_file));
+                mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
+            }
+        }// actionPerformed()
+    };// mBtnChooseKeyfileActionListener
+
+    private final ActionListener mBtnListEntriesActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (validateFields())
+                listEntries();
+        }// actionPerformed()
+    };// mBtnListEntriesActionListener
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static final DefaultComboBoxModel mCbxKeystoreTypeModel = new DefaultComboBoxModel(
+            new Object[] { new Object() {
+
+                @Override
+                public String toString() {
+                    return KeyTools.KEYSTORE_TYPE_JKS;
+                }
+            }, new Object() {
+
+                @Override
+                public String toString() {
+                    return KeyTools.KEYSTORE_TYPE_JCEKS;
+                }
+            }, new Object() {
+
+                @Override
+                public String toString() {
+                    return KeyTools.KEYSTORE_TYPE_PKCS12;
+                }
+            } });// mCbxKeystoreType
+
 }

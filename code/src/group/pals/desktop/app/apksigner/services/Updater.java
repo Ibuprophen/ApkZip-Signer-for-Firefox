@@ -114,6 +114,14 @@ public class Updater extends BaseThread {
      */
     public static final int MSG_UPDATE_FINISHED = 5;
 
+    /**
+     * Creates new instance.
+     */
+    public Updater() {
+        super();
+        setName(Messages.getString(R.string.updater_service));
+    }// Updater()
+
     @Override
     public void run() {
         try {

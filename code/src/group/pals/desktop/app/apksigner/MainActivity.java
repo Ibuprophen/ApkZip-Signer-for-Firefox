@@ -9,7 +9,9 @@ package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
+import group.pals.desktop.app.apksigner.services.BaseThread;
 import group.pals.desktop.app.apksigner.services.INotification;
+import group.pals.desktop.app.apksigner.services.ServiceManager;
 import group.pals.desktop.app.apksigner.services.Updater;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
@@ -29,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.AbstractAction;
@@ -207,21 +210,33 @@ public class MainActivity {
             public void windowClosing(WindowEvent e) {
                 Preferences.getInstance().store();
 
-                /*
-                 * In case the updater service finished while the confirmation
-                 * dialog is still active...
-                 */
-                final Updater updater = mUpdater;
-                if (updater != null && updater.isAlive()) {
-                    if (Dlg.confirmYesNo(null, null, Messages
-                            .getString(R.string.msg_app_updating_confirm_exit),
+                final List<BaseThread> activeThreads = ServiceManager
+                        .getActiveThreads();
+                if (activeThreads.isEmpty()) {
+                    mMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                } else {
+                    StringBuilder serviceNames = new StringBuilder();
+                    for (BaseThread thread : activeThreads)
+                        serviceNames.append(" - ").append(thread.getName())
+                                .append('\n');
+                    if (Dlg.confirmYesNo(
+                            null,
+                            null,
+                            String.format(
+                                    "%s\n\n%s\n%s",
+                                    Messages.getString(
+                                            activeThreads.size() > 1 ? R.string.pmsg_there_are_x_services_running
+                                                    : R.string.pmsg_there_is_x_service_running,
+                                            activeThreads.size()),
+                                    serviceNames,
+                                    Messages.getString(R.string.msg_do_you_want_to_exit)),
                             false)) {
-                        updater.interrupt();
+                        for (BaseThread thread : activeThreads)
+                            thread.interrupt();
                         mMainFrame
                                 .setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    }
-                } else
-                    mMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }// confirmYesNo()
+                }// There are active threads
             }// windowClosed()
         });
 
@@ -229,7 +244,7 @@ public class MainActivity {
          * START UPDATER SERVICE
          */
 
-        mUpdater = new Updater();
+        ServiceManager.registerThread(mUpdater = new Updater());
         mUpdater.addNotification(new INotification() {
 
             @Override

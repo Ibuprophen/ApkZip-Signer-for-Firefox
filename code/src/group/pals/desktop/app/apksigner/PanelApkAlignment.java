@@ -19,6 +19,7 @@ import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 import group.pals.desktop.app.apksigner.utils.ZipAlign;
 import group.pals.desktop.app.apksigner.utils.ZipAlign.ZipAligner;
+import group.pals.desktop.app.apksigner.utils.ZipAlign.ZipAlignmentVerifier;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -135,6 +136,21 @@ public class PanelApkAlignment extends JPanel {
             comp.setEnabled(enabled);
     }// enableCommands()
 
+    /**
+     * Validates all fields.
+     * 
+     * @return {@code true} or {@code false}.
+     */
+    private boolean validateFields() {
+        if (mApkFile == null || !mApkFile.isFile()) {
+            Dlg.showInfoMsg(null, null,
+                    Messages.getString(R.string.msg_load_apk_file));
+            return false;
+        }
+
+        return true;
+    }// validateFields()
+
     /*
      * LISTENERS
      */
@@ -165,7 +181,72 @@ public class PanelApkAlignment extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
+            if (!validateFields())
+                return;
+
+            mTextInfo.setText(null);
+            mProgressBar.setValue(0);
+            enableCommands(false);
+
+            final ZipAlignmentVerifier verifier = new ZipAlignmentVerifier(
+                    mApkFile);
+            ServiceManager.registerThread(verifier);
+            verifier.addNotification(new INotification() {
+
+                private long lastUpdate = 0;
+
+                @Override
+                public boolean onMessage(final Message msg) {
+                    switch (msg.id) {
+                    case ZipAligner.MSG_ERROR:
+                        mTextInfo.append("\n\n");
+                        mTextInfo.append(msg.detailedMessage);
+                        break;
+                    case ZipAligner.MSG_DONE:
+                        enableCommands(true);
+                        break;
+                    default:
+                        if (!Texts.isEmpty(msg.detailedMessage))
+                            mTextInfo.append(msg.detailedMessage);
+                        break;
+                    }
+
+                    if (msg.id == ZipAligner.MSG_INFO
+                            && msg.obj instanceof Double) {
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                mProgressBar.setValue((int) Math
+                                        .round((Double) msg.obj));
+                            }// run()
+                        });
+                    }// if
+
+                    if (System.currentTimeMillis() - lastUpdate >= UI.DELAY_TIME_UPDATING_UI
+                            || msg.id == ZipAligner.MSG_DONE) {
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                mTextInfoScrollPane.getHorizontalScrollBar()
+                                        .setValue(0);
+                                mTextInfoScrollPane.getVerticalScrollBar()
+                                        .setValue(
+                                                mTextInfoScrollPane
+                                                        .getVerticalScrollBar()
+                                                        .getMaximum());
+                            }// run()
+                        });
+
+                        lastUpdate = System.currentTimeMillis();
+                    }// if
+
+                    return false;
+                }// onMessage()
+            });
+
+            verifier.start();
         }// actionPerformed()
     };// mBtnVerifyActionListener
 
@@ -173,11 +254,8 @@ public class PanelApkAlignment extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (mApkFile == null || !mApkFile.isFile()) {
-                Dlg.showInfoMsg(null, null,
-                        Messages.getString(R.string.msg_load_apk_file));
+            if (!validateFields())
                 return;
-            }
 
             final File outputFile = new File(mApkFile.getParent()
                     + File.separator

@@ -319,7 +319,7 @@ public class ZipAlign {
             mOutputStream = new FilterOutputStreamEx(new FileOutputStream(
                     mOutputFile));
 
-            mProgress = 5;
+            sendNotification(MSG_INFO, mProgress = 5);
         }// openFiles()
 
         /**
@@ -352,7 +352,8 @@ public class ZipAlign {
 
                 final int inputEntryHeaderSize = ZIP_ENTRY_HEADER_LEN
                         + (entry.getExtra() != null ? entry.getExtra().length
-                                : 0) + entry.getName().getBytes("UTF-8").length;
+                                : 0)
+                        + entry.getName().getBytes(Texts.UTF8).length;
                 final long inputEntryDataOffset = mInputFileOffset
                         + inputEntryHeaderSize;
 
@@ -439,9 +440,9 @@ public class ZipAlign {
                 mOutputStream.writeInt(entry.getSize());
 
                 mOutputStream
-                        .writeShort(entry.getName().getBytes("UTF-8").length);
+                        .writeShort(entry.getName().getBytes(Texts.UTF8).length);
                 mOutputStream.writeShort(entry.getExtra().length);
-                mOutputStream.write(entry.getName().getBytes("UTF-8"));
+                mOutputStream.write(entry.getName().getBytes(Texts.UTF8));
                 mOutputStream.write(entry.getExtra(), 0,
                         entry.getExtra().length);
 
@@ -549,13 +550,13 @@ public class ZipAlign {
                 mOutputStream.writeInt(entry.getCompressedSize()); // compressed
                                                                    // size
                 mOutputStream.writeInt(entry.getSize()); // uncompressed size
-                final byte[] nameBytes = entry.getName().getBytes("UTF-8");
+                final byte[] nameBytes = entry.getName().getBytes(Texts.UTF8);
                 mOutputStream.writeShort(nameBytes.length);
                 mOutputStream.writeShort(entry.getExtra() != null ? entry
                         .getExtra().length - xentry.padding : 0);
                 final byte[] commentBytes;
                 if (entry.getComment() != null) {
-                    commentBytes = entry.getComment().getBytes("UTF-8");
+                    commentBytes = entry.getComment().getBytes(Texts.UTF8);
                     mOutputStream.writeShort(Math.min(commentBytes.length,
                             0xffff));
                 } else {
@@ -604,7 +605,7 @@ public class ZipAlign {
             mOutputStream.writeInt(centralDirOffset); // offset of central
             // directory
             if (mZipFile.getComment() != null) { // zip file comment
-                final byte[] bytes = mZipFile.getComment().getBytes("UTF-8");
+                final byte[] bytes = mZipFile.getComment().getBytes(Texts.UTF8);
                 mOutputStream.writeShort(bytes.length);
                 mOutputStream.write(bytes);
             } else {
@@ -646,10 +647,18 @@ public class ZipAlign {
      * @author Hai Bison
      * @since v1.6.9 beta
      */
-    public static class ZipAlignmentVerfier extends BaseThread {
+    public static class ZipAlignmentVerifier extends BaseThread {
 
         private final File mInputFile;
         private final int mAlignment;
+        private ZipFile mZipFile;
+        private RandomAccessFile mRafInput;
+
+        /**
+         * 0 >> 100
+         */
+        private double mProgress = 0;
+        private boolean mFoundBad = false;
 
         /**
          * Creates new instance with alignment value of
@@ -658,9 +667,9 @@ public class ZipAlign {
          * @param inputFile
          *            the input file to verify.
          */
-        public ZipAlignmentVerfier(File inputFile) {
+        public ZipAlignmentVerifier(File inputFile) {
             this(inputFile, DEFAULT_ALIGNMENT);
-        }// ZipAlignmentVerfier()
+        }// ZipAlignmentVerifier()
 
         /**
          * Creates new instance.
@@ -671,10 +680,173 @@ public class ZipAlign {
          *            the alignment, {@link ZipAlign#DEFAULT_ALIGNMENT} is
          *            highly recommended.
          */
-        public ZipAlignmentVerfier(File inputFile, int alignment) {
+        public ZipAlignmentVerifier(File inputFile, int alignment) {
             mInputFile = inputFile;
             mAlignment = alignment;
-        }// ZipAlignmentVerfier()
-    }// ZipAlignmentVerfier
+
+            setName(Messages.getString(R.string.apk_alignment_verifier_thread));
+        }// ZipAlignmentVerifier()
+
+        @Override
+        public void run() {
+            try {
+                openFiles();
+                verify();
+                closeFiles();
+            } catch (Exception e) {
+                sendNotification(
+                        MSG_ERROR,
+                        Texts.NULL,
+                        Messages.getString(R.string.pmsg_error_details,
+                                e.getMessage(), L.printStackTrace(e)));
+            }
+
+            sendNotification(MSG_DONE);
+        }// run()
+
+        /**
+         * Opens files.
+         * <p>
+         * This takes 5% of total.
+         * </p>
+         * 
+         * @throws IOException
+         */
+        private void openFiles() throws IOException {
+            sendNotification(MSG_INFO, Texts.NULL, String.format("%s\n\n",
+                    Messages.getString(
+                            R.string.pmsg_verifying_alignment_of_apk,
+                            mInputFile.getName(), mAlignment)));
+
+            mZipFile = new ZipFile(mInputFile);
+            mRafInput = new RandomAccessFile(mInputFile, "r");
+
+            sendNotification(MSG_INFO, mProgress = 5);
+        }// openFiles()
+
+        /**
+         * Verifies input file.
+         * <p>
+         * This takes 90% of total.
+         * </p>
+         * 
+         * @throws IOException
+         */
+        private void verify() throws IOException {
+            final int entryCount = mZipFile.size();
+            if (entryCount == 0) {
+                sendNotification(MSG_INFO, mProgress += 90);
+                return;
+            }
+
+            final Enumeration<? extends ZipEntry> entries = mZipFile.entries();
+            final float progress = 90f / entryCount;
+            long dataOffset = 0;
+
+            while (entries.hasMoreElements()) {
+                final ZipEntry entry = entries.nextElement();
+
+                /*
+                 * #28 is extra field length (2 bytes)
+                 */
+                mRafInput.seek(dataOffset + 28);
+                byte[] buf = new byte[2];
+                if (mRafInput.read(buf) != buf.length)
+                    throw new IOException("Reading extra field length failed");
+                /*
+                 * Fetches unsigned 16-bit value from byte array at specified
+                 * offset. The bytes are assumed to be in Intel (little-endian)
+                 * byte order.
+                 */
+                final int extraLen = (buf[0] & 0xff) | ((buf[1] & 0xff) << 8);
+
+                final int headerSize = ZIP_ENTRY_HEADER_LEN + extraLen
+                        + entry.getName().getBytes(Texts.UTF8).length;
+
+                if (entry.getMethod() != ZipEntry.STORED) {
+                    /*
+                     * The entry is compressed.
+                     */
+                    sendNotification(
+                            MSG_INFO,
+                            mProgress += progress,
+                            Texts.NULL,
+                            String.format("%,15d  %s  (%s - %s)\n", dataOffset
+                                    + headerSize, entry.getName(),
+                                    Messages.getString(R.string.ok),
+                                    Messages.getString(R.string.compressed)));
+                } else {
+                    /*
+                     * The entry is not compressed.
+                     */
+                    if ((dataOffset + headerSize) % mAlignment != 0) {
+                        sendNotification(
+                                MSG_INFO,
+                                mProgress += progress,
+                                Texts.NULL,
+                                String.format(
+                                        "%,15d  %s  (%s - %s)\n",
+                                        dataOffset + headerSize,
+                                        entry.getName(),
+                                        Messages.getString(R.string.BAD),
+                                        Texts.sizeToStr((dataOffset + headerSize)
+                                                % mAlignment)));
+                        mFoundBad = true;
+                    } else {
+                        sendNotification(
+                                MSG_INFO,
+                                mProgress += progress,
+                                Texts.NULL,
+                                String.format("%,15d  %s  (%s)\n", dataOffset
+                                        + headerSize, entry.getName(),
+                                        Messages.getString(R.string.ok)));
+                    }
+                }
+
+                int flags = entry.getMethod() == ZipEntry.STORED ? 0 : 1 << 3;
+                flags |= 1 << 11;
+                final long dataSize;
+                if ((flags & ZIP_ENTRY_USES_DATA_DESCR) != 0)
+                    dataSize = (entry.isDirectory() ? 0 : entry
+                            .getCompressedSize())
+                            + ZIP_ENTRY_DATA_DESCRIPTOR_LEN;
+                else
+                    dataSize = entry.isDirectory() ? 0 : entry
+                            .getCompressedSize();
+
+                L.d("\tsize = %,8d, compressed = %,8d, crc32 = %08x, data mHeaderOffset = %,8d >> %,8d"
+                        + " >> Entry '%s'", entry.getSize(),
+                        entry.getCompressedSize(), entry.getCrc(), dataOffset,
+                        dataOffset + dataSize, entry.getName());
+
+                dataOffset += headerSize + dataSize;
+            }// while
+        }// verify()
+
+        /**
+         * Closes source files.
+         * <p>
+         * This takes 5% of total.
+         * </p>
+         * 
+         * @throws IOException
+         */
+        private void closeFiles() throws IOException {
+            mZipFile.close();
+            mRafInput.close();
+
+            sendNotification(
+                    MSG_INFO,
+                    mProgress = 100,
+                    Texts.NULL,
+                    String.format(
+                            "\n%s",
+                            mFoundBad ? Messages
+                                    .getString(R.string.verification_failed)
+                                    : Messages
+                                            .getString(R.string.verification_succesful)));
+        }// closeFiles()
+
+    }// ZipAlignmentVerifier
 
 }

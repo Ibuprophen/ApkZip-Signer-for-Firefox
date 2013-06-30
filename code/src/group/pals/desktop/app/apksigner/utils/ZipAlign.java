@@ -712,6 +712,7 @@ public class ZipAlign {
                 openFiles();
                 verify();
             } catch (Exception e) {
+                mFoundBad = true;
                 sendNotification(
                         MSG_ERROR,
                         Texts.NULL,
@@ -721,6 +722,7 @@ public class ZipAlign {
                 try {
                     closeFiles();
                 } catch (Exception e) {
+                    mFoundBad = true;
                     sendNotification(
                             MSG_ERROR,
                             Texts.NULL,
@@ -776,8 +778,10 @@ public class ZipAlign {
 
                 mRafInput.seek(dataOffset + ZIP_ENTRY_OFFSET_EXTRA_LEN);
                 final byte[] buf = new byte[ZIP_ENTRY_FIELD_EXTRA_LEN_SIZE];
-                if (mRafInput.read(buf) != buf.length)
+                if (mRafInput.read(buf) != buf.length) {
+                    mFoundBad = true;
                     throw new IOException("Reading extra field length failed");
+                }
                 /*
                  * Fetches unsigned 16-bit value from byte array at specified
                  * offset. The bytes are assumed to be in Intel (little-endian)

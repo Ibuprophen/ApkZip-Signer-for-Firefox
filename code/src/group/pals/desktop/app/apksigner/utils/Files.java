@@ -11,6 +11,7 @@ import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.regex.Pattern;
 
@@ -37,6 +38,27 @@ public class Files {
         return name == null ? null : name.replaceAll("[\\\\/?%*:|\"<>]+", "")
                 .trim();
     }// fixFilename()
+
+    /**
+     * Appends {@code suffix} to {@code fileName}, makes sure the {@code suffix}
+     * is placed before the file's extension (if there is one).
+     * 
+     * @param fileName
+     *            the original file name.
+     * @param suffix
+     *            the suffix.
+     * @return the new file name.
+     */
+    public static String appendFilename(String fileName, String suffix) {
+        if (fileName.matches("(?si).+\\.[^ \t]+")) {
+            final int iPeriod = fileName.lastIndexOf(KeyEvent.VK_PERIOD);
+            return fileName.substring(0, iPeriod) + suffix
+                    + (char) KeyEvent.VK_PERIOD
+                    + fileName.substring(iPeriod + 1);
+        }
+
+        return fileName + suffix;
+    }// appendFilename()
 
     /**
      * Opens a dialog to choose a file.
@@ -300,9 +322,8 @@ public class Files {
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE, null, userOptions,
                             userOptions[1]);
-                    if (usrOption != 0) {
+                    if (usrOption != 0)
                         return;
-                    }
                 }
                 break;
             }// case SAVE_DIALOG

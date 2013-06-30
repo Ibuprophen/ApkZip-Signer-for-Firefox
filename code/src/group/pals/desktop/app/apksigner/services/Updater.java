@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner.services;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.utils.Files;
+import group.pals.desktop.app.apksigner.utils.Hasher;
 import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Network;
 import group.pals.desktop.app.apksigner.utils.SpeedTracker;
@@ -216,7 +217,7 @@ public class Updater extends BaseThread {
              * Check SHA-1.
              */
             try {
-                MessageDigest md = MessageDigest.getInstance(Texts.SHA1);
+                MessageDigest md = MessageDigest.getInstance(Hasher.SHA1);
 
                 final byte[] buf = new byte[FILE_BUFFER];
                 int read;
@@ -377,7 +378,7 @@ public class Updater extends BaseThread {
                 }, 999, 999);
                 try {
                     final MessageDigest md = MessageDigest
-                            .getInstance(Texts.SHA1);
+                            .getInstance(Hasher.SHA1);
                     byte[] buf = new byte[FILE_BUFFER];
                     int read;
                     long tick = System.nanoTime();

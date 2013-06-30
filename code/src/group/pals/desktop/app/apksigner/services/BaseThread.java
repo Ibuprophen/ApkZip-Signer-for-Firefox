@@ -8,6 +8,7 @@
 package group.pals.desktop.app.apksigner.services;
 
 import group.pals.desktop.app.apksigner.services.INotification.Message;
+import group.pals.desktop.app.apksigner.utils.Texts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +116,7 @@ public class BaseThread extends Thread {
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId, Object obj, String shortMsg) {
-        return sendNotification(msgId, obj, shortMsg, null);
+        return sendNotification(msgId, obj, shortMsg, Texts.NULL);
     }// sendNotification()
 
     /**
@@ -129,7 +130,7 @@ public class BaseThread extends Thread {
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId, Object obj) {
-        return sendNotification(msgId, obj, null);
+        return sendNotification(msgId, obj, Texts.NULL);
     }// sendNotification()
 
     /**
@@ -160,7 +161,7 @@ public class BaseThread extends Thread {
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId, String shortMsg) {
-        return sendNotification(msgId, null, shortMsg, null);
+        return sendNotification(msgId, null, shortMsg, Texts.NULL);
     }// sendNotification()
 
     /**
@@ -172,7 +173,7 @@ public class BaseThread extends Thread {
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId) {
-        return sendNotification(msgId, null);
+        return sendNotification(msgId, Texts.NULL);
     }// sendNotification()
 
 }

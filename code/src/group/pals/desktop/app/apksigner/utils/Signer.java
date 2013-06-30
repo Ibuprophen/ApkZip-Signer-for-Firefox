@@ -10,7 +10,6 @@ package group.pals.desktop.app.apksigner.utils;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,7 @@ import java.util.regex.Matcher;
 public class Signer {
 
     /**
-     * Used to append to newly signed APK's file name.
+     * Used to append to newly signed target's file name.
      */
     private static final String SIGNED = "SIGNED";
 
@@ -98,17 +97,13 @@ public class Signer {
         if (result.isEmpty()) {
             final String oldName = targetFile.getName();
             String newName;
-            if (oldName.matches("(?si).*?unsigned.+")) {
+            if (oldName.matches("(?si).*?unsigned.+"))
                 newName = oldName.replaceFirst("(?si)unsigned",
                         Matcher.quoteReplacement(SIGNED));
-            } else if (oldName.matches("(?si).+\\.(apk|jar|zip)$")) {
-                final int iPeriod = oldName.lastIndexOf(KeyEvent.VK_PERIOD);
-                newName = oldName.substring(0, iPeriod) + '_' + SIGNED
-                        + (char) KeyEvent.VK_PERIOD
-                        + oldName.substring(iPeriod + 1);
-            } else {
+            else if (oldName.matches("(?si).+\\.(apk|jar|zip)$"))
+                newName = Files.appendFilename(oldName, '_' + SIGNED);
+            else
                 newName = String.format("%s_%s", oldName, SIGNED);
-            }
 
             if (targetFile.renameTo(new File(targetFile.getParent()
                     + File.separator + newName)))

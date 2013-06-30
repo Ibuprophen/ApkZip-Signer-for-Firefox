@@ -9,11 +9,16 @@ package group.pals.desktop.app.apksigner;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
+import group.pals.desktop.app.apksigner.services.INotification;
+import group.pals.desktop.app.apksigner.services.ServiceManager;
+import group.pals.desktop.app.apksigner.ui.Dlg;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
+import group.pals.desktop.app.apksigner.utils.ZipAlign;
+import group.pals.desktop.app.apksigner.utils.ZipAlign.ZipAligner;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -23,11 +28,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 /**
  * APK alignment tools.
@@ -66,9 +73,9 @@ public class PanelApkAlignment extends JPanel {
     private JButton mBtnLoadApkFile;
     private JButton mBtnVerify;
     private JButton mBtnAlign;
-    private JScrollPane scrollPane;
     private JTextArea mTextInfo;
     private JProgressBar mProgressBar;
+    private JScrollPane mTextInfoScrollPane;
 
     /**
      * Create the panel.
@@ -111,6 +118,7 @@ public class PanelApkAlignment extends JPanel {
         panel_1.add(mBtnVerify);
 
         mBtnAlign = new JButton(Messages.getString(R.string.align));
+        mBtnAlign.addActionListener(mBtnAlignActionListener);
         panel_1.add(mBtnAlign);
 
         JSeparator separator = new JSeparator();
@@ -119,8 +127,8 @@ public class PanelApkAlignment extends JPanel {
         mProgressBar = new JProgressBar();
         panel.add(mProgressBar, BorderLayout.SOUTH);
 
-        scrollPane = new JScrollPane();
-        add(scrollPane, BorderLayout.CENTER);
+        mTextInfoScrollPane = new JScrollPane();
+        add(mTextInfoScrollPane, BorderLayout.CENTER);
 
         mTextInfo = new JTextArea();
         mTextInfo.setTabSize(UI.TEXT_COMPONENT_TAB_SIZE);
@@ -128,9 +136,96 @@ public class PanelApkAlignment extends JPanel {
         mTextInfo.setFont(new Font("Monospaced",
                 mTextInfo.getFont().getStyle(), mTextInfo.getFont().getSize()));
         mTextInfo.setEditable(false);
-        scrollPane.setViewportView(mTextInfo);
+        mTextInfoScrollPane.setViewportView(mTextInfo);
 
         JEditorPopupMenu.apply(this);
     }// PanelApkAlignment()
+
+    /**
+     * Enables/ disables commands.
+     * 
+     * @param enabled
+     *            {@code true} or {@code false}.
+     */
+    private void enableCommands(boolean enabled) {
+        for (JComponent comp : new JComponent[] { mBtnLoadApkFile, mBtnVerify,
+                mBtnAlign })
+            comp.setEnabled(enabled);
+    }// enableCommands()
+
+    /*
+     * LISTENERS
+     */
+
+    private final ActionListener mBtnAlignActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (mApkFile == null || !mApkFile.isFile()) {
+                Dlg.showInfoMsg(null, null,
+                        Messages.getString(R.string.msg_load_apk_file));
+                return;
+            }
+
+            final File outputFile = new File(mApkFile.getParent()
+                    + File.separator
+                    + Files.appendFilename(mApkFile.getName(), "_"
+                            + ZipAlign.ALIGNED));
+            if (outputFile.isFile()) {
+                if (!Dlg.confirmYesNo(null, null, Messages.getString(
+                        R.string.pmsg_override_file, outputFile.getName()),
+                        false))
+                    return;
+            }
+
+            mTextInfo.setText(null);
+            mProgressBar.setValue(0);
+            enableCommands(false);
+
+            final ZipAligner zipAligner = new ZipAligner(mApkFile, outputFile);
+            ServiceManager.registerThread(zipAligner);
+            zipAligner.addNotification(new INotification() {
+
+                @Override
+                public boolean onMessage(final Message msg) {
+                    switch (msg.id) {
+                    case ZipAligner.MSG_ERROR:
+                        mTextInfo.append("\n\n");
+                        mTextInfo.append(msg.detailedMessage);
+                        break;
+                    case ZipAligner.MSG_DONE:
+                        enableCommands(true);
+                        break;
+                    default:
+                        mTextInfo.append(msg.detailedMessage);
+                        break;
+                    }
+
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (msg.id == ZipAligner.MSG_INFO
+                                    && msg.obj instanceof Double)
+                                mProgressBar.setValue((int) Math
+                                        .round((Double) msg.obj));
+
+                            mTextInfoScrollPane.getHorizontalScrollBar()
+                                    .setValue(0);
+                            mTextInfoScrollPane.getVerticalScrollBar()
+                                    .setValue(
+                                            mTextInfoScrollPane
+                                                    .getVerticalScrollBar()
+                                                    .getMaximum());
+                        }// run()
+                    });
+
+                    return false;
+                }// onMessage()
+            });
+
+            zipAligner.start();
+        }// actionPerformed()
+    };// mBtnAlignActionListener
 
 }

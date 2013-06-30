@@ -205,8 +205,8 @@ public class KeyTools {
                             result.append(String.format(
                                     "\t\t%s:\n",
                                     Messages.getString(R.string.certificate_fingerprints)));
-                            for (String algorithm : new String[] { Texts.MD5,
-                                    Texts.SHA1, Texts.SHA256 }) {
+                            for (String algorithm : new String[] { Hasher.MD5,
+                                    Hasher.SHA1, Hasher.SHA256 }) {
                                 String hash = Hasher
                                         .calcHash(algorithm,
                                                 certChain[i].getEncoded(), true)

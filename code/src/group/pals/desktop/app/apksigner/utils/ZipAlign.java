@@ -114,6 +114,11 @@ public class ZipAlign {
     public static final int DEFAULT_ALIGNMENT = 4;
 
     /**
+     * Used to append to newly aligned APK's file name.
+     */
+    public static final String ALIGNED = "ALIGNED";
+
+    /**
      * Private helper class.
      * 
      * @author Hai Bison
@@ -271,6 +276,11 @@ public class ZipAlign {
         private long mInputFileOffset = 0;
         private int mTotalPadding = 0;
 
+        /**
+         * 0 >> 100
+         */
+        private double mProgress = 0;
+
         @Override
         public void run() {
             try {
@@ -279,9 +289,10 @@ public class ZipAlign {
                 buildCentralDirectory();
                 closeFiles();
             } catch (Exception e) {
+                mOutputFile.delete();
                 sendNotification(
                         MSG_ERROR,
-                        null,
+                        Texts.NULL,
                         Messages.getString(R.string.pmsg_error_details,
                                 e.getMessage(), L.printStackTrace(e)));
             }
@@ -291,22 +302,43 @@ public class ZipAlign {
 
         /**
          * Opens files.
+         * <p>
+         * This takes 10% of total.
+         * </p>
          * 
          * @throws IOException
          */
         private void openFiles() throws IOException {
+            sendNotification(MSG_INFO, Texts.NULL, String.format(
+                    "%s\n\n",
+                    Messages.getString(R.string.pmsg_aligning_apk,
+                            mInputFile.getName(), mAlignment)));
+
             mZipFile = new ZipFile(mInputFile);
             mRafInput = new RandomAccessFile(mInputFile, "r");
             mOutputStream = new FilterOutputStreamEx(new FileOutputStream(
                     mOutputFile));
+
+            mProgress = 10;
         }// openFiles()
 
         /**
          * Copies all entries, aligning them if needed.
+         * <p>
+         * This takes 80% of total.
+         * </p>
          * 
          * @throws IOException
          */
         private void copyAllEntries() throws IOException {
+            final int entryCount = mZipFile.size();
+            if (entryCount == 0) {
+                sendNotification(MSG_INFO, mProgress += 80);
+                return;
+            }
+
+            final float progress = 80f / entryCount;
+
             final Enumeration<? extends ZipEntry> entries = mZipFile.entries();
             while (entries.hasMoreElements()) {
                 final ZipEntry entry = entries.nextElement();
@@ -324,12 +356,19 @@ public class ZipAlign {
                 final long inputEntryDataOffset = mInputFileOffset
                         + inputEntryHeaderSize;
 
-                int padding = 0;
+                sendNotification(
+                        MSG_INFO,
+                        Texts.NULL,
+                        String.format("%,15d  %s", inputEntryDataOffset,
+                                entry.getName()));
+
+                final int padding;
 
                 if (entry.getMethod() != ZipEntry.STORED) {
                     /*
                      * The entry is compressed, copy it without padding.
                      */
+                    padding = 0;
                 } else {
                     /*
                      * Copy the entry, adjusting as required. We assume that the
@@ -442,11 +481,28 @@ public class ZipAlign {
                 }// if
 
                 mInputFileOffset += sizeToCopy;
+
+                if (padding == 0)
+                    sendNotification(MSG_INFO, mProgress += progress,
+                            Texts.NULL, String.format("  (%s, %s)\n",
+                                    Messages.getString(R.string.compressed),
+                                    Messages.getString(R.string.passed)));
+                else
+                    sendNotification(
+                            MSG_INFO,
+                            mProgress += progress,
+                            Texts.NULL,
+                            String.format("  (%s, %s)\n",
+                                    Messages.getString(R.string.aligned),
+                                    Texts.sizeToStr(padding)));
             }// while
         }// copyAllEntries()
 
         /**
          * Builds central directory.
+         * <p>
+         * This takes 5% of total.
+         * </p>
          * 
          * @throws IOException
          */
@@ -552,10 +608,15 @@ public class ZipAlign {
             } else {
                 mOutputStream.writeShort(0);
             }
+
+            sendNotification(MSG_INFO, mProgress += 5);
         }// buildCentralDirectory()
 
         /**
          * Closes all files.
+         * <p>
+         * This takes 5% of total.
+         * </p>
          * 
          * @throws IOException
          */
@@ -569,6 +630,11 @@ public class ZipAlign {
                     mOutputStream.close();
                 }
             }
+
+            sendNotification(MSG_INFO, mProgress = 100, Texts.NULL,
+                    String.format("\n%s",
+                            Messages.getString(R.string.pmsg_alignment_done,
+                                    mOutputFile.getName())));
         }// closeFiles()
     }// ZipAligner
 

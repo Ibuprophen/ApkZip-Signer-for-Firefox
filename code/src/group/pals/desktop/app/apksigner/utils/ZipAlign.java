@@ -303,7 +303,7 @@ public class ZipAlign {
         /**
          * Opens files.
          * <p>
-         * This takes 10% of total.
+         * This takes 5% of total.
          * </p>
          * 
          * @throws IOException
@@ -319,7 +319,7 @@ public class ZipAlign {
             mOutputStream = new FilterOutputStreamEx(new FileOutputStream(
                     mOutputFile));
 
-            mProgress = 10;
+            mProgress = 5;
         }// openFiles()
 
         /**
@@ -501,7 +501,7 @@ public class ZipAlign {
         /**
          * Builds central directory.
          * <p>
-         * This takes 5% of total.
+         * This takes 10% of total.
          * </p>
          * 
          * @throws IOException
@@ -579,6 +579,8 @@ public class ZipAlign {
                             Math.min(commentBytes.length, 0xffff));
             }// for xentry
 
+            sendNotification(MSG_INFO, mProgress += 5);
+
             /*
              * Write the end of central directory.
              */
@@ -637,5 +639,42 @@ public class ZipAlign {
                                     mOutputFile.getName())));
         }// closeFiles()
     }// ZipAligner
+
+    /**
+     * The ZIP alignment verifier.
+     * 
+     * @author Hai Bison
+     * @since v1.6.9 beta
+     */
+    public static class ZipAlignmentVerfier extends BaseThread {
+
+        private final File mInputFile;
+        private final int mAlignment;
+
+        /**
+         * Creates new instance with alignment value of
+         * {@link ZipAlign#DEFAULT_ALIGNMENT}.
+         * 
+         * @param inputFile
+         *            the input file to verify.
+         */
+        public ZipAlignmentVerfier(File inputFile) {
+            this(inputFile, DEFAULT_ALIGNMENT);
+        }// ZipAlignmentVerfier()
+
+        /**
+         * Creates new instance.
+         * 
+         * @param input
+         *            the input file.
+         * @param alignment
+         *            the alignment, {@link ZipAlign#DEFAULT_ALIGNMENT} is
+         *            highly recommended.
+         */
+        public ZipAlignmentVerfier(File inputFile, int alignment) {
+            mInputFile = inputFile;
+            mAlignment = alignment;
+        }// ZipAlignmentVerfier()
+    }// ZipAlignmentVerfier
 
 }

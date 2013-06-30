@@ -198,6 +198,8 @@ public class PanelApkAlignment extends JPanel {
             ServiceManager.registerThread(zipAligner);
             zipAligner.addNotification(new INotification() {
 
+                private long lastUpdate = 0;
+
                 @Override
                 public boolean onMessage(final Message msg) {
                     switch (msg.id) {
@@ -209,28 +211,41 @@ public class PanelApkAlignment extends JPanel {
                         enableCommands(true);
                         break;
                     default:
-                        mTextInfo.append(msg.detailedMessage);
+                        if (!Texts.isEmpty(msg.detailedMessage))
+                            mTextInfo.append(msg.detailedMessage);
                         break;
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
+                    if (msg.id == ZipAligner.MSG_INFO
+                            && msg.obj instanceof Double) {
+                        SwingUtilities.invokeLater(new Runnable() {
 
-                        @Override
-                        public void run() {
-                            if (msg.id == ZipAligner.MSG_INFO
-                                    && msg.obj instanceof Double)
+                            @Override
+                            public void run() {
                                 mProgressBar.setValue((int) Math
                                         .round((Double) msg.obj));
+                            }// run()
+                        });
+                    }// if
 
-                            mTextInfoScrollPane.getHorizontalScrollBar()
-                                    .setValue(0);
-                            mTextInfoScrollPane.getVerticalScrollBar()
-                                    .setValue(
-                                            mTextInfoScrollPane
-                                                    .getVerticalScrollBar()
-                                                    .getMaximum());
-                        }// run()
-                    });
+                    if (System.currentTimeMillis() - lastUpdate >= UI.DELAY_TIME_UPDATING_UI
+                            || msg.id == ZipAligner.MSG_DONE) {
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                mTextInfoScrollPane.getHorizontalScrollBar()
+                                        .setValue(0);
+                                mTextInfoScrollPane.getVerticalScrollBar()
+                                        .setValue(
+                                                mTextInfoScrollPane
+                                                        .getVerticalScrollBar()
+                                                        .getMaximum());
+                            }// run()
+                        });
+
+                        lastUpdate = System.currentTimeMillis();
+                    }// if
 
                     return false;
                 }// onMessage()

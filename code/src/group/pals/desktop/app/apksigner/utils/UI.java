@@ -33,6 +33,11 @@ public class UI {
     public static final int TEXT_COMPONENT_TAB_SIZE = 4;
 
     /**
+     * Delay time between updates of UI, in milliseconds.
+     */
+    public static final int DELAY_TIME_UPDATING_UI = 499;
+
+    /**
      * Moves the {@code window} to center of the screen, also resizes it by
      * ratio 16:9 :-) (in a multiplication with {@code luckyNo}).
      * 

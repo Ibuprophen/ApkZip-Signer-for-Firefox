@@ -48,7 +48,13 @@ public class Messages {
 
     private static final String BUNDLE_NAME = "group.pals.desktop.app.apksigner.i18n.messages"; //$NON-NLS-1$
     private static final ResourceBundle RESOURCE_BUNDLE = loadBundle();
+    private static ResourceBundle mDefaultResourceBundle;
 
+    /**
+     * Loads message resource.
+     * 
+     * @return the resource bundle which contains message resource.
+     */
     private static ResourceBundle loadBundle() {
         String localeTag = Preferences.getInstance().getLocaleTag();
         if (!AVAILABLE_LOCALES.containsKey(localeTag)) {
@@ -59,27 +65,37 @@ public class Messages {
                 Locale.forLanguageTag(localeTag));
     }// loadBundle()
 
-    public static String getString(String key) {
+    /**
+     * Gets a string for current locale by its key. If it's not available for
+     * current locale, the default string in built-in locale (English) will
+     * return.
+     * 
+     * @param key
+     *            the string's key.
+     * @return the string, or {@code null} if not found.
+     */
+    private static String getString(String key) {
         try {
             ResourceBundle bundle = Beans.isDesignTime() ? loadBundle()
                     : RESOURCE_BUNDLE;
-            return bundle.getString(key);
-        } catch (MissingResourceException e) {
-            return "!" + key + "!";
-        }
-    }// getString()
+            if (bundle.containsKey(key))
+                return bundle.getString(key);
 
-    /**
-     * Gets a formattable string and format it with {@code args}.
-     * 
-     * @param key
-     *            the key.
-     * @param args
-     *            the format arguments.
-     * @return the formatted string.
-     */
-    public static String getString(String key, Object... args) {
-        return String.format(getString(key), args);
+            /*
+             * Try to find the `key` in default locale.
+             */
+            if (!new Locale(DEFAULT_LOCALE).getLanguage().equals(
+                    bundle.getLocale().getLanguage())) {
+                if (mDefaultResourceBundle == null)
+                    mDefaultResourceBundle = ResourceBundle.getBundle(
+                            BUNDLE_NAME, Locale.forLanguageTag(DEFAULT_LOCALE));
+                return mDefaultResourceBundle.getString(key);
+            }
+
+            return null;
+        } catch (MissingResourceException e) {
+            return null;
+        }
     }// getString()
 
     /**
@@ -88,7 +104,8 @@ public class Messages {
     private static final Map<Integer, String> MAP_IDS = new HashMap<Integer, String>();
 
     /**
-     * Gets a string by its resource ID.
+     * Gets a string by its resource ID. If it's not available for current
+     * locale, the default string in built-in locale (English) will return.
      * 
      * @param resId
      *            the resource ID.

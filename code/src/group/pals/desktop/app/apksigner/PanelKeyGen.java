@@ -203,7 +203,7 @@ public class PanelKeyGen extends JPanel {
                 .getString(R.string.confirm), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextAliasPasswordConfirm = new GridBagConstraints();
-        gbc_mTextAliasPasswordConfirm.insets = new Insets(5, 5, 5, 0);
+        gbc_mTextAliasPasswordConfirm.insets = new Insets(3, 3, 3, 3);
         gbc_mTextAliasPasswordConfirm.fill = GridBagConstraints.HORIZONTAL;
         gbc_mTextAliasPasswordConfirm.gridx = 1;
         gbc_mTextAliasPasswordConfirm.gridy = 3;
@@ -240,7 +240,7 @@ public class PanelKeyGen extends JPanel {
                 .getString(R.string.organizational_unit), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextOrganizationalUnit = new GridBagConstraints();
-        gbc_mTextOrganizationalUnit.insets = new Insets(5, 5, 5, 0);
+        gbc_mTextOrganizationalUnit.insets = new Insets(3, 3, 3, 3);
         gbc_mTextOrganizationalUnit.fill = GridBagConstraints.HORIZONTAL;
         gbc_mTextOrganizationalUnit.gridx = 1;
         gbc_mTextOrganizationalUnit.gridy = 5;
@@ -266,7 +266,7 @@ public class PanelKeyGen extends JPanel {
                 .getString(R.string.city_or_locality), TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         GridBagConstraints gbc_mTextCityOrLocality = new GridBagConstraints();
-        gbc_mTextCityOrLocality.insets = new Insets(5, 5, 5, 0);
+        gbc_mTextCityOrLocality.insets = new Insets(3, 3, 3, 3);
         gbc_mTextCityOrLocality.fill = GridBagConstraints.HORIZONTAL;
         gbc_mTextCityOrLocality.gridx = 1;
         gbc_mTextCityOrLocality.gridy = 6;

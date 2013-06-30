@@ -7,7 +7,9 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
-import group.pals.desktop.app.apksigner.services.INotification;
+import group.pals.desktop.app.apksigner.i18n.Messages;
+import group.pals.desktop.app.apksigner.i18n.R;
+import group.pals.desktop.app.apksigner.services.BaseThread;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -224,7 +226,7 @@ public class ZipAlign {
      * @author Hai Bison
      * @since v1.6.9 beta
      */
-    public static class ZipAligner extends Thread {
+    public static class ZipAligner extends BaseThread {
 
         private final File mInputFile;
         private final int mAlignment;
@@ -258,31 +260,9 @@ public class ZipAlign {
             mInputFile = input;
             mAlignment = alignment;
             mOutputFile = output;
+
+            setName(Messages.getString(R.string.apk_aligner_thread));
         }// ZipAligner()
-
-        private INotification mNotification;
-
-        /**
-         * Sets notification.
-         * 
-         * @param notification
-         *            the notification.
-         * @return the instance of this object, to allow chaining multiple calls
-         *         into a single statement.
-         */
-        public ZipAligner setNotification(INotification notification) {
-            mNotification = notification;
-            return this;
-        }// setNotification()
-
-        /**
-         * Gets notification.
-         * 
-         * @return the notification.
-         */
-        public INotification getNotification() {
-            return mNotification;
-        }// getNotification()
 
         private ZipFile mZipFile;
         private RandomAccessFile mRafInput;
@@ -299,10 +279,14 @@ public class ZipAlign {
                 buildCentralDirectory();
                 closeFiles();
             } catch (Exception e) {
-                /*
-                 * TODO
-                 */
+                sendNotification(
+                        MSG_ERROR,
+                        null,
+                        Messages.getString(R.string.pmsg_error_details,
+                                e.getMessage(), L.printStackTrace(e)));
             }
+
+            sendNotification(MSG_DONE);
         }// run()
 
         /**

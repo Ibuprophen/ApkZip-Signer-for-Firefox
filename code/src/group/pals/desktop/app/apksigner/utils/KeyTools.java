@@ -13,8 +13,6 @@ import group.pals.desktop.app.apksigner.i18n.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -223,14 +221,7 @@ public class KeyTools {
                 inputStream.close();
             }
         } catch (Exception e) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            try {
-                e.printStackTrace(printWriter);
-                result.append(stringWriter.toString());
-            } finally {
-                printWriter.close();
-            }
+            result.append(L.printStackTrace(e));
         }
 
         return result;

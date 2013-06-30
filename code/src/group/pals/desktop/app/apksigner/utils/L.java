@@ -7,6 +7,9 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * Logger.
  * 
@@ -90,4 +93,22 @@ public class L {
     public static void e(String msg, Object... args) {
         err("ERROR", msg, args);
     }// e()
+
+    /**
+     * Prints the stack trace.
+     * 
+     * @param t
+     *            an exception.
+     * @return the stack trace.
+     */
+    public static CharSequence printStackTrace(Throwable t) {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        try {
+            t.printStackTrace(printWriter);
+            return stringWriter.toString();
+        } finally {
+            printWriter.close();
+        }
+    }// printStackTrace()
 }

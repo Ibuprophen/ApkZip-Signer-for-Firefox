@@ -26,6 +26,21 @@ public class BaseThread extends Thread {
     public static final int MSG_DONE = 0;
 
     /**
+     * There is an information.
+     */
+    public static final int MSG_INFO = -1;
+
+    /**
+     * A warning.
+     */
+    public static final int MSG_WARNING = -2;
+
+    /**
+     * An error.
+     */
+    public static final int MSG_ERROR = -3;
+
+    /**
      * All client notifications.
      */
     private final List<INotification> mNotifications = new ArrayList<INotification>();
@@ -60,6 +75,8 @@ public class BaseThread extends Thread {
      * 
      * @param msgId
      *            the message ID.
+     * @param obj
+     *            your arbitrary object.
      * @param shortMsg
      *            the short message.
      * @param detailedMsg
@@ -67,13 +84,14 @@ public class BaseThread extends Thread {
      * @return {@code true} if any of the listeners handled the message,
      *         {@code false} otherwise.
      */
-    protected boolean sendNotification(int msgId, String shortMsg,
+    protected boolean sendNotification(int msgId, Object obj, String shortMsg,
             String detailedMsg) {
         if (mNotifications.isEmpty())
             return false;
 
         Message msg = new Message();
         msg.id = msgId;
+        msg.obj = obj;
         msg.shortMessage = shortMsg;
         msg.detailedMessage = detailedMsg;
 
@@ -89,13 +107,60 @@ public class BaseThread extends Thread {
      * 
      * @param msgId
      *            the message ID.
+     * @param obj
+     *            your arbitrary object.
+     * @param shortMsg
+     *            the short message.
+     * @return {@code true} if any of the listeners handled the message,
+     *         {@code false} otherwise.
+     */
+    protected boolean sendNotification(int msgId, Object obj, String shortMsg) {
+        return sendNotification(msgId, obj, shortMsg, null);
+    }// sendNotification()
+
+    /**
+     * Sends notification to all listeners.
+     * 
+     * @param msgId
+     *            the message ID.
+     * @param obj
+     *            your arbitrary object.
+     * @return {@code true} if any of the listeners handled the message,
+     *         {@code false} otherwise.
+     */
+    protected boolean sendNotification(int msgId, Object obj) {
+        return sendNotification(msgId, obj, null);
+    }// sendNotification()
+
+    /**
+     * Sends notification to all listeners.
+     * 
+     * @param msgId
+     *            the message ID.
+     * @param shortMsg
+     *            the short message.
+     * @param detailedMsg
+     *            the detailed message.
+     * @return {@code true} if any of the listeners handled the message,
+     *         {@code false} otherwise.
+     */
+    protected boolean sendNotification(int msgId, String shortMsg,
+            String detailedMsg) {
+        return sendNotification(msgId, null, shortMsg, detailedMsg);
+    }// sendNotification()
+
+    /**
+     * Sends notification to all listeners.
+     * 
+     * @param msgId
+     *            the message ID.
      * @param shortMsg
      *            the short message.
      * @return {@code true} if any of the listeners handled the message,
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId, String shortMsg) {
-        return sendNotification(msgId, shortMsg, null);
+        return sendNotification(msgId, null, shortMsg, null);
     }// sendNotification()
 
     /**
@@ -107,7 +172,7 @@ public class BaseThread extends Thread {
      *         {@code false} otherwise.
      */
     protected boolean sendNotification(int msgId) {
-        return sendNotification(msgId, null, null);
+        return sendNotification(msgId, null);
     }// sendNotification()
 
 }

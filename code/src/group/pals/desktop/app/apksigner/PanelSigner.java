@@ -328,7 +328,7 @@ public class PanelSigner extends JPanel {
         gbc_mBtnSign.gridy = 5;
         add(mBtnSign, gbc_mBtnSign);
 
-        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
+        JEditorPopupMenu.apply(this);
     }// PanelSigner()
 
     /**

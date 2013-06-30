@@ -9,7 +9,6 @@ package group.pals.desktop.app.apksigner.services;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
-import group.pals.desktop.app.apksigner.services.INotification.Message;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Network;
@@ -40,7 +39,7 @@ import java.util.regex.Pattern;
  * @author Hai Bison
  * @since v1.6 beta
  */
-public class Updater extends Thread {
+public class Updater extends BaseThread {
 
     private static final String CLASSNAME = Updater.class.getName();
 
@@ -91,11 +90,6 @@ public class Updater extends Thread {
     private static final int FILE_BUFFER = 99 * 1024;
 
     /**
-     * The service has done its jobs.
-     */
-    public static final int MSG_DONE = 0;
-
-    /**
      * There is a local update file available.
      */
     public static final int MSG_LOCAL_UPDATE_AVAILABLE = 1;
@@ -119,55 +113,6 @@ public class Updater extends Thread {
      * The update finished.
      */
     public static final int MSG_UPDATE_FINISHED = 5;
-
-    private INotification mNotification;
-
-    /**
-     * Sets the notification.
-     * 
-     * @param notification
-     *            the notification to set.
-     * @return the instance of this service, to allow chaining multiple calls
-     *         into a single statement.
-     */
-    public Updater setNotification(INotification notification) {
-        mNotification = notification;
-        return this;
-    }// setNotification()
-
-    /**
-     * Gets the notification.
-     * 
-     * @return the notification.
-     */
-    public INotification getNotification() {
-        return mNotification;
-    }// getNotification()
-
-    /**
-     * Sends notification to listener.
-     * 
-     * @param msgId
-     *            the message ID.
-     * @param shortMsg
-     *            the short message.
-     * @param detailedMsg
-     *            the detailed message.
-     * @return the result of {@link INotification#onMessage(Message)}, or
-     *         {@code false} if there is no listener.
-     */
-    private boolean sendNotification(int msgId, String shortMsg,
-            String detailedMsg) {
-        if (getNotification() == null)
-            return false;
-
-        Message msg = new Message();
-        msg.id = msgId;
-        msg.shortMessage = shortMsg;
-        msg.detailedMessage = detailedMsg;
-
-        return getNotification().onMessage(msg);
-    }// sendNotification()
 
     @Override
     public void run() {
@@ -203,7 +148,7 @@ public class Updater extends Thread {
              */
             downloadUpdateFile(updateProperties);
         } finally {
-            sendNotification(MSG_DONE, null, null);
+            sendNotification(MSG_DONE);
         }
     }// run()
 
@@ -411,17 +356,14 @@ public class Updater extends Thread {
                                                     * 100f / contentLength),
                                             Texts.sizeToStr(totalRead[0]),
                                             Texts.sizeToStr(speedTracker
-                                                    .calcInstantaneousSpeed())),
-                                    null);
+                                                    .calcInstantaneousSpeed())));
                         }// contentLength > 0
                         else {
-                            sendNotification(
-                                    MSG_UPDATE_PROGRESS,
-                                    Messages.getString(R.string.pmsg_updating,
-                                            Texts.sizeToStr(totalRead[0]),
-                                            Texts.sizeToStr(speedTracker
-                                                    .calcInstantaneousSpeed())),
-                                    null);
+                            sendNotification(MSG_UPDATE_PROGRESS, Messages
+                                    .getString(R.string.pmsg_updating, Texts
+                                            .sizeToStr(totalRead[0]), Texts
+                                            .sizeToStr(speedTracker
+                                                    .calcInstantaneousSpeed())));
                         }// //contentLength == 0
                     }// run()
                 }, 999, 999);

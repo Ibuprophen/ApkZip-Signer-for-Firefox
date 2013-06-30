@@ -299,7 +299,7 @@ public class PanelKeyGen extends JPanel {
         add(mTextCountryCode, gbc_mTextCountryCode);
         mTextCountryCode.setColumns(10);
 
-        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
+        JEditorPopupMenu.apply(this);
     }// PanelKeyGen()
 
     /**

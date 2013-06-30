@@ -137,7 +137,7 @@ public class MainActivity {
         }
 
         UI.setWindowCenterScreen(mMainFrame, 59);
-        UI.setEditorPopupMenu(mMainFrame, new JEditorPopupMenu());
+        JEditorPopupMenu.apply(mMainFrame);
 
         /*
          * INITIALIZE CONTROLS
@@ -182,11 +182,24 @@ public class MainActivity {
         if (jdkPath != null && jdkPath.isDirectory())
             mTextJdkPath.setText(jdkPath.getAbsolutePath());
 
-        mTabbedPane.add(Messages.getString(R.string.key_generator),
-                new PanelKeyGen());
-        mTabbedPane.add(Messages.getString(R.string.signer), new PanelSigner());
-        mTabbedPane.add(Messages.getString(R.string.key_tools),
-                new PanelKeyTools());
+        /*
+         * Initialization of panels are slow. So we should put this block into a
+         * `Runnable`.
+         */
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                mTabbedPane.add(Messages.getString(R.string.key_generator),
+                        new PanelKeyGen());
+                mTabbedPane.add(Messages.getString(R.string.signer),
+                        new PanelSigner());
+                mTabbedPane.add(Messages.getString(R.string.apk_alignment),
+                        new PanelApkAlignment());
+                mTabbedPane.add(Messages.getString(R.string.key_tools),
+                        new PanelKeyTools());
+            }// run()
+        });
 
         mMainFrame.addWindowListener(new WindowAdapter() {
 
@@ -217,7 +230,7 @@ public class MainActivity {
          */
 
         mUpdater = new Updater();
-        mUpdater.setNotification(new INotification() {
+        mUpdater.addNotification(new INotification() {
 
             @Override
             public boolean onMessage(final Message msg) {

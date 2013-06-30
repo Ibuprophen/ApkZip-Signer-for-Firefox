@@ -12,6 +12,7 @@ import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.utils.Texts;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
@@ -37,6 +38,39 @@ public class JEditorPopupMenu extends JPopupMenu {
     private static final long serialVersionUID = 5578010916105435603L;
 
     private static final String CLASSNAME = JEditorPopupMenu.class.getName();
+
+    private static JEditorPopupMenu mInstance;
+
+    /**
+     * Gets the global instance of the popup menu.
+     * 
+     * @return the global instance of the popup menu.
+     */
+    public static JEditorPopupMenu getInstance() {
+        return mInstance != null ? mInstance
+                : (mInstance = new JEditorPopupMenu());
+    }// getInstance()
+
+    /**
+     * Applies the global instance of this menu to all sub components of
+     * {@code container} which are {@link JTextComponent}.
+     * <p>
+     * You can also obtain the global instance of this menu via
+     * {@link #getInstance()}.
+     * </p>
+     * 
+     * @param container
+     *            the container.
+     */
+    public static void apply(Container container) {
+        for (int i = 0; i < container.getComponentCount(); i++) {
+            final Component comp = container.getComponent(i);
+            if (comp instanceof JTextComponent)
+                ((JTextComponent) comp).setComponentPopupMenu(getInstance());
+            else if (comp instanceof Container)
+                apply((Container) comp);
+        }
+    }// setEditorPopupMenu()
 
     /**
      * Action CUT.

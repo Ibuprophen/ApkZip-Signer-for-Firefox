@@ -213,10 +213,10 @@ public class PanelKeyTools extends JPanel {
         mTextInfo.setFont(new Font("Monospaced",
                 mTextInfo.getFont().getStyle(), mTextInfo.getFont().getSize()));
         mTextInfo.setMargin(new Insets(9, 9, 9, 9));
-        mTextInfo.setTabSize(4);
+        mTextInfo.setTabSize(UI.TEXT_COMPONENT_TAB_SIZE);
         mTextInfoScrollPane.setViewportView(mTextInfo);
 
-        UI.setEditorPopupMenu(this, new JEditorPopupMenu());
+        JEditorPopupMenu.apply(this);
     }// PanelKeyTools()
 
     /**

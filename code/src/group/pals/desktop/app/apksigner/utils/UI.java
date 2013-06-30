@@ -7,13 +7,7 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
-import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
-
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-
-import javax.swing.text.JTextComponent;
 
 /**
  * UI utilities.
@@ -32,6 +26,11 @@ public class UI {
      * The colour of waiting command.
      */
     public static final Color COLOUR_WAITING_CMD = Color.cyan;
+
+    /**
+     * Default tab size for text component.
+     */
+    public static final int TEXT_COMPONENT_TAB_SIZE = 4;
 
     /**
      * Moves the {@code window} to center of the screen, also resizes it by
@@ -56,23 +55,4 @@ public class UI {
                 (dim.height - window.getHeight()) / 2);
     }// setWindowCenterScreen()
 
-    /**
-     * Sets a {@link JEditorPopupMenu} to all sub {@link JTextComponent}'s of
-     * {@code container}.
-     * 
-     * @param container
-     *            the container.
-     * @param epm
-     *            the editor popup menu.
-     */
-    public static void setEditorPopupMenu(Container container,
-            JEditorPopupMenu epm) {
-        for (int i = 0; i < container.getComponentCount(); i++) {
-            final Component comp = container.getComponent(i);
-            if (comp instanceof JTextComponent)
-                ((JTextComponent) comp).setComponentPopupMenu(epm);
-            else if (comp instanceof Container)
-                setEditorPopupMenu((Container) comp, epm);
-        }
-    }// setEditorPopupMenu()
 }

@@ -29,6 +29,11 @@ public interface INotification {
         public int id;
 
         /**
+         * The arbitrary object.
+         */
+        public Object obj;
+
+        /**
          * The short message.
          */
         public String shortMessage;

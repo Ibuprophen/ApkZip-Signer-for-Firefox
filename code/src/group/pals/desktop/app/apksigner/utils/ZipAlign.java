@@ -128,6 +128,11 @@ public class ZipAlign {
     public static final String ALIGNED = "ALIGNED";
 
     /**
+     * File reading/ writing buffer.
+     */
+    private static final int FILE_BUFFER = 99 * 1024;
+
+    /**
      * Private helper class.
      * 
      * @author Hai Bison
@@ -489,14 +494,13 @@ public class ZipAlign {
                 if (sizeToCopy > 0) {
                     mRafInput.seek(mInputFileOffset);
 
-                    final int bufSize = 1024;
                     long totalSizeCopied = 0;
-                    final byte[] buf = new byte[bufSize];
+                    final byte[] buf = new byte[FILE_BUFFER];
                     while (totalSizeCopied < sizeToCopy) {
                         int read = mRafInput.read(
                                 buf,
                                 0,
-                                (int) Math.min(bufSize, sizeToCopy
+                                (int) Math.min(FILE_BUFFER, sizeToCopy
                                         - totalSizeCopied));
                         if (read <= 0)
                             break;

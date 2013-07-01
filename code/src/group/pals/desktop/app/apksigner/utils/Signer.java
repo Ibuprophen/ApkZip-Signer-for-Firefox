@@ -25,6 +25,11 @@ public class Signer {
     /**
      * Used to append to newly signed target's file name.
      */
+    private static final String SIGNED = "SIGNED";
+
+    /**
+     * Used to append to newly signed target's file name.
+     */
     private static final String SIGNED_UNALIGNED = "SIGNED_UNALIGNED";
 
     /**
@@ -97,13 +102,20 @@ public class Signer {
         if (result.isEmpty()) {
             final String oldName = targetFile.getName();
             String newName;
-            if (oldName.matches("(?si).*?unsigned.+"))
-                newName = oldName.replaceFirst("(?si)unsigned",
-                        Matcher.quoteReplacement(SIGNED_UNALIGNED));
-            else if (oldName.matches("(?si).+\\.(apk|jar|zip)$"))
+            if (oldName.matches("(?si).*?unsigned.+")) {
+                if (oldName.matches(Texts.REGEX_APK_FILES))
+                    newName = oldName.replaceFirst("(?si)unsigned",
+                            Matcher.quoteReplacement(SIGNED_UNALIGNED));
+                else
+                    newName = oldName.replaceFirst("(?si)unsigned",
+                            Matcher.quoteReplacement(SIGNED));
+            } else if (oldName.matches(Texts.REGEX_APK_FILES))
                 newName = Files.appendFilename(oldName, '_' + SIGNED_UNALIGNED);
+            else if (oldName.matches(Texts.REGEX_JAR_FILES)
+                    || oldName.matches(Texts.REGEX_ZIP_FILES))
+                newName = Files.appendFilename(oldName, '_' + SIGNED);
             else
-                newName = String.format("%s_%s", oldName, SIGNED_UNALIGNED);
+                newName = String.format("%s_%s", oldName, SIGNED);
 
             if (targetFile.renameTo(new File(targetFile.getParent()
                     + File.separator + newName)))

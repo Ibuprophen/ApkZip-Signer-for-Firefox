@@ -207,11 +207,11 @@ public class PanelApkAlignment extends JPanel {
                 @Override
                 public boolean onMessage(final Message msg) {
                     switch (msg.id) {
-                    case ZipAligner.MSG_ERROR:
+                    case ZipAlignmentVerifier.MSG_ERROR:
                         mTextInfo.append("\n\n");
                         mTextInfo.append(msg.detailedMessage);
                         break;
-                    case ZipAligner.MSG_DONE:
+                    case ZipAlignmentVerifier.MSG_DONE:
                         enableCommands(true);
                         break;
                     default:
@@ -220,7 +220,7 @@ public class PanelApkAlignment extends JPanel {
                         break;
                     }
 
-                    if (msg.id == ZipAligner.MSG_INFO
+                    if (msg.id == ZipAlignmentVerifier.MSG_INFO
                             && msg.obj instanceof Double) {
                         SwingUtilities.invokeLater(new Runnable() {
 
@@ -233,7 +233,7 @@ public class PanelApkAlignment extends JPanel {
                     }// if
 
                     if (System.currentTimeMillis() - lastUpdate >= UI.DELAY_TIME_UPDATING_UI
-                            || msg.id == ZipAligner.MSG_DONE) {
+                            || msg.id == ZipAlignmentVerifier.MSG_DONE) {
                         SwingUtilities.invokeLater(new Runnable() {
 
                             @Override

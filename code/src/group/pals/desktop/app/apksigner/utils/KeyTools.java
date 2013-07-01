@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner.utils;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -120,7 +121,8 @@ public class KeyTools {
         final StringBuilder result = new StringBuilder();
 
         try {
-            InputStream inputStream = new FileInputStream(keyFile);
+            final InputStream inputStream = new BufferedInputStream(
+                    new FileInputStream(keyFile), Files.FILE_BUFFER);
             try {
                 KeyStore keyStore = KeyStore.getInstance(keystoreType);
                 keyStore.load(inputStream, storepass);
@@ -243,7 +245,8 @@ public class KeyTools {
         final List<String> result = new ArrayList<String>();
 
         try {
-            InputStream inputStream = new FileInputStream(keyFile);
+            final InputStream inputStream = new BufferedInputStream(
+                    new FileInputStream(keyFile), Files.FILE_BUFFER);
             try {
                 KeyStore keyStore = KeyStore.getInstance(keystoreType);
                 keyStore.load(inputStream, storepass);

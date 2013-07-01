@@ -28,6 +28,11 @@ import javax.swing.filechooser.FileFilter;
 public class Files {
 
     /**
+     * File handling buffer (reading, writing...). {@code 32 KiB}.
+     */
+    public static final int FILE_BUFFER = 32 * 1024;
+
+    /**
      * Removes invalid characters...
      * 
      * @param name

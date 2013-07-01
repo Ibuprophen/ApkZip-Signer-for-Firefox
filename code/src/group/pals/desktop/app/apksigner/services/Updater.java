@@ -17,6 +17,8 @@ import group.pals.desktop.app.apksigner.utils.SpeedTracker;
 import group.pals.desktop.app.apksigner.utils.Sys;
 import group.pals.desktop.app.apksigner.utils.Texts;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -84,11 +86,6 @@ public class Updater extends BaseThread {
      */
     public static final int MAX_UPDATE_FILESIZE = Sys.DEBUG ? Integer.MAX_VALUE
             : 9 * 1024 * 1024;
-
-    /**
-     * File handling buffer (reading, writing...).
-     */
-    private static final int FILE_BUFFER = 99 * 1024;
 
     /**
      * There is a local update file available.
@@ -219,9 +216,10 @@ public class Updater extends BaseThread {
             try {
                 MessageDigest md = MessageDigest.getInstance(Hasher.SHA1);
 
-                final byte[] buf = new byte[FILE_BUFFER];
+                final byte[] buf = new byte[Files.FILE_BUFFER];
                 int read;
-                FileInputStream inputStream = new FileInputStream(file);
+                final InputStream inputStream = new BufferedInputStream(
+                        new FileInputStream(file), Files.FILE_BUFFER);
                 try {
                     while ((read = inputStream.read(buf)) > 0) {
                         if (isInterrupted())
@@ -347,8 +345,8 @@ public class Updater extends BaseThread {
                  * START DOWNLOADING
                  */
 
-                final OutputStream outputStream = new FileOutputStream(
-                        targetFile);
+                final OutputStream outputStream = new BufferedOutputStream(
+                        new FileOutputStream(targetFile), Files.FILE_BUFFER);
                 final long[] totalRead = { 0 };
                 final SpeedTracker speedTracker = new SpeedTracker();
                 final Timer timer = new Timer();
@@ -379,7 +377,7 @@ public class Updater extends BaseThread {
                 try {
                     final MessageDigest md = MessageDigest
                             .getInstance(Hasher.SHA1);
-                    byte[] buf = new byte[FILE_BUFFER];
+                    byte[] buf = new byte[Files.FILE_BUFFER];
                     int read;
                     long tick = System.nanoTime();
                     while ((read = inputStream.read(buf)) > 0) {

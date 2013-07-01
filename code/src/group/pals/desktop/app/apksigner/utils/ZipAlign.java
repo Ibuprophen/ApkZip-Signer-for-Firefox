@@ -11,6 +11,7 @@ import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.services.BaseThread;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
@@ -126,11 +127,6 @@ public class ZipAlign {
      * Used to append to newly aligned APK's file name.
      */
     public static final String ALIGNED = "ALIGNED";
-
-    /**
-     * File reading/ writing buffer.
-     */
-    private static final int FILE_BUFFER = 99 * 1024;
 
     /**
      * Private helper class.
@@ -346,8 +342,8 @@ public class ZipAlign {
 
             mZipFile = new ZipFile(mInputFile);
             mRafInput = new RandomAccessFile(mInputFile, "r");
-            mOutputStream = new FilterOutputStreamEx(new FileOutputStream(
-                    mOutputFile));
+            mOutputStream = new FilterOutputStreamEx(new BufferedOutputStream(
+                    new FileOutputStream(mOutputFile), Files.FILE_BUFFER));
 
             sendNotification(MSG_INFO, mProgress = 5);
         }// openFiles()
@@ -495,12 +491,12 @@ public class ZipAlign {
                     mRafInput.seek(mInputFileOffset);
 
                     long totalSizeCopied = 0;
-                    final byte[] buf = new byte[FILE_BUFFER];
+                    final byte[] buf = new byte[Files.FILE_BUFFER];
                     while (totalSizeCopied < sizeToCopy) {
                         int read = mRafInput.read(
                                 buf,
                                 0,
-                                (int) Math.min(FILE_BUFFER, sizeToCopy
+                                (int) Math.min(Files.FILE_BUFFER, sizeToCopy
                                         - totalSizeCopied));
                         if (read <= 0)
                             break;
@@ -646,6 +642,8 @@ public class ZipAlign {
             } else {
                 mOutputStream.writeShort(0);
             }
+
+            mOutputStream.flush();
 
             sendNotification(MSG_INFO, mProgress += 5);
         }// buildCentralDirectory()

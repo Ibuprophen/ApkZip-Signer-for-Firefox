@@ -241,10 +241,7 @@ public class PanelApkAlignment extends JPanel {
                                 mTextInfoScrollPane.getHorizontalScrollBar()
                                         .setValue(0);
                                 mTextInfoScrollPane.getVerticalScrollBar()
-                                        .setValue(
-                                                mTextInfoScrollPane
-                                                        .getVerticalScrollBar()
-                                                        .getMaximum());
+                                        .setValue(Integer.MAX_VALUE);
                             }// run()
                         });
 
@@ -339,10 +336,7 @@ public class PanelApkAlignment extends JPanel {
                                 mTextInfoScrollPane.getHorizontalScrollBar()
                                         .setValue(0);
                                 mTextInfoScrollPane.getVerticalScrollBar()
-                                        .setValue(
-                                                mTextInfoScrollPane
-                                                        .getVerticalScrollBar()
-                                                        .getMaximum());
+                                        .setValue(Integer.MAX_VALUE);
                             }// run()
                         });
 

@@ -294,8 +294,10 @@ public class ZipAlign {
         public void run() {
             try {
                 openFiles();
-                copyAllEntries();
-                buildCentralDirectory();
+                if (!isInterrupted())
+                    copyAllEntries();
+                if (!isInterrupted())
+                    buildCentralDirectory();
             } catch (Exception e) {
                 mOutputFile.delete();
                 sendNotification(
@@ -315,6 +317,10 @@ public class ZipAlign {
                                     e.getMessage(), L.printStackTrace(e)));
                 }
             }
+
+            if (isInterrupted())
+                sendNotification(MSG_ERROR, Texts.NULL,
+                        Messages.getString(R.string.cancelled));
 
             sendNotification(MSG_DONE);
         }// run()
@@ -359,7 +365,7 @@ public class ZipAlign {
             final float progress = 80f / entryCount;
 
             final Enumeration<? extends ZipEntry> entries = mZipFile.entries();
-            while (entries.hasMoreElements()) {
+            while (entries.hasMoreElements() && !isInterrupted()) {
                 final ZipEntry entry = entries.nextElement();
 
                 int flags = entry.getMethod() == ZipEntry.STORED ? 0 : 1 << 3;
@@ -532,6 +538,9 @@ public class ZipAlign {
             L.d("\tWriting Central Directory at %,d", centralDirOffset);
 
             for (XEntry xentry : mXEntries) {
+                if (isInterrupted())
+                    break;
+
                 /*
                  * Write entry.
                  */
@@ -598,6 +607,9 @@ public class ZipAlign {
                     mOutputStream.write(commentBytes, 0,
                             Math.min(commentBytes.length, 0xffff));
             }// for xentry
+
+            if (isInterrupted())
+                return;
 
             sendNotification(MSG_INFO, mProgress += 5);
 
@@ -710,7 +722,8 @@ public class ZipAlign {
         public void run() {
             try {
                 openFiles();
-                verify();
+                if (!isInterrupted())
+                    verify();
             } catch (Exception e) {
                 mFoundBad = true;
                 sendNotification(
@@ -730,6 +743,10 @@ public class ZipAlign {
                                     e.getMessage(), L.printStackTrace(e)));
                 }
             }
+
+            if (isInterrupted())
+                sendNotification(MSG_ERROR, Texts.NULL,
+                        Messages.getString(R.string.cancelled));
 
             sendNotification(MSG_DONE);
         }// run()
@@ -773,7 +790,7 @@ public class ZipAlign {
             final float progress = 90f / entryCount;
             long dataOffset = 0;
 
-            while (entries.hasMoreElements()) {
+            while (entries.hasMoreElements() && !isInterrupted()) {
                 final ZipEntry entry = entries.nextElement();
 
                 mRafInput.seek(dataOffset + ZIP_ENTRY_OFFSET_EXTRA_LEN);

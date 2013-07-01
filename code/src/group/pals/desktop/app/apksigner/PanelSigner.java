@@ -295,8 +295,7 @@ public class PanelSigner extends JPanel {
             return false;
         }
 
-        if (mCbxAlias.getSelectedIndex() < 0
-                || Texts.isEmpty(String.valueOf(mCbxAlias.getSelectedItem()))) {
+        if (Texts.isEmpty(String.valueOf(mCbxAlias.getSelectedItem()))) {
             Dlg.showErrMsg(Messages.getString(R.string.msg_alias_is_empty));
             mCbxAlias.requestFocus();
             return false;

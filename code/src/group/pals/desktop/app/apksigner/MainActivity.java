@@ -400,7 +400,7 @@ public class MainActivity {
                             + " - All of our friends, who have been contributing to this project.\n"
                             + " - The authors of external modules/ libraries which are used in this project.\n"
                             + "\n"
-                            + "We hope the project is always useful for everyone.\n"
+                            + "We hope this project will be always useful for everyone.\n"
                             + "\n"
                             + "\n"
                             + "*** CREDITS ***\n"

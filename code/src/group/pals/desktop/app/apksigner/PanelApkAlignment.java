@@ -12,6 +12,7 @@ import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.services.INotification;
 import group.pals.desktop.app.apksigner.services.ServiceManager;
 import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.FileDrop;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Preferences;
@@ -29,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.regex.Matcher;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -95,6 +97,9 @@ public class PanelApkAlignment extends JPanel {
         mBtnLoadApkFile = new JButton(
                 Messages.getString(R.string.desc_load_apk_file));
         mBtnLoadApkFile.addActionListener(mBtnLoadApkFileActionListener);
+        new FileDrop(mBtnLoadApkFile, BorderFactory.createCompoundBorder(
+                UI.BORDER_FILE_DROP, mBtnLoadApkFile.getBorder()),
+                mBtnLoadApkFileFileDropListener);
         panel_1.add(mBtnLoadApkFile);
 
         mBtnVerify = new JButton(Messages.getString(R.string.verify));
@@ -159,31 +164,50 @@ public class PanelApkAlignment extends JPanel {
         return true;
     }// validateFields()
 
+    /**
+     * Sets the APK file.
+     * 
+     * @param file
+     *            the APK file, can be {@code null}.
+     */
+    private void setApkFile(File file) {
+        if (file != null && file.isFile()) {
+            mApkFile = file;
+            mBtnLoadApkFile.setText(mApkFile.getName());
+            mBtnLoadApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
+            Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                    mApkFile.getParentFile().getAbsolutePath());
+        } else {
+            mApkFile = null;
+            mBtnLoadApkFile.setText(Messages
+                    .getString(R.string.desc_load_apk_file));
+            mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);
+        }
+
+        resetOutputFields();
+    }// setApkFile()
+
     /*
      * LISTENERS
      */
+
+    private final FileDrop.Listener mBtnLoadApkFileFileDropListener = new FileDrop.Listener() {
+
+        @Override
+        public void onFilesDropped(File[] files) {
+            setApkFile(files[0]);
+        }// onFilesDropped()
+    };// mBtnLoadApkFileFileDropListener
 
     private final ActionListener mBtnLoadApkFileActionListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            mApkFile = Files.chooseFile(
+            setApkFile(Files.chooseFile(
                     new File(Preferences.getInstance().get(
                             PKEY_LAST_WORKING_DIR, "/")),
                     Texts.REGEX_APK_FILES,
-                    Messages.getString(R.string.desc_apk_files));
-            if (mApkFile != null) {
-                mBtnLoadApkFile.setText(mApkFile.getName());
-                mBtnLoadApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
-                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                        mApkFile.getParentFile().getAbsolutePath());
-            } else {
-                mBtnLoadApkFile.setText(Messages
-                        .getString(R.string.desc_load_apk_file));
-                mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);
-            }
-
-            resetOutputFields();
+                    Messages.getString(R.string.desc_apk_files)));
         }// actionPerformed()
     };// mBtnLoadApkFileActionListener
 

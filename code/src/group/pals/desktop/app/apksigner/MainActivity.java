@@ -14,6 +14,7 @@ import group.pals.desktop.app.apksigner.services.INotification;
 import group.pals.desktop.app.apksigner.services.ServiceManager;
 import group.pals.desktop.app.apksigner.services.Updater;
 import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.FileDrop;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.L;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -182,6 +184,11 @@ public class MainActivity {
         File jdkPath = Preferences.getInstance().getJdkPath();
         if (jdkPath != null && jdkPath.isDirectory())
             mTextJdkPath.setText(jdkPath.getAbsolutePath());
+        new FileDrop(mTextJdkPath, BorderFactory.createTitledBorder(
+                UI.BORDER_FILE_DROP,
+                Messages.getString(R.string.desc_jdk_path),
+                TitledBorder.LEADING, TitledBorder.TOP, null,
+                UI.COLOUR_BORDER_FILE_DROP), mTextJdkPathFileDropListener);
 
         /*
          * Initialization of panels are slow. So we should put this block into a
@@ -287,6 +294,24 @@ public class MainActivity {
                 SpringLayout.EAST, mMainFrame.getContentPane());
         mMainFrame.getContentPane().add(mTabbedPane);
     }// initialize()
+
+    /**
+     * Sets the JDK path.
+     * 
+     * @param file
+     *            the JDK path to set.
+     */
+    private void setJdkPath(File file) {
+        if (file != null && file.isDirectory() && file.canRead()) {
+            Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                    file.getParentFile().getAbsolutePath());
+            Preferences.getInstance().setJdkPath(file);
+            mTextJdkPath.setText(file.getAbsolutePath());
+        } else {
+            Preferences.getInstance().setJdkPath(null);
+            mTextJdkPath.setText(null);
+        }
+    }// setJdkPath()
 
     /*
      * LISTENERS
@@ -395,15 +420,16 @@ public class MainActivity {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            File f = Files.chooseDir(new File(Preferences.getInstance().get(
-                    PKEY_LAST_WORKING_DIR, "/")));
-            Preferences.getInstance().setJdkPath(f);
-            if (f != null) {
-                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                        f.getParentFile().getAbsolutePath());
-                mTextJdkPath.setText(f.getAbsolutePath());
-            } else
-                mTextJdkPath.setText(null);
+            setJdkPath(Files.chooseDir(new File(Preferences.getInstance().get(
+                    PKEY_LAST_WORKING_DIR, "/"))));
         }// actionPerformed()
     };// mBtnChooseJdkPathActionListener
+
+    private final FileDrop.Listener mTextJdkPathFileDropListener = new FileDrop.Listener() {
+
+        @Override
+        public void onFilesDropped(File[] files) {
+            setJdkPath(files[0]);
+        }// onFilesDropped()
+    };// mTextJdkPathFileDropListener
 }

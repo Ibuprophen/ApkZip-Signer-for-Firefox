@@ -7,7 +7,12 @@
 
 package group.pals.desktop.app.apksigner.utils;
 
+import group.pals.desktop.app.apksigner.ui.FileDrop;
+
 import java.awt.Color;
+
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 /**
  * UI utilities.
@@ -26,6 +31,17 @@ public class UI {
      * The colour of waiting command.
      */
     public static final Color COLOUR_WAITING_CMD = Color.cyan;
+
+    /**
+     * Default colour for border of {@link FileDrop}.
+     */
+    public static final Color COLOUR_BORDER_FILE_DROP = Color.yellow;
+
+    /**
+     * Default border for {@link FileDrop}.
+     */
+    public static final Border BORDER_FILE_DROP = BorderFactory
+            .createMatteBorder(1, 2, 1, 2, COLOUR_BORDER_FILE_DROP);
 
     /**
      * Default tab size for text component.

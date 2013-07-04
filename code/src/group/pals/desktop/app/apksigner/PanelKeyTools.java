@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.FileDrop;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.KeyTools;
@@ -25,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -77,7 +79,7 @@ public class PanelKeyTools extends JPanel {
     private JButton mBtnListEntries;
     private JTextArea mTextInfo;
     private JScrollPane mTextInfoScrollPane;
-    private JPanel panel;
+    private JPanel mPanelKeyFile;
     private JPanel panel_1;
     private JPanel panel_2;
     @SuppressWarnings("rawtypes")
@@ -91,24 +93,29 @@ public class PanelKeyTools extends JPanel {
         SpringLayout springLayout = new SpringLayout();
         setLayout(springLayout);
 
-        panel = new JPanel();
-        springLayout.putConstraint(SpringLayout.NORTH, panel, 5,
+        mPanelKeyFile = new JPanel();
+        springLayout.putConstraint(SpringLayout.NORTH, mPanelKeyFile, 5,
                 SpringLayout.NORTH, this);
-        springLayout.putConstraint(SpringLayout.WEST, panel, 3,
+        springLayout.putConstraint(SpringLayout.WEST, mPanelKeyFile, 3,
                 SpringLayout.WEST, this);
-        springLayout.putConstraint(SpringLayout.EAST, panel, -3,
+        springLayout.putConstraint(SpringLayout.EAST, mPanelKeyFile, -3,
                 SpringLayout.EAST, this);
-        add(panel);
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        add(mPanelKeyFile);
+        mPanelKeyFile.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        new FileDrop(mPanelKeyFile, UI.BORDER_FILE_DROP,
+                mCompKeyFileFileDropListener);
 
         mBtnChooseKeyfile = new JButton(
                 Messages.getString(R.string.desc_load_key_file));
-        panel.add(mBtnChooseKeyfile);
+        mPanelKeyFile.add(mBtnChooseKeyfile);
         mBtnChooseKeyfile.addActionListener(mBtnChooseKeyfileActionListener);
+        new FileDrop(mBtnChooseKeyfile, BorderFactory.createCompoundBorder(
+                UI.BORDER_FILE_DROP, mBtnChooseKeyfile.getBorder()),
+                mCompKeyFileFileDropListener);
 
         panel_1 = new JPanel();
         springLayout.putConstraint(SpringLayout.NORTH, panel_1, 3,
-                SpringLayout.SOUTH, panel);
+                SpringLayout.SOUTH, mPanelKeyFile);
         springLayout.putConstraint(SpringLayout.WEST, panel_1, 3,
                 SpringLayout.WEST, this);
         springLayout.putConstraint(SpringLayout.EAST, panel_1, -3,
@@ -218,30 +225,48 @@ public class PanelKeyTools extends JPanel {
         });
     }// listEntries()
 
+    /**
+     * Sets the key file.
+     * 
+     * @param file
+     *            the key file.
+     */
+    private void setKeyFile(File file) {
+        if (file != null && file.isFile()) {
+            mKeyfile = file;
+            mBtnChooseKeyfile.setText(mKeyfile.getName());
+            mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
+            Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                    mKeyfile.getParentFile().getAbsolutePath());
+        } else {
+            mKeyfile = null;
+            mBtnChooseKeyfile.setText(Messages
+                    .getString(R.string.desc_load_key_file));
+            mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
+        }
+    }// setKeyFile()
+
     /*
      * LISTENERS & DATA
      */
+
+    private final FileDrop.Listener mCompKeyFileFileDropListener = new FileDrop.Listener() {
+
+        @Override
+        public void onFilesDropped(File[] files) {
+            setKeyFile(files[0]);
+        }// onFilesDropped()
+    };// mCompKeyFileFileDropListener
 
     private final ActionListener mBtnChooseKeyfileActionListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            mKeyfile = Files.chooseFile(
+            setKeyFile(Files.chooseFile(
                     new File(Preferences.getInstance().get(
                             PKEY_LAST_WORKING_DIR, "/")),
                     Texts.REGEX_KEYSTORE_FILES,
-                    Messages.getString(R.string.desc_keystore_files));
-            if (mKeyfile != null) {
-                mBtnChooseKeyfile.setText(mKeyfile.getName());
-                mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
-                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                        mKeyfile.getParentFile().getAbsolutePath());
-                mTextPassword.requestFocus();
-            } else {
-                mBtnChooseKeyfile.setText(Messages
-                        .getString(R.string.desc_load_key_file));
-                mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
-            }
+                    Messages.getString(R.string.desc_keystore_files)));
         }// actionPerformed()
     };// mBtnChooseKeyfileActionListener
 

@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.ui.FileDrop;
 import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Files.JFileChooserEx;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -102,6 +104,7 @@ public class PanelSigner extends JPanel {
 
     private File mKeyfile;
     private File mTargetFile;
+    private Timer mKeyFileAliasesLoader;
 
     /*
      * CONTROLS
@@ -111,7 +114,9 @@ public class PanelSigner extends JPanel {
     @SuppressWarnings("rawtypes")
     private JComboBox mCbxAlias;
     private JPasswordField mTextAliasPassword;
+    private JPanel mPanelKeyFile;
     private JButton mBtnChooseKeyfile;
+    private JPanel mPanelTargetFile;
     private JButton mBtnChooseTargetFile;
     private JButton mBtnSign;
     private JPanel panel;
@@ -129,14 +134,32 @@ public class PanelSigner extends JPanel {
                 Double.MIN_VALUE };
         setLayout(gridBagLayout);
 
+        mPanelKeyFile = new JPanel();
+        GridBagConstraints gbc_mPanelKeyFile = new GridBagConstraints();
+        gbc_mPanelKeyFile.fill = GridBagConstraints.BOTH;
+        gbc_mPanelKeyFile.insets = new Insets(10, 3, 5, 3);
+        gbc_mPanelKeyFile.gridx = 0;
+        gbc_mPanelKeyFile.gridy = 0;
+        add(mPanelKeyFile, gbc_mPanelKeyFile);
+        GridBagLayout gbl_mPanelKeyFile = new GridBagLayout();
+        gbl_mPanelKeyFile.columnWidths = new int[] { 0, 0 };
+        gbl_mPanelKeyFile.rowHeights = new int[] { 0, 0 };
+        gbl_mPanelKeyFile.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+        gbl_mPanelKeyFile.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+        mPanelKeyFile.setLayout(gbl_mPanelKeyFile);
+        new FileDrop(mPanelKeyFile, UI.BORDER_FILE_DROP,
+                mCompKeyFileFileDropListener);
+
         mBtnChooseKeyfile = new JButton(
                 Messages.getString(R.string.desc_load_key_file));
-        mBtnChooseKeyfile.addActionListener(mBtnChooseKeyfileActionListener);
         GridBagConstraints gbc_mBtnChooseKeyfile = new GridBagConstraints();
-        gbc_mBtnChooseKeyfile.insets = new Insets(10, 3, 5, 3);
         gbc_mBtnChooseKeyfile.gridx = 0;
         gbc_mBtnChooseKeyfile.gridy = 0;
-        add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
+        mPanelKeyFile.add(mBtnChooseKeyfile, gbc_mBtnChooseKeyfile);
+        mBtnChooseKeyfile.addActionListener(mBtnChooseKeyfileActionListener);
+        new FileDrop(mBtnChooseKeyfile, BorderFactory.createCompoundBorder(
+                UI.BORDER_FILE_DROP, mBtnChooseKeyfile.getBorder()),
+                mCompKeyFileFileDropListener);
 
         mTextPassword = new JPasswordField();
         mTextPassword
@@ -156,7 +179,7 @@ public class PanelSigner extends JPanel {
         panel = new JPanel();
         GridBagConstraints gbc_panel = new GridBagConstraints();
         gbc_panel.fill = GridBagConstraints.BOTH;
-        gbc_panel.insets = new Insets(3, 3, 3, 3);
+        gbc_panel.insets = new Insets(3, 3, 5, 3);
         gbc_panel.gridx = 0;
         gbc_panel.gridy = 2;
         add(panel, gbc_panel);
@@ -191,15 +214,34 @@ public class PanelSigner extends JPanel {
         gbc_mTextAliasPassword.gridy = 3;
         add(mTextAliasPassword, gbc_mTextAliasPassword);
 
+        mPanelTargetFile = new JPanel();
+        GridBagConstraints gbc_mPanelTargetFile = new GridBagConstraints();
+        gbc_mPanelTargetFile.fill = GridBagConstraints.BOTH;
+        gbc_mPanelTargetFile.insets = new Insets(3, 3, 5, 3);
+        gbc_mPanelTargetFile.gridx = 0;
+        gbc_mPanelTargetFile.gridy = 4;
+        add(mPanelTargetFile, gbc_mPanelTargetFile);
+        GridBagLayout gbl_mPanelTargetFile = new GridBagLayout();
+        gbl_mPanelTargetFile.columnWidths = new int[] { 0, 0 };
+        gbl_mPanelTargetFile.rowHeights = new int[] { 0, 0 };
+        gbl_mPanelTargetFile.columnWeights = new double[] { 1.0,
+                Double.MIN_VALUE };
+        gbl_mPanelTargetFile.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+        mPanelTargetFile.setLayout(gbl_mPanelTargetFile);
+        new FileDrop(mPanelTargetFile, UI.BORDER_FILE_DROP,
+                mCompTargetFileFileDropListener);
+
         mBtnChooseTargetFile = new JButton(
                 Messages.getString(R.string.desc_load_target_file));
+        GridBagConstraints gbc_mBtnChooseTargetFile = new GridBagConstraints();
+        gbc_mBtnChooseTargetFile.gridx = 0;
+        gbc_mBtnChooseTargetFile.gridy = 0;
+        mPanelTargetFile.add(mBtnChooseTargetFile, gbc_mBtnChooseTargetFile);
         mBtnChooseTargetFile
                 .addActionListener(mBtnChooseTargetFileActionListener);
-        GridBagConstraints gbc_mBtnChooseApkFile = new GridBagConstraints();
-        gbc_mBtnChooseApkFile.insets = new Insets(3, 3, 5, 3);
-        gbc_mBtnChooseApkFile.gridx = 0;
-        gbc_mBtnChooseApkFile.gridy = 4;
-        add(mBtnChooseTargetFile, gbc_mBtnChooseApkFile);
+        new FileDrop(mBtnChooseTargetFile, BorderFactory.createCompoundBorder(
+                UI.BORDER_FILE_DROP, mBtnChooseTargetFile.getBorder()),
+                mCompTargetFileFileDropListener);
 
         mBtnSign = new JButton(Messages.getString(R.string.sign));
         mBtnSign.addActionListener(mBtnSignActionListener);
@@ -276,6 +318,58 @@ public class PanelSigner extends JPanel {
     }// createAndScheduleKeyAliasesLoader()
 
     /**
+     * Sets key file.
+     * 
+     * @param file
+     *            the key file, can be {@code null}.
+     */
+    private void setKeyFile(File file) {
+        if (file != null && file.isFile()) {
+            mKeyfile = file;
+
+            mBtnChooseKeyfile.setText(mKeyfile.getName());
+            mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
+            Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                    mKeyfile.getParentFile().getAbsolutePath());
+
+            if (mKeyFileAliasesLoader != null)
+                mKeyFileAliasesLoader.cancel();
+            mKeyFileAliasesLoader = createAndScheduleKeyAliasesLoader();
+
+            mTextPassword.requestFocus();
+        } else {
+            mKeyfile = null;
+
+            mBtnChooseKeyfile.setText(Messages
+                    .getString(R.string.desc_load_key_file));
+            mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
+        }
+    }// setKeyFile()
+
+    /**
+     * Sets target file.
+     * 
+     * @param file
+     *            the target file.
+     */
+    private void setTargetFile(File file) {
+        if (file != null && file.isFile()) {
+            mTargetFile = file;
+
+            mBtnChooseTargetFile.setText(mTargetFile.getName());
+            mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
+            Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
+                    mTargetFile.getParentFile().getAbsolutePath());
+        } else {
+            mTargetFile = null;
+
+            mBtnChooseTargetFile.setText(Messages
+                    .getString(R.string.desc_load_target_file));
+            mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
+        }
+    }// setTargetFile()
+
+    /**
      * Validates all fields.
      * 
      * @return {@code true} or {@code false}.
@@ -347,33 +441,23 @@ public class PanelSigner extends JPanel {
      * LISTENERS
      */
 
-    private final ActionListener mBtnChooseKeyfileActionListener = new ActionListener() {
+    private final FileDrop.Listener mCompKeyFileFileDropListener = new FileDrop.Listener() {
 
-        Timer mTimer;
+        @Override
+        public void onFilesDropped(File[] files) {
+            setKeyFile(files[0]);
+        }// onFilesDropped()
+    };// mCompKeyFileFileDropListener
+
+    private final ActionListener mBtnChooseKeyfileActionListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            mKeyfile = Files.chooseFile(
+            setKeyFile(Files.chooseFile(
                     new File(Preferences.getInstance().get(
                             PKEY_LAST_WORKING_DIR, "/")),
                     Texts.REGEX_KEYSTORE_FILES,
-                    Messages.getString(R.string.desc_keystore_files));
-            if (mKeyfile != null) {
-                mBtnChooseKeyfile.setText(mKeyfile.getName());
-                mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
-                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                        mKeyfile.getParentFile().getAbsolutePath());
-
-                if (mTimer != null)
-                    mTimer.cancel();
-                mTimer = createAndScheduleKeyAliasesLoader();
-
-                mTextPassword.requestFocus();
-            } else {
-                mBtnChooseKeyfile.setText(Messages
-                        .getString(R.string.desc_load_key_file));
-                mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);
-            }
+                    Messages.getString(R.string.desc_keystore_files)));
         }// actionPerformed()
     };// mBtnChooseKeyfileActionListener
 
@@ -421,6 +505,14 @@ public class PanelSigner extends JPanel {
         }// itemStateChanged()
     };// mCbxAliasItemListener
 
+    private final FileDrop.Listener mCompTargetFileFileDropListener = new FileDrop.Listener() {
+
+        @Override
+        public void onFilesDropped(File[] files) {
+            setTargetFile(files[0]);
+        }// onFilesDropped()
+    };// mCompTargetFileFileDropListener
+
     private final ActionListener mBtnChooseTargetFileActionListener = new ActionListener() {
 
         @Override
@@ -443,27 +535,16 @@ public class PanelSigner extends JPanel {
 
             switch (fileChooser.showOpenDialog(null)) {
             case JFileChooser.APPROVE_OPTION: {
-                mTargetFile = fileChooser.getSelectedFile();
-
-                mBtnChooseTargetFile.setText(mTargetFile.getName());
-                mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
-                Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
-                        mTargetFile.getParentFile().getAbsolutePath());
+                setTargetFile(fileChooser.getSelectedFile());
                 Preferences.getInstance().set(
                         PKEY_LAST_TARGET_FILE_FILTER_ID,
                         Integer.toString(TARGET_FILE_FILTERS
                                 .indexOf(fileChooser.getFileFilter())));
-
                 break;
             }// APPROVE_OPTION
 
             default: {
-                mTargetFile = null;
-
-                mBtnChooseTargetFile.setText(Messages
-                        .getString(R.string.desc_load_target_file));
-                mBtnChooseTargetFile.setForeground(UI.COLOUR_WAITING_CMD);
-
+                setTargetFile(null);
                 break;
             }// default
             }

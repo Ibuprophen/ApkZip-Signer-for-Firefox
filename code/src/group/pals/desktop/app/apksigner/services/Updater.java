@@ -47,9 +47,20 @@ public class Updater extends BaseThread {
     private static final String CLASSNAME = Updater.class.getName();
 
     /**
-     * The URL pointing to `update.properties` file.
+     * The URLs pointing to `update.properties` file. We should try all (in case
+     * one of them doesn't exist, or for some reason we can't reach it).
+     * <p>
+     * <h1>Notes</h1>
+     * </p>
+     * <ul>
+     * <li>
+     * Currently the final one (at our Google Sites) is just a place holder, it
+     * doesn't exist.</li>
+     * </ul>
      */
-    public static final String URL_UPDATE_PROPERTIES = "https://apk-signer.googlecode.com/hg/bin/update.properties";
+    public static final String[] URLS_UPDATE_PROPERTIES = {
+            "http://cdn.bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",
+            "https://sites.google.com/site/haibisonapps/apps/apk-signer/update.properties" };
 
     /**
      * The app version code.
@@ -165,36 +176,47 @@ public class Updater extends BaseThread {
      *         {@code null} if an error occurred.
      */
     private Properties downloadUpdateProperties() {
-        HttpURLConnection conn = Network
-                .openHttpConnection(URL_UPDATE_PROPERTIES);
-        if (conn == null)
-            return null;
+        for (String url : URLS_UPDATE_PROPERTIES) {
+            HttpURLConnection conn = Network.openHttpConnection(url);
+            if (conn == null)
+                return null;
 
-        try {
-            conn.connect();
-            InputStream inputStream = conn.getInputStream();
-            if (conn.getContentLength() > MAX_UPDATE_PROPERTIES_FILESIZE) {
-                inputStream.close();
+            try {
+                conn.connect();
+                final InputStream inputStream = conn.getInputStream();
+                try {
+                    if (conn.getContentLength() > MAX_UPDATE_PROPERTIES_FILESIZE)
+                        return null;
+
+                    /*
+                     * We can load directly from the `InputStream` over the
+                     * network, since the size is small.
+                     */
+                    Properties result = new Properties();
+                    result.load(inputStream);
+                    return result;
+                } finally {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                /*
+                 * Ignore it.
+                 */
+                e.printStackTrace();
+
+                /*
+                 * Maybe the current URL doesn't exist. Try the next one.
+                 */
+                continue;
+            } catch (NullPointerException e) {
+                /*
+                 * Ignore it.
+                 */
                 return null;
             }
+        }// for URL
 
-            Properties result = new Properties();
-            result.load(inputStream);
-            inputStream.close();
-
-            return result;
-        } catch (IOException e) {
-            /*
-             * Ignore it.
-             */
-            e.printStackTrace();
-            return null;
-        } catch (NullPointerException e) {
-            /*
-             * Ignore it.
-             */
-            return null;
-        }
+        return null;
     }// downloadUpdateProperties()
 
     /**

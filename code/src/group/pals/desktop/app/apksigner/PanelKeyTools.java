@@ -234,12 +234,14 @@ public class PanelKeyTools extends JPanel {
     private void setKeyFile(File file) {
         if (file != null && file.isFile()) {
             mKeyfile = file;
+
             mBtnChooseKeyfile.setText(mKeyfile.getName());
             mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
             Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                     mKeyfile.getParentFile().getAbsolutePath());
         } else {
             mKeyfile = null;
+
             mBtnChooseKeyfile.setText(Messages
                     .getString(R.string.desc_load_key_file));
             mBtnChooseKeyfile.setForeground(UI.COLOUR_WAITING_CMD);

@@ -4,7 +4,31 @@ Feel free to contact us at:
    + haibison.apps(@)gmail(.)com
    + support(@)haibison(.)com
 
-History:
+
+We sincerely thank:
+
+ - All of our friends, who have been contributing to this project.
+ - The authors of external modules/ libraries which are used in this project.
+
+We hope the project is always useful for everyone.
+
+
+*** CREDITS ***
+
+ - Hans Bickel (library TinyLaF)
+   + http://www.muntjak.de/hans/java/tinylaf/index.html
+ - Leo Chien (contributor)
+   + https://plus.google.com/118055781130476825691?prsrc=2
+ - Robert Harder and his friends (module FileDrop)
+   + http://www.iharder.net/current/java/filedrop/
+
+
+*** HISTORY ***
+
++++ Version 1.7.4 +++
+ * Release: July 04, 2013
+
+ - Add module FileDrop. Thanks to Robert Harder and his friends.
 
 +++ Version 1.7.3 +++
  * Release: July 01, 2013

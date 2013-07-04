@@ -388,21 +388,35 @@ public class MainActivity {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String msg = String
+            final String msg = String
                     .format("%s\n\n"
                             + "...by Hai Bison\n\n"
                             + " - License: MIT License\n"
                             + " - Code page: https://code.google.com/p/apk-signer/\n"
                             + " - Official site: http://www.haibison.com\n"
                             + "\n"
-                            + "Special thanks to Hans Bickel for TinyLaF library:\n"
-                            + " - http://www.muntjak.de/hans/java/tinylaf/index.html\n"
-                            + " - License: GNU Lesser General Public License\n"
+                            + "We sincerely thank:\n"
                             + "\n"
-                            + "And thanks to our friends who have been contributing to this project:\n"
-                            + " - Leo Chien (https://plus.google.com/118055781130476825691?prsrc=2)",
-                            Messages.getString(R.string.pmsg_app_name,
-                                    Sys.APP_NAME, Sys.APP_VERSION_NAME));
+                            + " - All of our friends, who have been contributing to this project.\n"
+                            + " - The authors of external modules/ libraries which are used in this project.\n"
+                            + "\n"
+                            + "We hope the project is always useful for everyone.\n"
+                            + "\n"
+                            + "\n"
+                            + "*** CREDITS ***\n"
+                            + "\n"
+                            + " - Hans Bickel (library TinyLaF)\n"
+                            + "   + http://www.muntjak.de/hans/java/tinylaf/index.html\n"
+                            + "   + License: GNU Lesser General Public License\n"
+                            + "\n"
+                            + " - Leo Chien (contributor)\n"
+                            + "   + https://plus.google.com/118055781130476825691?prsrc=2\n"
+                            + "\n"
+                            + " - Robert Harder and his friends (module FileDrop)\n"
+                            + "   + http://www.iharder.net/current/java/filedrop/\n"
+                            + "   + License: Public Domain\n", Messages
+                            .getString(R.string.pmsg_app_name, Sys.APP_NAME,
+                                    Sys.APP_VERSION_NAME));
             Dlg.showHugeInfoMsg(msg, 630, 270);
         }// actionPerformed()
     };// mMenuItemAboutActionListener

@@ -173,12 +173,14 @@ public class PanelApkAlignment extends JPanel {
     private void setApkFile(File file) {
         if (file != null && file.isFile()) {
             mApkFile = file;
+
             mBtnLoadApkFile.setText(mApkFile.getName());
             mBtnLoadApkFile.setForeground(UI.COLOUR_SELECTED_FILE);
             Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                     mApkFile.getParentFile().getAbsolutePath());
         } else {
             mApkFile = null;
+
             mBtnLoadApkFile.setText(Messages
                     .getString(R.string.desc_load_apk_file));
             mBtnLoadApkFile.setForeground(UI.COLOUR_WAITING_CMD);

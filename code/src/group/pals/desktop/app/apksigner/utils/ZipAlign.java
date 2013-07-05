@@ -373,8 +373,9 @@ public class ZipAlign {
                 flags |= 1 << 11;
 
                 final long outputEntryHeaderOffset = mOutputStream.totalWritten;
-                L.d("\t\toutputEntryHeaderOffset = %,d",
-                        outputEntryHeaderOffset);
+                if (Sys.DEBUG)
+                    L.d("\t\toutputEntryHeaderOffset = %,d",
+                            outputEntryHeaderOffset);
 
                 final int inputEntryHeaderSize = ZIP_ENTRY_HEADER_LEN
                         + (entry.getExtra() != null ? entry.getExtra().length
@@ -403,7 +404,8 @@ public class ZipAlign {
                      * position in the original.
                      */
                     long newOffset = inputEntryDataOffset + mTotalPadding;
-                    L.d("\t\t\tnewOffset = %,d", newOffset);
+                    if (Sys.DEBUG)
+                        L.d("\t\t\tnewOffset = %,d", newOffset);
                     padding = (int) ((mAlignment - (newOffset % mAlignment)) % mAlignment);
                     mTotalPadding += padding;
                 }
@@ -412,8 +414,9 @@ public class ZipAlign {
                         outputEntryHeaderOffset, flags, padding);
                 mXEntries.add(xentry);
 
-                L.d("\t'%s' >> header = %,d, padding = %,d", entry.getName(),
-                        inputEntryHeaderSize, padding);
+                if (Sys.DEBUG)
+                    L.d("\t'%s' >> header = %,d, padding = %,d",
+                            entry.getName(), inputEntryHeaderSize, padding);
 
                 /*
                  * Modify the original header, add padding to `extra` field and
@@ -862,10 +865,12 @@ public class ZipAlign {
                     dataSize = entry.isDirectory() ? 0 : entry
                             .getCompressedSize();
 
-                L.d("size = %,8d, compressed = %,8d, crc32 = %08x, data mHeaderOffset = %,8d >> %,8d"
-                        + " >> Entry '%s'", entry.getSize(),
-                        entry.getCompressedSize(), entry.getCrc(), dataOffset,
-                        dataOffset + headerSize, entry.getName());
+                if (Sys.DEBUG)
+                    L.d("size = %,8d, compressed = %,8d, crc32 = %08x, data mHeaderOffset = %,8d >> %,8d"
+                            + " >> Entry '%s'", entry.getSize(),
+                            entry.getCompressedSize(), entry.getCrc(),
+                            dataOffset, dataOffset + headerSize,
+                            entry.getName());
 
                 dataOffset += headerSize + dataSize;
             }// while

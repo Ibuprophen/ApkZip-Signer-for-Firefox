@@ -134,6 +134,8 @@ public class Updater extends BaseThread {
     @Override
     public void run() {
         try {
+            L.d("%s >> starting", Updater.class.getSimpleName());
+
             /*
              * DOWNLOAD UPDATE.PROPERTIES AND PARSE INFO TO MEMORY
              */
@@ -165,6 +167,7 @@ public class Updater extends BaseThread {
              */
             downloadUpdateFile(updateProperties);
         } finally {
+            L.d("%s >> finishing", Updater.class.getSimpleName());
             sendNotification(MSG_DONE);
         }
     }// run()

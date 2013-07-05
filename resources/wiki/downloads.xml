@@ -8,6 +8,6 @@
 -->
 
 <Module>
-  <ModulePrefs title="screenshots" />
-  <Content type="url" href="http://imgur.com/a/AB0oA/embed" />
+  <ModulePrefs title="Downloads" />
+  <Content type="url" href="https://bitbucket.org/haibisonapps/apk-signer/downloads" />
 </Module>

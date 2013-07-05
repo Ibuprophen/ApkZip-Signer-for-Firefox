@@ -76,6 +76,12 @@ public class MainActivity {
     private static final String PKEY_LAST_WORKING_DIR = CLASSNAME
             + ".last_working_dir";
 
+    /**
+     * This key holds the last tab index.
+     */
+    private static final String PKEY_LAST_TAB_INDEX = CLASSNAME
+            + ".last_tab_index";
+
     /*
      * FIELDS
      */
@@ -206,6 +212,27 @@ public class MainActivity {
                         new PanelApkAlignment());
                 mTabbedPane.add(Messages.getString(R.string.key_tools),
                         new PanelKeyTools());
+
+                /*
+                 * Select the last tab index.
+                 */
+
+                int lastTabIndex = 0;
+                try {
+                    lastTabIndex = Integer.parseInt(Preferences.getInstance()
+                            .get(PKEY_LAST_TAB_INDEX));
+                } catch (Exception e) {
+                    /*
+                     * Ignore it.
+                     */
+                }
+
+                if (lastTabIndex >= mTabbedPane.getTabCount())
+                    lastTabIndex = mTabbedPane.getTabCount() - 1;
+                if (lastTabIndex < 0)
+                    lastTabIndex = 0;
+
+                mTabbedPane.setSelectedIndex(lastTabIndex);
             }// run()
         });
 
@@ -321,6 +348,8 @@ public class MainActivity {
 
         @Override
         public void windowClosing(WindowEvent e) {
+            Preferences.getInstance().set(PKEY_LAST_TAB_INDEX,
+                    Integer.toString(mTabbedPane.getSelectedIndex()));
             Preferences.getInstance().store();
 
             final List<BaseThread> activeThreads = ServiceManager

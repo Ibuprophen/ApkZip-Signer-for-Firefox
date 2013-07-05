@@ -360,6 +360,8 @@ public class PanelSigner extends JPanel {
             mBtnChooseTargetFile.setForeground(UI.COLOUR_SELECTED_FILE);
             Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                     mTargetFile.getParentFile().getAbsolutePath());
+
+            mBtnSign.requestFocus();
         } else {
             mTargetFile = null;
 

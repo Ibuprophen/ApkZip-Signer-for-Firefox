@@ -239,6 +239,8 @@ public class PanelKeyTools extends JPanel {
             mBtnChooseKeyfile.setForeground(UI.COLOUR_SELECTED_FILE);
             Preferences.getInstance().set(PKEY_LAST_WORKING_DIR,
                     mKeyfile.getParentFile().getAbsolutePath());
+
+            mTextPassword.requestFocus();
         } else {
             mKeyfile = null;
 

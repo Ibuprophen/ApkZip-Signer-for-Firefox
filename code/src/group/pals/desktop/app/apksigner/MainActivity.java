@@ -24,11 +24,15 @@ import group.pals.desktop.app.apksigner.utils.Texts;
 import group.pals.desktop.app.apksigner.utils.UI;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -196,47 +200,10 @@ public class MainActivity {
                 TitledBorder.LEADING, TitledBorder.TOP, null,
                 UI.COLOUR_BORDER_FILE_DROP), mTextJdkPathFileDropListener);
 
-        /*
-         * Initialization of panels are slow. So we should put this block into a
-         * `Runnable`.
-         */
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                mTabbedPane.add(Messages.getString(R.string.key_generator),
-                        new PanelKeyGen());
-                mTabbedPane.add(Messages.getString(R.string.signer),
-                        new PanelSigner());
-                mTabbedPane.add(Messages.getString(R.string.apk_alignment),
-                        new PanelApkAlignment());
-                mTabbedPane.add(Messages.getString(R.string.key_tools),
-                        new PanelKeyTools());
-
-                /*
-                 * Select the last tab index.
-                 */
-
-                int lastTabIndex = 0;
-                try {
-                    lastTabIndex = Integer.parseInt(Preferences.getInstance()
-                            .get(PKEY_LAST_TAB_INDEX));
-                } catch (Exception e) {
-                    /*
-                     * Ignore it.
-                     */
-                }
-
-                if (lastTabIndex >= mTabbedPane.getTabCount())
-                    lastTabIndex = mTabbedPane.getTabCount() - 1;
-                if (lastTabIndex < 0)
-                    lastTabIndex = 0;
-
-                mTabbedPane.setSelectedIndex(lastTabIndex);
-            }// run()
-        });
-
         mMainFrame.addWindowListener(mMainFrameWindowAdapter);
+        mTabbedPane.addMouseWheelListener(mTabbedPaneMouseWheelListener);
+
+        initTabs();
 
         /*
          * START UPDATER SERVICE
@@ -321,6 +288,51 @@ public class MainActivity {
                 SpringLayout.EAST, mMainFrame.getContentPane());
         mMainFrame.getContentPane().add(mTabbedPane);
     }// initialize()
+
+    /**
+     * Initializes tabs.
+     */
+    private void initTabs() {
+        /*
+         * Initialization of panels are slow. So we should put this block into a
+         * `Runnable`.
+         */
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                mTabbedPane.add(Messages.getString(R.string.key_generator),
+                        new PanelKeyGen());
+                mTabbedPane.add(Messages.getString(R.string.signer),
+                        new PanelSigner());
+                mTabbedPane.add(Messages.getString(R.string.apk_alignment),
+                        new PanelApkAlignment());
+                mTabbedPane.add(Messages.getString(R.string.key_tools),
+                        new PanelKeyTools());
+
+                /*
+                 * Select the last tab index.
+                 */
+
+                int lastTabIndex = 0;
+                try {
+                    lastTabIndex = Integer.parseInt(Preferences.getInstance()
+                            .get(PKEY_LAST_TAB_INDEX));
+                } catch (Exception e) {
+                    /*
+                     * Ignore it.
+                     */
+                }
+
+                if (lastTabIndex >= mTabbedPane.getTabCount())
+                    lastTabIndex = mTabbedPane.getTabCount() - 1;
+                if (lastTabIndex < 0)
+                    lastTabIndex = 0;
+
+                mTabbedPane.setSelectedIndex(lastTabIndex);
+            }// run()
+        });
+    }// initTabs()
 
     /**
      * Sets the JDK path.
@@ -467,6 +479,32 @@ public class MainActivity {
                     PKEY_LAST_WORKING_DIR, "/"))));
         }// actionPerformed()
     };// mBtnChooseJdkPathActionListener
+
+    private final MouseWheelListener mTabbedPaneMouseWheelListener = new MouseWheelListener() {
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            final Component selectedComp = mTabbedPane.getSelectedComponent();
+            if (selectedComp == null)
+                return;
+
+            final int headerHeight = mTabbedPane.getHeight()
+                    - selectedComp.getHeight();
+            if (!new Rectangle(0, 0, mTabbedPane.getWidth(), headerHeight)
+                    .contains(e.getPoint()))
+                return;
+
+            final int tabIndex = mTabbedPane.getSelectedIndex();
+            final int wheelRotation = e.getWheelRotation();
+            if (wheelRotation > 0) {
+                if (tabIndex < mTabbedPane.getTabCount() - 1)
+                    mTabbedPane.setSelectedIndex(tabIndex + 1);
+            } else if (wheelRotation < 0) {
+                if (tabIndex > 0)
+                    mTabbedPane.setSelectedIndex(tabIndex - 1);
+            }
+        }// mouseWheelMoved()
+    };// mTabbedPaneMouseWheelListener
 
     private final FileDrop.Listener mTextJdkPathFileDropListener = new FileDrop.Listener() {
 

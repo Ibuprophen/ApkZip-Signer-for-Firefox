@@ -186,7 +186,8 @@ public class Updater extends BaseThread {
 
             try {
                 conn.connect();
-                final InputStream inputStream = conn.getInputStream();
+                final InputStream inputStream = new BufferedInputStream(
+                        conn.getInputStream(), Files.FILE_BUFFER);
                 try {
                     if (conn.getContentLength() > MAX_UPDATE_PROPERTIES_FILESIZE)
                         return null;
@@ -310,7 +311,7 @@ public class Updater extends BaseThread {
 
         try {
             conn.connect();
-            InputStream inputStream = conn.getInputStream();
+            final InputStream inputStream = conn.getInputStream();
             try {
                 final int contentLength = conn.getContentLength();
                 if (contentLength == 0)

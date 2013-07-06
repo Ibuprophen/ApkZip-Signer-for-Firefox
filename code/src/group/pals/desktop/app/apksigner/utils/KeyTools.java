@@ -163,7 +163,7 @@ public class KeyTools {
                             Messages.getString(R.string.alias_name), alias));
                     result.append(String.format("%s: %s\n",
                             Messages.getString(R.string.creation_date),
-                            Texts.formatDate(keyStore.getCreationDate(alias))));
+                            keyStore.getCreationDate(alias)));
                     result.append(String.format("%s: %s\n",
                             Messages.getString(R.string.entry_type),
                             cert.getType()));
@@ -197,10 +197,8 @@ public class KeyTools {
                                 result.append("\t\t")
                                         .append(Messages.getString(
                                                 R.string.pmsg_valid_from_until,
-                                                Texts.formatDate(x509Cert
-                                                        .getNotBefore()), Texts
-                                                        .formatDate(x509Cert
-                                                                .getNotAfter())))
+                                                x509Cert.getNotBefore(),
+                                                x509Cert.getNotAfter()))
                                         .append('\n');
                             }
 

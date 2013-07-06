@@ -65,11 +65,13 @@ import java.util.zip.ZipOutputStream;
  * <h1>Notes</h1>
  * </p>
  * <p>
+ * <ul>
  * <li>The tool modifies the "extra" field of all entries which are not
  * compressed ({@link ZipEntry#STORED}).</li>
  * 
  * <li>Only the "extra" fields in local file headers are modified. The ones in
  * central directory are not touched.</li>
+ * </ul>
  * </p>
  * <p>
  * See <a href="http://en.wikipedia.org/wiki/Zip_(file_format)">Zip (file
@@ -542,7 +544,7 @@ public class ZipAlign {
 
             for (XEntry xentry : mXEntries) {
                 if (isInterrupted())
-                    break;
+                    return;
 
                 /*
                  * Write entry.

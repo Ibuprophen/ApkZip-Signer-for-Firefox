@@ -189,8 +189,10 @@ public class Updater extends BaseThread {
                 final InputStream inputStream = new BufferedInputStream(
                         conn.getInputStream(), Files.FILE_BUFFER);
                 try {
+                    if (conn.getResponseCode() != Network.HTTP_STATUS_OK)
+                        continue;
                     if (conn.getContentLength() > MAX_UPDATE_PROPERTIES_FILESIZE)
-                        return null;
+                        continue;
 
                     /*
                      * We can load directly from the `InputStream` over the
@@ -216,7 +218,7 @@ public class Updater extends BaseThread {
                 /*
                  * Ignore it.
                  */
-                return null;
+                continue;
             }
         }// for URL
 
@@ -313,6 +315,9 @@ public class Updater extends BaseThread {
             conn.connect();
             final InputStream inputStream = conn.getInputStream();
             try {
+                if (conn.getResponseCode() != Network.HTTP_STATUS_OK)
+                    return;
+
                 final int contentLength = conn.getContentLength();
                 if (contentLength == 0)
                     return;

@@ -26,6 +26,11 @@ public class Network {
     public static final int NETWORK_TIMEOUT = 15000;
 
     /**
+     * HTTP status code OK.
+     */
+    public static final int HTTP_STATUS_OK = 200;
+
+    /**
      * Opens new connection to {@code url} with default settings.
      * 
      * @param url

@@ -10,9 +10,11 @@ This tool parses `messages.properties` and generates all strings to their
 respective IDs, which can be put into class R.string.
 '''
 
+import os
 import re
 
-SOURCE_FILE = '../code/src/group/pals/desktop/app/apksigner/i18n/messages_en.properties'
+SOURCE_FILE = os.sep.join(['..','code','src','group','pals','desktop','app',
+                           'apksigner','i18n','messages_en.properties'])
 
 # PARSE SOURCE FILE
 

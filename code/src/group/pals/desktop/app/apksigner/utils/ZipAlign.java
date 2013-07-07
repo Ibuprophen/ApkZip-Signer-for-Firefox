@@ -295,6 +295,8 @@ public class ZipAlign {
 
         @Override
         public void run() {
+            L.d("%s >> starting", ZipAligner.class.getSimpleName());
+
             try {
                 openFiles();
                 if (!isInterrupted())
@@ -326,6 +328,8 @@ public class ZipAlign {
                         Messages.getString(R.string.cancelled));
 
             sendNotification(MSG_DONE);
+
+            L.d("%s >> finishing", ZipAligner.class.getSimpleName());
         }// run()
 
         /**
@@ -727,6 +731,8 @@ public class ZipAlign {
 
         @Override
         public void run() {
+            L.d("%s >> starting", ZipAlignmentVerifier.class.getSimpleName());
+
             try {
                 openFiles();
                 if (!isInterrupted())
@@ -756,6 +762,8 @@ public class ZipAlign {
                         Messages.getString(R.string.cancelled));
 
             sendNotification(MSG_DONE);
+
+            L.d("%s >> finishing", ZipAlignmentVerifier.class.getSimpleName());
         }// run()
 
         /**

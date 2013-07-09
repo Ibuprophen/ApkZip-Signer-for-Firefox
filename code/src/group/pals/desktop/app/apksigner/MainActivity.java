@@ -388,7 +388,7 @@ public class MainActivity {
                     mMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }// confirmYesNo()
             }// There are active threads
-        }// windowClosed()
+        }// windowClosing()
     };// mMainFrameWindowAdapter
 
     private final INotification mUpdaterServiceNotification = new INotification() {

@@ -11,9 +11,12 @@ respective IDs, which can be put into class R.string.
 '''
 
 import os
+import os.path
 import re
+import sys
 
-SOURCE_FILE = os.sep.join(['..','code','src','group','pals','desktop','app',
+SOURCE_FILE = os.sep.join([os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0]))),
+                           'code','src','group','pals','desktop','app',
                            'apksigner','i18n','messages_en.properties'])
 
 # PARSE SOURCE FILE

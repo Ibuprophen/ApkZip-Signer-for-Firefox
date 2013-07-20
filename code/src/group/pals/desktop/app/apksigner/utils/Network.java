@@ -12,6 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.codec.binary.Base64;
+
 /**
  * Network utilities.
  * 
@@ -30,8 +32,11 @@ public class Network {
      */
     public static final int HTTP_STATUS_OK = 200;
 
-    private static final String PROPERTY_SYS_PROXY_HOST = "http.proxyHost";
-    private static final String PROPERTY_SYS_PROXY_PORT = "http.proxyPort";
+    private static final String PROPERTY_SYS_HTTP_PROXY_HOST = "http.proxyHost";
+    private static final String PROPERTY_SYS_HTTP_PROXY_PORT = "http.proxyPort";
+
+    private static final String PROPERTY_SYS_HTTPS_PROXY_HOST = "https.proxyHost";
+    private static final String PROPERTY_SYS_HTTPS_PROXY_PORT = "https.proxyPort";
 
     /**
      * Opens new connection to {@code url} with default settings.
@@ -45,18 +50,46 @@ public class Network {
             return null;
 
         if (Preferences.getInstance().isUsingProxy()) {
-            System.setProperty(PROPERTY_SYS_PROXY_HOST, Preferences
+            /*
+             * HTTP
+             */
+            System.setProperty(PROPERTY_SYS_HTTP_PROXY_HOST, Preferences
                     .getInstance().getProxyHost());
-            System.setProperty(PROPERTY_SYS_PROXY_PORT,
+            System.setProperty(PROPERTY_SYS_HTTP_PROXY_PORT,
+                    Integer.toString(Preferences.getInstance().getProxyPort()));
+
+            /*
+             * HTTPS
+             */
+            System.setProperty(PROPERTY_SYS_HTTPS_PROXY_HOST, Preferences
+                    .getInstance().getProxyHost());
+            System.setProperty(PROPERTY_SYS_HTTPS_PROXY_PORT,
                     Integer.toString(Preferences.getInstance().getProxyPort()));
         } else {
-            System.clearProperty(PROPERTY_SYS_PROXY_HOST);
-            System.clearProperty(PROPERTY_SYS_PROXY_PORT);
+            for (String s : new String[] { PROPERTY_SYS_HTTP_PROXY_HOST,
+                    PROPERTY_SYS_HTTP_PROXY_PORT,
+                    PROPERTY_SYS_HTTPS_PROXY_HOST,
+                    PROPERTY_SYS_HTTPS_PROXY_PORT })
+                System.clearProperty(s);
         }
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url)
                     .openConnection();
+
+            if (Preferences.getInstance().isUsingProxy()
+                    && !Texts.isEmpty(Preferences.getInstance()
+                            .getProxyUsername())) {
+                char[] password = Preferences.getInstance().getProxyPassword();
+                String proxyAuthorization = Base64
+                        .encodeBase64String((Preferences.getInstance()
+                                .getProxyUsername() + ":" + (password != null ? new String(
+                                password) : "")).getBytes(Texts.UTF8));
+                // https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+                conn.setRequestProperty("Proxy-Authorization", "Basic "
+                        + proxyAuthorization);
+            }
+
             conn.setConnectTimeout(NETWORK_TIMEOUT);
             conn.setReadTimeout(NETWORK_TIMEOUT);
             return conn;

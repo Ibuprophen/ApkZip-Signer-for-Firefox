@@ -1,14 +1,15 @@
-* Feel free to contact us at:
-    + [Homepage](http://www.haibison.com)
-    + E-mails  :
-        - haibison.apps(@)gmail(.)com
-        - support(@)haibison(.)com
+### Feel free to contact us at:
+
+* [Homepage](http://www.haibison.com)
+* E-mails  :
+    - haibison.apps(@)gmail(.)com
+    - support(@)haibison(.)com
 
 
-We sincerely thank:
+### We sincerely thank:
 
-    * All of our friends, who have been contributing to this project.
-    * The authors of external modules/ libraries which are used in this project.
+* All of our friends, who have been contributing to this project.
+* The authors of external modules/ libraries which are used in this project.
 
 We hope this project will be always useful for everyone.
 

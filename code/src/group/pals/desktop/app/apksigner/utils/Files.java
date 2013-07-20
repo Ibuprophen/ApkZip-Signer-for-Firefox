@@ -9,7 +9,7 @@ package group.pals.desktop.app.apksigner.utils;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
-import group.pals.desktop.app.apksigner.ui.Dlg;
+import group.pals.desktop.app.apksigner.utils.ui.Dlg;
 
 import java.awt.event.KeyEvent;
 import java.io.File;

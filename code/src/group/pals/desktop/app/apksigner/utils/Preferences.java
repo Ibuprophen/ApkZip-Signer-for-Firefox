@@ -44,6 +44,7 @@ public class Preferences {
     private final File mPropertiesFile = new File(Sys.getAppDir()
             .getAbsolutePath() + File.separator + PREFS_FILENAME);
     private final Properties mProperties = new Properties();
+    private Properties mTransaction;
 
     /**
      * Creates new instance.
@@ -61,6 +62,55 @@ public class Preferences {
             L.e("[%s] Error loading preferences: %s", CLASSNAME, e);
         }
     }// Preferences()
+
+    /**
+     * Begins a transaction. Currently this method supports only one instance of
+     * a transaction. This mean calling this method multiple times has only one
+     * affect.
+     * 
+     * @return the instance of this object, to allow chaining multiple calls
+     *         into a single statement.
+     * @see #endTransaction()
+     */
+    public synchronized Preferences beginTransaction() {
+        if (mTransaction == null)
+            mTransaction = new Properties();
+        return this;
+    }// beginTransaction()
+
+    /**
+     * Ends a transaction.
+     * 
+     * @see #beginTransaction()
+     */
+    public synchronized void endTransaction() {
+        if (mTransaction == null)
+            return;
+
+        mProperties.putAll(mTransaction);
+
+        destroyTransaction();
+    }// endTransaction()
+
+    /**
+     * Cancels a transaction.
+     * 
+     * @see #beginTransaction()
+     */
+    public synchronized void cancelTransaction() {
+        destroyTransaction();
+    }// cancelTransaction()
+
+    /**
+     * Destroys the transaction.
+     */
+    private synchronized void destroyTransaction() {
+        if (mTransaction == null)
+            return;
+
+        mTransaction.clear();
+        mTransaction = null;
+    }// destroyTransaction()
 
     /**
      * Stores all preferences to file.
@@ -85,10 +135,13 @@ public class Preferences {
      *            the key name.
      * @param v
      *            the value of the key.
+     * @return the instance of this object, to allow chaining multiple calls
+     *         into a single statement.
      */
-    public void set(String k, String v) {
-        mProperties.setProperty(k, v != null ? v.trim() : "");
-        store();
+    public Preferences set(String k, String v) {
+        Properties p = mTransaction != null ? mTransaction : mProperties;
+        p.setProperty(k, v != null ? v.trim() : "");
+        return this;
     }// set()
 
     /**
@@ -99,7 +152,7 @@ public class Preferences {
      * @return the value of the given key.
      */
     public String get(String k) {
-        return mProperties.getProperty(k);
+        return get(k, null);
     }// get()
 
     /**
@@ -113,7 +166,14 @@ public class Preferences {
      *         not exist.
      */
     public String get(String k, String def) {
-        return mProperties.getProperty(k, def);
+        String v;
+
+        if (mTransaction != null && mTransaction.containsKey(k))
+            v = mTransaction.getProperty(k, def);
+        else
+            v = mProperties.getProperty(k, def);
+
+        return v;
     }// get()
 
     /*
@@ -138,12 +198,15 @@ public class Preferences {
      * 
      * @param path
      *            the JDK path.
+     * @return the instance of this object, to allow chaining multiple calls
+     *         into a single statement.
      */
-    public void setJdkPath(File path) {
+    public Preferences setJdkPath(File path) {
         if (path != null)
             set(KEY_JDK_PATH, path.getAbsolutePath());
         else
             mProperties.remove(KEY_JDK_PATH);
+        return this;
     }// setJdkPath()
 
     /**
@@ -160,11 +223,14 @@ public class Preferences {
      * 
      * @param tag
      *            the locale tag.
+     * @return the instance of this object, to allow chaining multiple calls
+     *         into a single statement.
      */
-    public void setLocaleTag(String tag) {
+    public Preferences setLocaleTag(String tag) {
         if (Texts.isEmpty(tag))
             mProperties.remove(KEY_LOCALE_TAG);
         else
             set(KEY_LOCALE_TAG, tag);
+        return this;
     }// setLocaleTag()
 }

@@ -13,28 +13,26 @@ import group.pals.desktop.app.apksigner.services.BaseThread;
 import group.pals.desktop.app.apksigner.services.INotification;
 import group.pals.desktop.app.apksigner.services.ServiceManager;
 import group.pals.desktop.app.apksigner.services.Updater;
-import group.pals.desktop.app.apksigner.ui.Dlg;
-import group.pals.desktop.app.apksigner.ui.FileDrop;
-import group.pals.desktop.app.apksigner.ui.JEditorPopupMenu;
+import group.pals.desktop.app.apksigner.ui.prefs.DialogPreferences;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Sys;
 import group.pals.desktop.app.apksigner.utils.Texts;
-import group.pals.desktop.app.apksigner.utils.UI;
+import group.pals.desktop.app.apksigner.utils.ui.Dlg;
+import group.pals.desktop.app.apksigner.utils.ui.FileDrop;
+import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
+import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.Beans;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +41,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -201,7 +200,7 @@ public class MainActivity {
                 UI.COLOUR_BORDER_FILE_DROP), mTextJdkPathFileDropListener);
 
         mMainFrame.addWindowListener(mMainFrameWindowAdapter);
-        mTabbedPane.addMouseWheelListener(mTabbedPaneMouseWheelListener);
+        UI.initJTabbedPaneHeaderMouseWheelListener(mTabbedPane);
 
         initTabs();
 
@@ -227,6 +226,14 @@ public class MainActivity {
 
         JMenu mMenuFile = new JMenu(Messages.getString(R.string.file)); //$NON-NLS-1$
         mMenuBar.add(mMenuFile);
+
+        JMenuItem mMenuItemPreferences = new JMenuItem(
+                Messages.getString(R.string.settings)); //$NON-NLS-1$
+        mMenuItemPreferences
+                .addActionListener(mMenuItemPreferencesActionListener);
+        mMenuFile.add(mMenuItemPreferences);
+
+        mMenuFile.addSeparator();
 
         JMenuItem mMenuItemExit = new JMenuItem(
                 Messages.getString(R.string.exit)); //$NON-NLS-1$
@@ -293,6 +300,9 @@ public class MainActivity {
      * Initializes tabs.
      */
     private void initTabs() {
+        if (Beans.isDesignTime())
+            return;
+
         /*
          * Initialization of panels are slow. So we should put this block into a
          * `Runnable`.
@@ -462,6 +472,17 @@ public class MainActivity {
         }// actionPerformed()
     };// mMenuItemAboutActionListener
 
+    private final ActionListener mMenuItemPreferencesActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DialogPreferences dialog = new DialogPreferences(mMainFrame);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            UI.setWindowCenterScreen(dialog, 40);
+            dialog.setVisible(true);
+        }// actionPerformed()
+    };// mMenuItemPreferencesActionListener
+
     private final ActionListener mMenuItemExitActionListener = new ActionListener() {
 
         @Override
@@ -479,32 +500,6 @@ public class MainActivity {
                     PKEY_LAST_WORKING_DIR, "/"))));
         }// actionPerformed()
     };// mBtnChooseJdkPathActionListener
-
-    private final MouseWheelListener mTabbedPaneMouseWheelListener = new MouseWheelListener() {
-
-        @Override
-        public void mouseWheelMoved(MouseWheelEvent e) {
-            final Component selectedComp = mTabbedPane.getSelectedComponent();
-            if (selectedComp == null)
-                return;
-
-            final int headerHeight = mTabbedPane.getHeight()
-                    - selectedComp.getHeight();
-            if (!new Rectangle(0, 0, mTabbedPane.getWidth(), headerHeight)
-                    .contains(e.getPoint()))
-                return;
-
-            final int tabIndex = mTabbedPane.getSelectedIndex();
-            final int wheelRotation = e.getWheelRotation();
-            if (wheelRotation > 0) {
-                if (tabIndex < mTabbedPane.getTabCount() - 1)
-                    mTabbedPane.setSelectedIndex(tabIndex + 1);
-            } else if (wheelRotation < 0) {
-                if (tabIndex > 0)
-                    mTabbedPane.setSelectedIndex(tabIndex - 1);
-            }
-        }// mouseWheelMoved()
-    };// mTabbedPaneMouseWheelListener
 
     private final FileDrop.Listener mTextJdkPathFileDropListener = new FileDrop.Listener() {
 

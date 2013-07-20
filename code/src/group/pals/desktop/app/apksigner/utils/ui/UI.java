@@ -5,13 +5,16 @@
  *    permission.
  */
 
-package group.pals.desktop.app.apksigner.utils;
-
-import group.pals.desktop.app.apksigner.ui.FileDrop;
+package group.pals.desktop.app.apksigner.utils.ui;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Rectangle;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
 
 /**
@@ -76,4 +79,40 @@ public class UI {
                 (dim.height - window.getHeight()) / 2);
     }// setWindowCenterScreen()
 
+    /**
+     * Initializes a tabbed pane to listen to mouse wheel events, and switch
+     * tabs based on those events.
+     * 
+     * @param tabbedPane
+     *            the tabbed pane.
+     */
+    public static void initJTabbedPaneHeaderMouseWheelListener(
+            final JTabbedPane tabbedPane) {
+        tabbedPane.addMouseWheelListener(new MouseWheelListener() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                final Component selectedComp = tabbedPane
+                        .getSelectedComponent();
+                if (selectedComp == null)
+                    return;
+
+                final int headerHeight = tabbedPane.getHeight()
+                        - selectedComp.getHeight();
+                if (!new Rectangle(0, 0, tabbedPane.getWidth(), headerHeight)
+                        .contains(e.getPoint()))
+                    return;
+
+                final int tabIndex = tabbedPane.getSelectedIndex();
+                final int wheelRotation = e.getWheelRotation();
+                if (wheelRotation > 0) {
+                    if (tabIndex < tabbedPane.getTabCount() - 1)
+                        tabbedPane.setSelectedIndex(tabIndex + 1);
+                } else if (wheelRotation < 0) {
+                    if (tabIndex > 0)
+                        tabbedPane.setSelectedIndex(tabIndex - 1);
+                }
+            }// mouseWheelMoved()
+        });
+    }// initJTabbedPaneHeaderMouseWheelListener()
 }

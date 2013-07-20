@@ -5,7 +5,7 @@
  *    permission.
  */
 
-package group.pals.desktop.app.apksigner.ui;
+package group.pals.desktop.app.apksigner.utils.ui;
 
 import java.awt.Color;
 import java.awt.Component;

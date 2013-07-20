@@ -166,6 +166,8 @@ public class Updater extends BaseThread {
              * DOWNLOAD THE UPDATE FILE
              */
             downloadUpdateFile(updateProperties);
+        } catch (Exception e) {
+            L.e("%s >> %s", Updater.class.getSimpleName(), e);
         } finally {
             L.d("%s >> finishing", Updater.class.getSimpleName());
             sendNotification(MSG_DONE);

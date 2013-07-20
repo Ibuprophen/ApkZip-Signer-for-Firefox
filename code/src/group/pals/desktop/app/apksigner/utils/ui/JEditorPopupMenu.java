@@ -5,7 +5,7 @@
  *    permission.
  */
 
-package group.pals.desktop.app.apksigner.ui;
+package group.pals.desktop.app.apksigner.utils.ui;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;

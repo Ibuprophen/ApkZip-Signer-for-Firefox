@@ -30,6 +30,9 @@ public class Network {
      */
     public static final int HTTP_STATUS_OK = 200;
 
+    private static final String PROPERTY_SYS_PROXY_HOST = "http.proxyHost";
+    private static final String PROPERTY_SYS_PROXY_PORT = "http.proxyPort";
+
     /**
      * Opens new connection to {@code url} with default settings.
      * 
@@ -40,6 +43,16 @@ public class Network {
     public static HttpURLConnection openHttpConnection(String url) {
         if (Texts.isEmpty(url))
             return null;
+
+        if (Preferences.getInstance().isUsingProxy()) {
+            System.setProperty(PROPERTY_SYS_PROXY_HOST, Preferences
+                    .getInstance().getProxyHost());
+            System.setProperty(PROPERTY_SYS_PROXY_PORT,
+                    Integer.toString(Preferences.getInstance().getProxyPort()));
+        } else {
+            System.clearProperty(PROPERTY_SYS_PROXY_HOST);
+            System.clearProperty(PROPERTY_SYS_PROXY_PORT);
+        }
 
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url)

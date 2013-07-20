@@ -465,9 +465,13 @@ public class MainActivity {
                             + "\n"
                             + " - Robert Harder and his friends (module FileDrop)\n"
                             + "   + http://www.iharder.net/current/java/filedrop/\n"
-                            + "   + License: Public Domain\n", Messages
-                            .getString(R.string.pmsg_app_name, Sys.APP_NAME,
-                                    Sys.APP_VERSION_NAME));
+                            + "   + License: Public Domain\n"
+                            + "\n"
+                            + " - The Apache Software Foundation (module Commons Codec)\n"
+                            + "   + http://commons.apache.org/proper/commons-codec/\n"
+                            + "   + License: Apache License, Version 2.0\n",
+                            Messages.getString(R.string.pmsg_app_name,
+                                    Sys.APP_NAME, Sys.APP_VERSION_NAME));
             Dlg.showHugeInfoMsg(msg, 630, 270);
         }// actionPerformed()
     };// mMenuItemAboutActionListener

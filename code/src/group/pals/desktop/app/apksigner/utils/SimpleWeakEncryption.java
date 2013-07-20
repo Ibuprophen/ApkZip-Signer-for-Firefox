@@ -38,7 +38,12 @@ public class SimpleWeakEncryption {
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
     private static final String SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA1";
     private static final String SECRET_KEY_SPEC_ALGORITHM = "AES";
-    private static final int KEY_LEN = 256;
+
+    /**
+     * Only {@code 128} bits. If this is {@code 256}, some JVMs must need extra
+     * tools to be installed. Poor Java :|
+     */
+    private static final int KEY_LEN = 128;
     private static final int ITERATION_COUNT = (int) Math.pow(2, 16);
     private static final String SEPARATOR = "\t";
 

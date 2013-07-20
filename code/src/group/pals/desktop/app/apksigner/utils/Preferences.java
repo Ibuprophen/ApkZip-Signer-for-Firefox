@@ -263,7 +263,10 @@ public class Preferences {
 
         if (Texts.isEmpty(res)) {
             res = UUID.randomUUID().toString();
-            set(KEY_UID, res);
+            /*
+             * Don't use set(), to avoid of using transaction...
+             */
+            mProperties.setProperty(KEY_UID, res);
         }
 
         return res;

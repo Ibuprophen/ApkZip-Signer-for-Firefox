@@ -28,6 +28,12 @@ We hope this project will be always useful for everyone.
 
 # HISTORY
 
+* Version 1.7.8
+    + *Release*: July 21, 2013
+    + Fix encryption module on some (poor) JVMs  :|
+    + Fix i18n Vietnamese translation.
+    + Use ProGuard to shrink final executable JAR file.
+
 * Version 1.7.8 beta
     + *Initialize*: July 20, 2013
 

@@ -58,7 +58,12 @@ public class DialogPreferences extends JDialog {
     private static final String PKEY_LAST_TAB_INDEX = CLASSNAME
             + ".last_tab_index";
 
+    /*
+     * CONTROLS
+     */
+
     private final JPanel contentPanel = new JPanel();
+    private JTabbedPane mTabbedPane;
 
     /**
      * Create the dialog.
@@ -71,8 +76,7 @@ public class DialogPreferences extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Preferences.getInstance().cancelTransaction();
-                closeDialog();
+                closeDialog(false);
             }// actionPerformed()
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -166,8 +170,16 @@ public class DialogPreferences extends JDialog {
 
     /**
      * Closes this dialog.
+     * 
+     * @param commitTransaction
+     *            {@code true} or {@code false}.
      */
-    public void closeDialog() {
+    public void closeDialog(boolean commitTransaction) {
+        if (commitTransaction)
+            Preferences.getInstance().endTransaction();
+        else
+            Preferences.getInstance().cancelTransaction();
+
         dispatchEvent(new WindowEvent(DialogPreferences.this,
                 WindowEvent.WINDOW_CLOSING));
     }// closeDialog()
@@ -200,8 +212,7 @@ public class DialogPreferences extends JDialog {
                 }
             }
 
-            Preferences.getInstance().endTransaction();
-            closeDialog();
+            closeDialog(true);
         }// actionPerformed()
     };// mBtnOkActionListener
 
@@ -209,9 +220,8 @@ public class DialogPreferences extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Preferences.getInstance().cancelTransaction();
-            closeDialog();
+            closeDialog(false);
         }// actionPerformed()
     };// mBtnCancelActionListener
-    private JTabbedPane mTabbedPane;
+
 }

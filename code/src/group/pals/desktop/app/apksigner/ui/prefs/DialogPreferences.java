@@ -19,14 +19,18 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.Beans;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
@@ -63,6 +67,16 @@ public class DialogPreferences extends JDialog {
         super(owner, Messages.getString(R.string.settings),
                 Dialog.ModalityType.APPLICATION_MODAL);
 
+        getRootPane().registerKeyboardAction(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Preferences.getInstance().cancelTransaction();
+                closeDialog();
+            }// actionPerformed()
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+
         setBounds(0, 0, 630, 270);
         getContentPane().setLayout(new BorderLayout(10, 10));
         contentPanel.setLayout(new FlowLayout());
@@ -89,6 +103,13 @@ public class DialogPreferences extends JDialog {
             mTabbedPane = new JTabbedPane(JTabbedPane.TOP);
             getContentPane().add(mTabbedPane, BorderLayout.CENTER);
             UI.initJTabbedPaneHeaderMouseWheelListener(mTabbedPane);
+        }
+        {
+            JLabel lblNewLabel = new JLabel(Messages.getString(
+                    R.string.pmsg_sensitive_data_encryption,
+                    Preferences.PREFS_FILENAME));
+            lblNewLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            getContentPane().add(lblNewLabel, BorderLayout.NORTH);
         }
 
         /*
@@ -172,6 +193,13 @@ public class DialogPreferences extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            for (int i = 0; i < mTabbedPane.getTabCount(); i++) {
+                if (!((PreferencesFrame) mTabbedPane.getComponentAt(i)).store()) {
+                    mTabbedPane.setSelectedIndex(i);
+                    return;
+                }
+            }
+
             Preferences.getInstance().endTransaction();
             closeDialog();
         }// actionPerformed()

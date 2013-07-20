@@ -57,7 +57,7 @@ public class KeyGen {
         target.delete();
 
         /*
-         * keytool -genkey -sigalg MD5withRSA -digestalg SHA1 -alias ALIAS_NAME
+         * keytool -genkey -sigalg MD5withRSA -digestalg MD5 -alias ALIAS_NAME
          * -keypass KEY_PASS -validity YEARS -keystore TARGET_FILE -storepass
          * STORE_PASS -genkeypair -dname
          * "CN=Mark Jones, OU=JavaSoft, O=Sun, L=city, S=state C=US"

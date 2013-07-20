@@ -64,12 +64,12 @@ public class Signer {
                 .getAbsolutePath() + "/jarsigner.exe" : "jarsigner";
 
         /*
-         * jarsigner -keystore KEY_FILE -sigalg MD5withRSA -digestalg SHA1
+         * jarsigner -keystore KEY_FILE -sigalg MD5withRSA -digestalg MD5
          * -storepass STORE_PASS -keypass KEY_PASS APK_FILE ALIAS_NAME
          */
         ProcessBuilder pb = new ProcessBuilder(new String[] { jarsigner,
                 "-keystore", keyFile.getAbsolutePath(), "-sigalg",
-                "MD5withRSA", "-digestalg", "SHA1", "-storepass",
+                "MD5withRSA", "-digestalg", "MD5", "-storepass",
                 new String(storepass), "-keypass", new String(keypass),
                 targetFile.getAbsolutePath(), alias });
         Process p = pb.start();

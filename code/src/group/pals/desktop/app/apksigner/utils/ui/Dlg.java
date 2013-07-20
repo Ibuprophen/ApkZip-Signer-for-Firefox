@@ -18,6 +18,7 @@ import java.awt.Insets;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 /**
  * Utilities for dialog boxes.
@@ -44,6 +45,27 @@ public class Dlg {
     }// showErrMsg()
 
     /**
+     * Shows an error message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     */
+    public static void showErrMsgAsync(final Component comp,
+            final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showErrMsg(comp, title, msg);
+            }// run()
+        });
+    }// showErrMsgAsync()
+
+    /**
      * Shows an error message.
      * 
      * @param comp
@@ -54,6 +76,24 @@ public class Dlg {
     public static void showErrMsg(Component comp, Object msg) {
         showErrMsg(comp, null, msg);
     }// showErrMsg()
+
+    /**
+     * Shows an error message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param msg
+     *            the message.
+     */
+    public static void showErrMsgAsync(final Component comp, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showErrMsg(comp, msg);
+            }// run()
+        });
+    }// showErrMsgAsync()
 
     /**
      * Shows an error message.
@@ -68,6 +108,24 @@ public class Dlg {
     }// showErrMsg()
 
     /**
+     * Shows an error message asynchronously.
+     * 
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     */
+    public static void showErrMsgAsync(final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showErrMsg(title, msg);
+            }// run()
+        });
+    }// showErrMsgAsync()
+
+    /**
      * Shows an error message.
      * 
      * @param msg
@@ -76,6 +134,22 @@ public class Dlg {
     public static void showErrMsg(Object msg) {
         showErrMsg(null, null, msg);
     }// showErrMsg()
+
+    /**
+     * Shows an error message asynchronously.
+     * 
+     * @param msg
+     *            the message.
+     */
+    public static void showErrMsgAsync(final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showErrMsg(msg);
+            }// run()
+        });
+    }// showErrMsgAsync()
 
     /**
      * Shows an exception message.
@@ -94,6 +168,27 @@ public class Dlg {
     }// showException()
 
     /**
+     * Shows an exception message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param e
+     *            the exception.
+     */
+    public static void showExceptionAsync(final Component comp,
+            final String title, final Exception e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showException(comp, title, e);
+            }// run()
+        });
+    }// showExceptionAsync()
+
+    /**
      * Shows an exception message.
      * 
      * @param comp
@@ -104,6 +199,25 @@ public class Dlg {
     public static void showException(Component comp, Exception e) {
         showException(comp, null, e);
     }// showException()
+
+    /**
+     * Shows an exception message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param e
+     *            the exception.
+     */
+    public static void showExceptionAsync(final Component comp,
+            final Exception e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showException(comp, e);
+            }// run()
+        });
+    }// showExceptionAsync()
 
     /**
      * Shows an exception message.
@@ -118,6 +232,24 @@ public class Dlg {
     }// showException()
 
     /**
+     * Shows an exception message asynchronously.
+     * 
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param e
+     *            the exception.
+     */
+    public static void showExceptionAsync(final String title, final Exception e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showException(title, e);
+            }// run()
+        });
+    }// showExceptionAsync()
+
+    /**
      * Shows an exception message.
      * 
      * @param e
@@ -126,6 +258,22 @@ public class Dlg {
     public static void showException(Exception e) {
         showException(null, null, e);
     }// showException()
+
+    /**
+     * Shows an exception message asynchronously.
+     * 
+     * @param e
+     *            the exception.
+     */
+    public static void showExceptionAsync(final Exception e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showException(e);
+            }// run()
+        });
+    }// showExceptionAsync()
 
     /**
      * Shows an information message.
@@ -147,6 +295,27 @@ public class Dlg {
     }// showInfoMsg()
 
     /**
+     * Shows an information message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     */
+    public static void showInfoMsgAsync(final Component comp,
+            final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showInfoMsg(comp, title, msg);
+            }// run()
+        });
+    }// showInfoMsgAsync()
+
+    /**
      * Shows an information message.
      * 
      * @param title
@@ -157,6 +326,24 @@ public class Dlg {
     public static void showInfoMsg(String title, Object msg) {
         showInfoMsg(null, title, msg);
     }// showInfoMsg()
+
+    /**
+     * Shows an information message asynchronously.
+     * 
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     */
+    public static void showInfoMsgAsync(final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showInfoMsg(title, msg);
+            }// run()
+        });
+    }// showInfoMsgAsync()
 
     /**
      * Shows an information message.
@@ -171,6 +358,24 @@ public class Dlg {
     }// showInfoMsg()
 
     /**
+     * Shows an information message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param msg
+     *            the message.
+     */
+    public static void showInfoMsgAsync(final Component comp, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showInfoMsg(comp, msg);
+            }// run()
+        });
+    }// showInfoMsgAsync()
+
+    /**
      * Shows an information message.
      * 
      * @param msg
@@ -179,6 +384,22 @@ public class Dlg {
     public static void showInfoMsg(Object msg) {
         showInfoMsg(null, null, msg);
     }// showInfoMsg()
+
+    /**
+     * Shows an information message asynchronously.
+     * 
+     * @param msg
+     *            the message.
+     */
+    public static void showInfoMsgAsync(final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showInfoMsg(msg);
+            }// run()
+        });
+    }// showInfoMsgAsync()
 
     /**
      * Shows a huge information message. The dialog size will be hardcoded with
@@ -214,6 +435,33 @@ public class Dlg {
     }// showHugeInfoMsg()
 
     /**
+     * Shows a huge information message asynchronously. The dialog size will be
+     * hardcoded with {@code width} and {@code height}.
+     * 
+     * @param comp
+     *            the root component.
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     * @param width
+     *            the dialog width.
+     * @param height
+     *            the dialog height.
+     */
+    public static void showHugeInfoMsgAsync(final Component comp,
+            final String title, final String msg, final int width,
+            final int height) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showHugeInfoMsg(comp, title, msg, width, height);
+            }// run()
+        });
+    }// showHugeInfoMsgAsync()
+
+    /**
      * Shows a huge information message. The dialog size will be hardcoded with
      * {@code width} and {@code height}.
      * 
@@ -230,6 +478,30 @@ public class Dlg {
             int height) {
         showHugeInfoMsg(null, title, msg, width, height);
     }// showHugeInfoMsg()
+
+    /**
+     * Shows a huge information message asynchronously. The dialog size will be
+     * hardcoded with {@code width} and {@code height}.
+     * 
+     * @param title
+     *            the title. If {@code null}, default will be used.
+     * @param msg
+     *            the message.
+     * @param width
+     *            the dialog width.
+     * @param height
+     *            the dialog height.
+     */
+    public static void showHugeInfoMsgAsync(final String title,
+            final String msg, final int width, final int height) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showHugeInfoMsg(title, msg, width, height);
+            }// run()
+        });
+    }// showHugeInfoMsgAsync()
 
     /**
      * Shows a huge information message. The dialog size will be hardcoded with
@@ -250,6 +522,30 @@ public class Dlg {
     }// showHugeInfoMsg()
 
     /**
+     * Shows a huge information message asynchronously. The dialog size will be
+     * hardcoded with {@code width} and {@code height}.
+     * 
+     * @param comp
+     *            the root component.
+     * @param msg
+     *            the message.
+     * @param width
+     *            the dialog width.
+     * @param height
+     *            the dialog height.
+     */
+    public static void showHugeInfoMsgAsync(final Component comp,
+            final String msg, final int width, final int height) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showHugeInfoMsg(comp, msg, width, height);
+            }// run()
+        });
+    }// showHugeInfoMsgAsync()
+
+    /**
      * Shows a huge information message. The dialog size will be hardcoded with
      * {@code width} and {@code height}.
      * 
@@ -263,6 +559,28 @@ public class Dlg {
     public static void showHugeInfoMsg(String msg, int width, int height) {
         showHugeInfoMsg(null, null, msg, width, height);
     }// showHugeInfoMsg()
+
+    /**
+     * Shows a huge information message asynchronously. The dialog size will be
+     * hardcoded with {@code width} and {@code height}.
+     * 
+     * @param msg
+     *            the message.
+     * @param width
+     *            the dialog width.
+     * @param height
+     *            the dialog height.
+     */
+    public static void showHugeInfoMsgAsync(final String msg, final int width,
+            final int height) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showHugeInfoMsg(msg, width, height);
+            }// run()
+        });
+    }// showHugeInfoMsgAsync()
 
     /**
      * Shows a warning message.
@@ -281,6 +599,27 @@ public class Dlg {
     }// showWarningMsg()
 
     /**
+     * Shows a warning message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param title
+     *            the title.
+     * @param msg
+     *            the message.
+     */
+    public static void showWarningMsgAsync(final Component comp,
+            final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showWarningMsg(comp, title, msg);
+            }// run()
+        });
+    }// showWarningMsgAsync()
+
+    /**
      * Shows a warning message.
      * 
      * @param comp
@@ -291,6 +630,25 @@ public class Dlg {
     public static void showWarningMsg(Component comp, Object msg) {
         showWarningMsg(comp, null, msg);
     }// showWarningMsg()
+
+    /**
+     * Shows a warning message asynchronously.
+     * 
+     * @param comp
+     *            the root component.
+     * @param msg
+     *            the message.
+     */
+    public static void showWarningMsgAsync(final Component comp,
+            final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showWarningMsg(comp, msg);
+            }// run()
+        });
+    }// showWarningMsgAsync()
 
     /**
      * Shows a warning message.
@@ -305,6 +663,24 @@ public class Dlg {
     }// showWarningMsg()
 
     /**
+     * Shows a warning message asynchronously.
+     * 
+     * @param title
+     *            the title.
+     * @param msg
+     *            the message.
+     */
+    public static void showWarningMsgAsync(final String title, final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showWarningMsg(title, msg);
+            }// run()
+        });
+    }// showWarningMsgAsync()
+
+    /**
      * Shows a warning message.
      * 
      * @param msg
@@ -313,6 +689,22 @@ public class Dlg {
     public static void showWarningMsg(Object msg) {
         showWarningMsg(null, null, msg);
     }// showWarningMsg()
+
+    /**
+     * Shows a warning message asynchronously.
+     * 
+     * @param msg
+     *            the message.
+     */
+    public static void showWarningMsgAsync(final Object msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                showWarningMsg(msg);
+            }// run()
+        });
+    }// showWarningMsgAsync()
 
     /**
      * Shows a yes-no confirmation dialog.

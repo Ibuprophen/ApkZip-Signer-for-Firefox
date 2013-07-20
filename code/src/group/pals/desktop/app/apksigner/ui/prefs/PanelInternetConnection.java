@@ -141,6 +141,7 @@ public class PanelInternetConnection extends JPanel implements PreferencesFrame 
              */
             if (Texts.isEmpty(mTextProxyHost.getText().trim())) {
                 mTextProxyHost.requestFocus();
+                mTextProxyHost.selectAll();
                 Dlg.showErrMsgAsync(Messages
                         .getString(R.string.msg_invalid_proxy_host));
                 return false;
@@ -153,6 +154,7 @@ public class PanelInternetConnection extends JPanel implements PreferencesFrame 
              */
             if (!mTextProxyPort.getText().matches("[0-9]+")) {
                 mTextProxyPort.requestFocus();
+                mTextProxyPort.selectAll();
                 Dlg.showErrMsgAsync(Messages
                         .getString(R.string.msg_invalid_proxy_port));
                 return false;

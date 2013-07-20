@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -71,6 +72,8 @@ public class DialogPreferences extends JDialog {
     public DialogPreferences(Window owner) {
         super(owner, Messages.getString(R.string.settings),
                 Dialog.ModalityType.APPLICATION_MODAL);
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         getRootPane().registerKeyboardAction(new ActionListener() {
 

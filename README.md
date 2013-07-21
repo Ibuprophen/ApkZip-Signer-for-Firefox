@@ -32,6 +32,10 @@ We hope this project will be always useful for everyone.
 
 # HISTORY
 
+* Version 1.8
+    + *Release*: July 22, 2013
+    + Optimize/ improve UI.
+
 * Version 1.8 beta
     + *Initialize*: July 21, 2013
 

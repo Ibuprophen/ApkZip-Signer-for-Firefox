@@ -66,9 +66,6 @@ public class SplashDialog extends JDialog {
      * Launch the application.
      */
     public static void main(String[] args) {
-        L.i(Messages.getString(R.string.pmsg_app_name, Sys.APP_NAME,
-                Sys.APP_VERSION_NAME));
-
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -108,11 +105,11 @@ public class SplashDialog extends JDialog {
         mLabelInfo.setForeground(new Color(0, 191, 255));
         mLabelInfo.setFont(mLabelInfo.getFont().deriveFont(
                 mLabelInfo.getFont().getSize() - 3f));
-        mLabelInfo.setText(Messages.getString(R.string.msg_html_loading));
         getContentPane().add(mLabelInfo, BorderLayout.CENTER);
 
         UI.setWindowCenterScreen(this, logo.getIconWidth(),
                 logo.getIconHeight());
+        pack();
     }// SplashDialog()
 
     /**
@@ -133,6 +130,11 @@ public class SplashDialog extends JDialog {
 
         @Override
         protected Void doInBackground() throws Exception {
+            publish(Messages.getString(R.string.msg_html_loading));
+
+            L.i(Messages.getString(R.string.pmsg_app_name, Sys.APP_NAME,
+                    Sys.APP_VERSION_NAME));
+
             Locale.setDefault(Locale.forLanguageTag(Preferences.getInstance()
                     .getLocaleTag()));
             publish(Messages.getString(R.string.msg_html_loading_language));

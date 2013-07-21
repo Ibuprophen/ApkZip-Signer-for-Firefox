@@ -417,9 +417,7 @@ public class Dlg {
      */
     public static void showHugeInfoMsg(Component comp, String title,
             String msg, int width, int height) {
-        JLabel textArea = new JLabel(msg);
-
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollPane scrollPane = new JScrollPane(new JLabel(msg));
         if (width > 0 && height > 0) {
             Dimension size = new Dimension(width, height);
             scrollPane.setMaximumSize(size);

@@ -22,7 +22,7 @@ import java.io.IOException;
 public class Assets {
 
     private static Font mDefaultFont, mDefaultMonoFont;
-    private static Image mIconLogo;
+    private static Image mIconLogo, mIconSplash;
 
     /**
      * Gets font from resource.
@@ -80,4 +80,16 @@ public class Assets {
                     SplashDialog.class.getResource("/images/logo_256.png"));
         return mIconLogo;
     }// getIconLogo()
+
+    /**
+     * Gets the icon splash.
+     * 
+     * @return the icon splash.
+     */
+    public static Image getIconSplash() {
+        if (mIconSplash == null)
+            mIconSplash = Toolkit.getDefaultToolkit().getImage(
+                    SplashDialog.class.getResource("/images/logo_399x144.png"));
+        return mIconSplash;
+    }// getIconSplash()
 }

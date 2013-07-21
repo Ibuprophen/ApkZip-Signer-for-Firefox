@@ -24,6 +24,7 @@ import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -37,17 +38,21 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
@@ -434,7 +439,21 @@ public class MainActivity {
                             + "</li>" + "</ul></p>" + "</body></html>",
                             Messages.getString(R.string.pmsg_app_name,
                                     Sys.APP_NAME, Sys.APP_VERSION_NAME));
-            Dlg.showHugeInfoMsg(msg, 630, 270);
+
+            JLabel label = new JLabel(new ImageIcon(Assets.getIconSplash()),
+                    SwingConstants.CENTER);
+            label.setVerticalAlignment(SwingConstants.TOP);
+            label.setHorizontalTextPosition(SwingConstants.CENTER);
+            label.setVerticalTextPosition(SwingConstants.BOTTOM);
+            label.setText(msg);
+
+            JScrollPane scrollPane = new JScrollPane(label);
+            Dimension size = new Dimension(630, 270);
+            scrollPane.setMaximumSize(size);
+            scrollPane.setMinimumSize(size);
+            scrollPane.setPreferredSize(size);
+
+            Dlg.showInfoMsg(null, null, scrollPane);
         }// actionPerformed()
     };// mMenuItemAboutActionListener
 

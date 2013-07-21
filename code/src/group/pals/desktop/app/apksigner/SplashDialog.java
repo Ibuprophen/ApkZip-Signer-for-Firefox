@@ -17,7 +17,6 @@ import group.pals.desktop.app.apksigner.utils.ui.UI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Toolkit;
 import java.beans.Beans;
 import java.util.List;
 import java.util.Locale;
@@ -99,10 +98,7 @@ public class SplashDialog extends JDialog {
         setUndecorated(true);
         setIconImage(Assets.getIconLogo());
 
-        final ImageIcon logo = new ImageIcon(Toolkit.getDefaultToolkit()
-                .getImage(
-                        SplashDialog.class
-                                .getResource("/images/logo_399x144.png")));
+        final ImageIcon logo = new ImageIcon(Assets.getIconSplash());
 
         UI.setWindowCenterScreen(this, logo.getIconWidth(),
                 logo.getIconHeight());

@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.codec.binary.Base64;
+import android.util.Base64;
 
 /**
  * Network utilities.
@@ -82,9 +82,11 @@ public class Network {
                             .getProxyUsername())) {
                 char[] password = Preferences.getInstance().getProxyPassword();
                 String proxyAuthorization = Base64
-                        .encodeBase64String((Preferences.getInstance()
-                                .getProxyUsername() + ":" + (password != null ? new String(
-                                password) : "")).getBytes(Texts.UTF8));
+                        .encodeToString(
+                                (Preferences.getInstance().getProxyUsername()
+                                        + ":" + (password != null ? new String(
+                                        password) : "")).getBytes(Texts.UTF8),
+                                Base64.DEFAULT);
                 // https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
                 conn.setRequestProperty("Proxy-Authorization", "Basic "
                         + proxyAuthorization);

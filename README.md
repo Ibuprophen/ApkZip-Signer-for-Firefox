@@ -22,11 +22,15 @@ We hope this project will be always useful for everyone.
     + [Google+ page](https://plus.google.com/118055781130476825691?prsrc=2)
 * Robert Harder and his friends (module [FileDrop](http://www.iharder.net/current/java/filedrop/))
     + License: Public Domain
-* The Apache Software Foundation (module [Commons Codec](http://commons.apache.org/proper/commons-codec/))
+* The Android Open Source Project (module [AOSP Base64](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/))
     + License: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 # HISTORY
+
+* Version 1.7.9
+    + *Release*: July 21, 2013
+    + Use AOSP Base64 instead of Apache Commons Codec (to reduce binary size).
 
 * Version 1.7.8
     + *Release*: July 21, 2013

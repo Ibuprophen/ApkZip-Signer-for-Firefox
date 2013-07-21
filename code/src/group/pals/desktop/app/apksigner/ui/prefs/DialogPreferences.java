@@ -9,7 +9,6 @@ package group.pals.desktop.app.apksigner.ui.prefs;
 
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
-import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
@@ -195,9 +194,6 @@ public class DialogPreferences extends JDialog {
 
         @Override
         public void windowClosing(WindowEvent e) {
-            L.d("%s >> windowClosing()",
-                    DialogPreferences.class.getSimpleName());
-
             Preferences.getInstance().set(PKEY_LAST_TAB_INDEX,
                     Integer.toString(mTabbedPane.getSelectedIndex()));
             Preferences.getInstance().store();

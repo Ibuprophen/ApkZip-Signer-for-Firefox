@@ -467,8 +467,8 @@ public class MainActivity {
                             + "   + http://www.iharder.net/current/java/filedrop/\n"
                             + "   + License: Public Domain\n"
                             + "\n"
-                            + " - The Apache Software Foundation (module Commons Codec)\n"
-                            + "   + http://commons.apache.org/proper/commons-codec/\n"
+                            + " - The Android Open Source Project (module AOSP Base64)\n"
+                            + "   + https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/\n"
                             + "   + License: Apache License, Version 2.0\n",
                             Messages.getString(R.string.pmsg_app_name,
                                     Sys.APP_NAME, Sys.APP_VERSION_NAME));

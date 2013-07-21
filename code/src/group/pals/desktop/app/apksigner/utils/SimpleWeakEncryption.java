@@ -25,7 +25,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
+import android.util.Base64;
 
 /**
  * The <b>simple-and-weak</b> encryption utilities.
@@ -90,8 +90,8 @@ public class SimpleWeakEncryption {
         try {
             bytes = cipher.doFinal(bytes);
             return String.format("%s%s%s",
-                    Base64.encodeBase64String(cipher.getIV()), SEPARATOR,
-                    Base64.encodeBase64String(bytes));
+                    Base64.encodeToString(cipher.getIV(), Base64.DEFAULT),
+                    SEPARATOR, Base64.encodeToString(bytes, Base64.DEFAULT));
         } catch (IllegalBlockSizeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -130,8 +130,8 @@ public class SimpleWeakEncryption {
             cipher.init(
                     Cipher.DECRYPT_MODE,
                     genKey(password),
-                    new IvParameterSpec(Base64.decodeBase64(data.substring(0,
-                            iSeparator))));
+                    new IvParameterSpec(Base64.decode(
+                            data.substring(0, iSeparator), Base64.DEFAULT)));
         } catch (InvalidKeyException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -141,8 +141,8 @@ public class SimpleWeakEncryption {
         }
 
         try {
-            return new String(cipher.doFinal(Base64.decodeBase64(data
-                    .substring(iSeparator + 1))), UTF8);
+            return new String(cipher.doFinal(Base64.decode(
+                    data.substring(iSeparator + 1), Base64.DEFAULT)), UTF8);
         } catch (IllegalBlockSizeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

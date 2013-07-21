@@ -97,20 +97,22 @@ public class SplashDialog extends JDialog {
     public SplashDialog() {
         setUndecorated(true);
         setIconImage(Assets.getIconLogo());
+        getContentPane().setBackground(new Color(0, 0, 0, 0xcc));
 
         final ImageIcon logo = new ImageIcon(Assets.getIconSplash());
 
-        UI.setWindowCenterScreen(this, logo.getIconWidth(),
-                logo.getIconHeight());
-
-        mLabelInfo = new JLabel(logo);
+        mLabelInfo = new JLabel(logo, SwingConstants.CENTER);
+        mLabelInfo.setVerticalAlignment(SwingConstants.TOP);
         mLabelInfo.setHorizontalTextPosition(SwingConstants.CENTER);
-        mLabelInfo.setVerticalTextPosition(SwingConstants.CENTER);
+        mLabelInfo.setVerticalTextPosition(SwingConstants.BOTTOM);
         mLabelInfo.setForeground(new Color(0, 191, 255));
         mLabelInfo.setFont(mLabelInfo.getFont().deriveFont(
                 mLabelInfo.getFont().getSize() - 3f));
         mLabelInfo.setText(Messages.getString(R.string.msg_html_loading));
         getContentPane().add(mLabelInfo, BorderLayout.CENTER);
+
+        UI.setWindowCenterScreen(this, logo.getIconWidth(),
+                logo.getIconHeight());
     }// SplashDialog()
 
     /**
@@ -178,6 +180,7 @@ public class SplashDialog extends JDialog {
         @Override
         protected void process(List<String> strings) {
             mLabelInfo.setText(strings.get(strings.size() - 1));
+            pack();
         }// process()
 
     }// Loader

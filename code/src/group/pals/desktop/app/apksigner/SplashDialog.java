@@ -109,7 +109,7 @@ public class SplashDialog extends JDialog {
         mLabelInfo.setForeground(new Color(0, 191, 255));
         mLabelInfo.setFont(mLabelInfo.getFont().deriveFont(
                 mLabelInfo.getFont().getSize() - 3f));
-        mLabelInfo.setText(Messages.getString(R.string.msg_loading));
+        mLabelInfo.setText(Messages.getString(R.string.msg_html_loading));
         getContentPane().add(mLabelInfo, BorderLayout.CENTER);
     }// SplashDialog()
 
@@ -133,18 +133,18 @@ public class SplashDialog extends JDialog {
         protected Void doInBackground() throws Exception {
             Locale.setDefault(Locale.forLanguageTag(Preferences.getInstance()
                     .getLocaleTag()));
-            publish(Messages.getString(R.string.msg_loading_language));
+            publish(Messages.getString(R.string.msg_html_loading_language));
 
             /*
              * THEME
              */
 
-            publish(Messages.getString(R.string.msg_loading_fonts));
+            publish(Messages.getString(R.string.msg_html_loading_fonts));
             for (String fontKey : FONT_KEYS)
                 UIManager.put(fontKey, Assets.getDefaultFont());
             Assets.getDefaultMonoFont();
 
-            publish(Messages.getString(R.string.msg_loading_theme));
+            publish(Messages.getString(R.string.msg_html_loading_theme));
             try {
                 ThemeDescription[] availableThemes = Theme.getAvailableThemes();
                 for (ThemeDescription td : availableThemes) {
@@ -165,7 +165,7 @@ public class SplashDialog extends JDialog {
              * Start MainActivity.
              */
 
-            publish(Messages.getString(R.string.msg_loading));
+            publish(Messages.getString(R.string.msg_html_loading));
 
             MainActivity window = new MainActivity();
             setVisible(false);

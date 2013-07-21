@@ -53,7 +53,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -103,7 +102,7 @@ public class MainActivity {
     public MainActivity() {
         initialize();
 
-        UI.setWindowCenterScreen(mMainFrame, 59);
+        UI.setWindowCenterScreen(mMainFrame, 65);
         JEditorPopupMenu.apply(mMainFrame);
 
         /*
@@ -257,45 +256,34 @@ public class MainActivity {
         if (Beans.isDesignTime())
             return;
 
+        mTabbedPane.add(Messages.getString(R.string.key_generator),
+                new PanelKeyGen());
+        mTabbedPane.add(Messages.getString(R.string.signer), new PanelSigner());
+        mTabbedPane.add(Messages.getString(R.string.apk_alignment),
+                new PanelApkAlignment());
+        mTabbedPane.add(Messages.getString(R.string.key_tools),
+                new PanelKeyTools());
+
         /*
-         * Initialization of panels are slow. So we should put this block into a
-         * `Runnable`.
+         * Select the last tab index.
          */
-        SwingUtilities.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                mTabbedPane.add(Messages.getString(R.string.key_generator),
-                        new PanelKeyGen());
-                mTabbedPane.add(Messages.getString(R.string.signer),
-                        new PanelSigner());
-                mTabbedPane.add(Messages.getString(R.string.apk_alignment),
-                        new PanelApkAlignment());
-                mTabbedPane.add(Messages.getString(R.string.key_tools),
-                        new PanelKeyTools());
+        int lastTabIndex = 0;
+        try {
+            lastTabIndex = Integer.parseInt(Preferences.getInstance().get(
+                    PKEY_LAST_TAB_INDEX));
+        } catch (Exception e) {
+            /*
+             * Ignore it.
+             */
+        }
 
-                /*
-                 * Select the last tab index.
-                 */
+        if (lastTabIndex >= mTabbedPane.getTabCount())
+            lastTabIndex = mTabbedPane.getTabCount() - 1;
+        if (lastTabIndex < 0)
+            lastTabIndex = 0;
 
-                int lastTabIndex = 0;
-                try {
-                    lastTabIndex = Integer.parseInt(Preferences.getInstance()
-                            .get(PKEY_LAST_TAB_INDEX));
-                } catch (Exception e) {
-                    /*
-                     * Ignore it.
-                     */
-                }
-
-                if (lastTabIndex >= mTabbedPane.getTabCount())
-                    lastTabIndex = mTabbedPane.getTabCount() - 1;
-                if (lastTabIndex < 0)
-                    lastTabIndex = 0;
-
-                mTabbedPane.setSelectedIndex(lastTabIndex);
-            }// run()
-        });
+        mTabbedPane.setSelectedIndex(lastTabIndex);
     }// initTabs()
 
     /**

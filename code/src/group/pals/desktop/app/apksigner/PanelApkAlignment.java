@@ -23,10 +23,10 @@ import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Beans;
 import java.io.File;
 import java.util.regex.Matcher;
 
@@ -122,8 +122,8 @@ public class PanelApkAlignment extends JPanel {
         mTextInfo = new JTextArea();
         mTextInfo.setTabSize(UI.TEXT_COMPONENT_TAB_SIZE);
         mTextInfo.setMargin(new Insets(9, 9, 9, 9));
-        mTextInfo.setFont(new Font("Monospaced",
-                mTextInfo.getFont().getStyle(), mTextInfo.getFont().getSize()));
+        if (!Beans.isDesignTime())
+            mTextInfo.setFont(Assets.getDefaultMonoFont());
         mTextInfo.setEditable(false);
         mTextInfoScrollPane.setViewportView(mTextInfo);
 

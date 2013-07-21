@@ -66,13 +66,27 @@ public class UI {
      *            your lucky number :-)
      */
     public static void setWindowCenterScreen(java.awt.Window window, int luckyNo) {
+        setWindowCenterScreen(window, luckyNo * 16, luckyNo * 9);
+    }// setWindowCenterScreen()
+
+    /**
+     * Moves the {@code window} to center of the screen, also resizes it by
+     * {@code width} x {@code height}.
+     * 
+     * @param window
+     *            the window.
+     * @param width
+     *            the window width.
+     * @param height
+     *            the window height.
+     */
+    public static void setWindowCenterScreen(java.awt.Window window, int width,
+            int height) {
         java.awt.Dimension dim;
 
-        if (luckyNo > 0) {
-            dim = new java.awt.Dimension(luckyNo * 16, luckyNo * 9);
-            window.setMinimumSize(dim);
-            window.setSize(dim);
-        }
+        dim = new java.awt.Dimension(width, height);
+        window.setMinimumSize(dim);
+        window.setSize(dim);
 
         dim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         window.setLocation((dim.width - window.getWidth()) / 2,

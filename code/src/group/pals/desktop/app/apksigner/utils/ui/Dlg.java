@@ -13,11 +13,10 @@ import group.pals.desktop.app.apksigner.utils.Texts;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Insets;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 /**
@@ -418,10 +417,7 @@ public class Dlg {
      */
     public static void showHugeInfoMsg(Component comp, String title,
             String msg, int width, int height) {
-        JTextArea textArea = new JTextArea(msg);
-        textArea.setEditable(false);
-        textArea.setMargin(new Insets(9, 9, 9, 9));
-        textArea.setComponentPopupMenu(new JEditorPopupMenu());
+        JLabel textArea = new JLabel(msg);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
         if (width > 0 && height > 0) {

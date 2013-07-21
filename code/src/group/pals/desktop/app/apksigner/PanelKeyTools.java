@@ -20,10 +20,10 @@ import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.Beans;
 import java.io.File;
 
 import javax.swing.BorderFactory;
@@ -171,8 +171,8 @@ public class PanelKeyTools extends JPanel {
 
         mTextInfo = new JTextArea();
         mTextInfo.setEditable(false);
-        mTextInfo.setFont(new Font("Monospaced",
-                mTextInfo.getFont().getStyle(), mTextInfo.getFont().getSize()));
+        if (!Beans.isDesignTime())
+            mTextInfo.setFont(Assets.getDefaultMonoFont());
         mTextInfo.setMargin(new Insets(9, 9, 9, 9));
         mTextInfo.setTabSize(UI.TEXT_COMPONENT_TAB_SIZE);
         mTextInfoScrollPane.setViewportView(mTextInfo);

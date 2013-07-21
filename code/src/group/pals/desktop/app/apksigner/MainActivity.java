@@ -15,7 +15,6 @@ import group.pals.desktop.app.apksigner.services.ServiceManager;
 import group.pals.desktop.app.apksigner.services.Updater;
 import group.pals.desktop.app.apksigner.ui.prefs.DialogPreferences;
 import group.pals.desktop.app.apksigner.utils.Files;
-import group.pals.desktop.app.apksigner.utils.L;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Sys;
 import group.pals.desktop.app.apksigner.utils.Texts;
@@ -25,7 +24,6 @@ import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -35,7 +33,6 @@ import java.awt.event.WindowEvent;
 import java.beans.Beans;
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -52,13 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
-
-import de.muntjak.tinylookandfeel.Theme;
-import de.muntjak.tinylookandfeel.ThemeDescription;
-import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 
 /**
  * Main activity.
@@ -102,53 +93,10 @@ public class MainActivity {
     private JMenu mMenuLanguage;
 
     /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        L.i(Messages.getString(R.string.pmsg_app_name, Sys.APP_NAME,
-                Sys.APP_VERSION_NAME));
-
-        Locale.setDefault(Locale.forLanguageTag(Preferences.getInstance()
-                .getLocaleTag()));
-
-        EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                try {
-                    MainActivity window = new MainActivity();
-                    window.mMainFrame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }// main()
-
-    /**
      * Create the application.
      */
     public MainActivity() {
         initialize();
-
-        /*
-         * THEME
-         */
-
-        try {
-            ThemeDescription[] availableThemes = Theme.getAvailableThemes();
-            for (ThemeDescription td : availableThemes) {
-                if (td.getURL().toString().matches("(?i).*nightly.*")) {
-                    Theme.loadTheme(td);
-                    UIManager.setLookAndFeel(new TinyLookAndFeel());
-                    SwingUtilities.updateComponentTreeUI(mMainFrame);
-                    break;
-                }
-            }
-        } catch (UnsupportedLookAndFeelException ex) {
-            /*
-             * Ignore it.
-             */
-        }
 
         UI.setWindowCenterScreen(mMainFrame, 59);
         JEditorPopupMenu.apply(mMainFrame);
@@ -220,6 +168,7 @@ public class MainActivity {
         mMainFrame = new JFrame();
         mMainFrame.setBounds(100, 100, 450, 300);
         mMainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mMainFrame.setIconImage(Assets.getIconLogo());
 
         JMenuBar mMenuBar = new JMenuBar();
         mMainFrame.setJMenuBar(mMenuBar);
@@ -345,6 +294,13 @@ public class MainActivity {
     }// initTabs()
 
     /**
+     * Shows main window.
+     */
+    public void show() {
+        mMainFrame.setVisible(true);
+    }// show()
+
+    /**
      * Sets the JDK path.
      * 
      * @param file
@@ -440,36 +396,42 @@ public class MainActivity {
         @Override
         public void actionPerformed(ActionEvent e) {
             final String msg = String
-                    .format("%s\n\n"
-                            + "...by Hai Bison\n\n"
-                            + " - License: MIT License\n"
-                            + " - Code page: https://code.google.com/p/apk-signer/\n"
-                            + " - Official site: http://www.haibison.com\n"
-                            + "\n"
-                            + "We sincerely thank:\n"
-                            + "\n"
-                            + " - All of our friends, who have been contributing to this project.\n"
-                            + " - The authors of external modules/ libraries which are used in this project.\n"
-                            + "\n"
-                            + "We hope this project will be always useful for everyone.\n"
-                            + "\n"
-                            + "\n"
-                            + "*** CREDITS ***\n"
-                            + "\n"
-                            + " - Hans Bickel (library TinyLaF)\n"
-                            + "   + http://www.muntjak.de/hans/java/tinylaf/index.html\n"
-                            + "   + License: GNU Lesser General Public License\n"
-                            + "\n"
-                            + " - Leo Chien (contributor)\n"
-                            + "   + https://plus.google.com/118055781130476825691?prsrc=2\n"
-                            + "\n"
-                            + " - Robert Harder and his friends (module FileDrop)\n"
-                            + "   + http://www.iharder.net/current/java/filedrop/\n"
-                            + "   + License: Public Domain\n"
-                            + "\n"
-                            + " - The Android Open Source Project (module AOSP Base64)\n"
-                            + "   + https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/\n"
-                            + "   + License: Apache License, Version 2.0\n",
+                    .format("<html><body topmargin=\"10px\" leftmargin=\"10px\" marginheight=\"10px\" marginwidth=\"10px\">"
+                            + "<p><h3>%s</h3></p>"
+                            + "<p>...by Hai Bison</p>"
+                            + "<p><ul><li>License: MIT License</li>"
+                            + "<li>Code page: <a href=\"https://code.google.com/p/apk-signer/\">https://code.google.com/p/apk-signer/</a></li>"
+                            + "<li>Official site: <a href=\"http://www.haibison.com\">http://www.haibison.com</a></li></ul><p>"
+                            + "<p>"
+                            + "We sincerely thank:"
+                            + "</p><ul>"
+                            + "<li>All of our friends, who have been contributing to this project.</li>"
+                            + "<li>The authors of external modules/ libraries which are used in this project.</li>"
+                            + "</ul></p>"
+                            + "<p>We hope this project will be always useful for everyone.</p>"
+                            + ""
+                            + "<p><h2>CREDITS</h2></p>"
+                            + "<p><ul>"
+                            + "<li>Hans Bickel (library <a href=\"http://www.muntjak.de/hans/java/tinylaf/index.html\">TinyLaF</a>)"
+                            + "<ul>"
+                            + "<li>License: <a href=\"http://www.gnu.org/licenses/lgpl.html\">GNU Lesser General Public License</a></li>"
+                            + "</ul>"
+                            + "</li>"
+                            + "<li>Leo Chien (contributor)"
+                            + "<ul><li><a href=\"https://plus.google.com/118055781130476825691?prsrc=2\">Google+ page</a></li></ul>"
+                            + "</li>"
+                            + "<li>Robert Harder and his friends (module <a href=\"http://www.iharder.net/current/java/filedrop/\">FileDrop</a>)"
+                            + "<ul>"
+                            + "<li>License: Public Domain</li>"
+                            + "</ul>"
+                            + "</li>"
+                            + "<li>The Android Open Source Project (module <a href=\"https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/\">AOSP Base64</a>)"
+                            + "<ul>"
+                            + "<li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
+                            + "</li>"
+                            + "<li>The Ubuntu Font Family authors"
+                            + "<ul><li>License: <a href=\"http://font.ubuntu.com/ufl/ubuntu-font-licence-1.0.txt\">Ubuntu Font Licence 1.0</a></li></ul>"
+                            + "</li>" + "</ul></p>" + "</body></html>",
                             Messages.getString(R.string.pmsg_app_name,
                                     Sys.APP_NAME, Sys.APP_VERSION_NAME));
             Dlg.showHugeInfoMsg(msg, 630, 270);

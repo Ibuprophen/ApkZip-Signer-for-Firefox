@@ -24,9 +24,14 @@ We hope this project will be always useful for everyone.
     + License: Public Domain
 * The Android Open Source Project (module [AOSP Base64](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/))
     + License: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* The Ubuntu Font Family authors
+    + License: [Ubuntu Font Licence 1.0](http://font.ubuntu.com/ufl/ubuntu-font-licence-1.0.txt)
 
 
 # HISTORY
+
+* Version 1.8 beta
+    + *Initialize*: July 21, 2013
 
 * Version 1.7.9
     + *Release*: July 21, 2013

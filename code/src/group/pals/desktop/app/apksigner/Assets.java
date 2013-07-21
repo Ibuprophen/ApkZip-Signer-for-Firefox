@@ -53,7 +53,7 @@ public class Assets {
      */
     public static Font getDefaultFont() {
         if (mDefaultFont == null)
-            mDefaultFont = getFont("fonts/Ubuntu-Regular.ttf").deriveFont(12f);
+            mDefaultFont = getFont("fonts/Roboto-Regular.ttf").deriveFont(12f);
         return mDefaultFont;
     }// getDefaultFont()
 
@@ -64,8 +64,8 @@ public class Assets {
      */
     public static Font getDefaultMonoFont() {
         if (mDefaultMonoFont == null)
-            mDefaultMonoFont = getFont("fonts/UbuntuMono-Regular.ttf")
-                    .deriveFont(13f);
+            mDefaultMonoFont = getFont("fonts/DroidSansMono.ttf").deriveFont(
+                    13f);
         return mDefaultMonoFont;
     }// getDefaultMonoFont()
 

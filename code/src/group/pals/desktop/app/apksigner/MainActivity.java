@@ -434,8 +434,11 @@ public class MainActivity {
                             + "<ul>"
                             + "<li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
                             + "</li>"
-                            + "<li>The Ubuntu Font Family authors"
-                            + "<ul><li>License: <a href=\"http://font.ubuntu.com/ufl/ubuntu-font-licence-1.0.txt\">Ubuntu Font Licence 1.0</a></li></ul>"
+                            + "<li>Steve Matteson (font Droid Sans Mono)"
+                            + "<ul><li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
+                            + "</li>"
+                            + "<li>Christian Robertson (font Roboto)"
+                            + "<ul><li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
                             + "</li>" + "</ul></p>" + "</body></html>",
                             Messages.getString(R.string.pmsg_app_name,
                                     Sys.APP_NAME, Sys.APP_VERSION_NAME));

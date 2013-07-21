@@ -24,8 +24,10 @@ We hope this project will be always useful for everyone.
     + License: Public Domain
 * The Android Open Source Project (module [AOSP Base64](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/))
     + License: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* The Ubuntu Font Family authors
-    + License: [Ubuntu Font Licence 1.0](http://font.ubuntu.com/ufl/ubuntu-font-licence-1.0.txt)
+* Steve Matteson (font [Droid Sans Mono](https://www.google.com/fonts/))
+    + License: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* Christian Robertson (font [Roboto](https://www.google.com/fonts/))
+    + License: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 # HISTORY

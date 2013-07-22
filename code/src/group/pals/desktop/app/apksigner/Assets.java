@@ -73,7 +73,7 @@ public class Assets {
     public static Font getDefaultMonoFont() {
         if (mDefaultMonoFont == null)
             mDefaultMonoFont = getFont("assets/fonts/SourceCodePro-Regular.ttf")
-                    .deriveFont(12f);
+                    .deriveFont(12.5f);
         return mDefaultMonoFont;
     }// getDefaultMonoFont()
 

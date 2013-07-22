@@ -50,7 +50,7 @@ public class Network {
     /**
      * The date format of header fields.
      */
-    public static final String HEADER_DATE_FORMAT = "EEE, dd MMM yyyy kk:mm:ss z";
+    public static final String HEADER_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 
     /**
      * Header field "Expires".

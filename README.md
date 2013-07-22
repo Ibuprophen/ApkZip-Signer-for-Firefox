@@ -32,6 +32,11 @@ We hope this project will be always useful for everyone.
 
 # HISTORY
 
+* Version 1.8.1
+    + *Release:* July 22, 2013
+    + Improve module Updater, now it supports redirection URLs (302) from server.
+    + Use new font Source Code Pro instead of Droid Sans Mono.
+
 * Version 1.8.1 beta
     + *Initialize:* July 22, 2013
 

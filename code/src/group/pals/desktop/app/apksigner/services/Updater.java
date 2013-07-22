@@ -30,6 +30,9 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,7 +62,7 @@ public class Updater extends BaseThread {
      * </ul>
      */
     public static final String[] URLS_UPDATE_PROPERTIES = {
-            "http://cdn.bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",
+            "https://bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",
             "https://sites.google.com/site/haibisonapps/apps/apk-signer/update.properties" };
 
     /**
@@ -134,7 +137,7 @@ public class Updater extends BaseThread {
     @Override
     public void run() {
         try {
-            L.d("%s >> starting", Updater.class.getSimpleName());
+            L.i("%s >> starting", Updater.class.getSimpleName());
 
             /*
              * DOWNLOAD UPDATE.PROPERTIES AND PARSE INFO TO MEMORY
@@ -142,6 +145,10 @@ public class Updater extends BaseThread {
             final Properties updateProperties = downloadUpdateProperties();
             if (updateProperties == null || isInterrupted())
                 return;
+
+            L.i("\tCurrent version: %,d (%s) -- Update version: %s",
+                    Sys.APP_VERSION_CODE, Sys.APP_VERSION_NAME,
+                    updateProperties.getProperty(KEY_APP_VERSION_CODE));
 
             try {
                 if (Sys.APP_VERSION_CODE >= Integer.parseInt(updateProperties
@@ -154,7 +161,7 @@ public class Updater extends BaseThread {
                 return;
             }
 
-            L.d("%s >> %s", CLASSNAME, updateProperties);
+            L.d("\t>> %s", updateProperties);
 
             /*
              * CHECK TO SEE IF THE UPDATE FILE HAS BEEN DOWNLOADED BEFORE
@@ -169,10 +176,80 @@ public class Updater extends BaseThread {
         } catch (Exception e) {
             L.e("%s >> %s", Updater.class.getSimpleName(), e);
         } finally {
-            L.d("%s >> finishing", Updater.class.getSimpleName());
+            L.i("%s >> finishing", Updater.class.getSimpleName());
             sendNotification(MSG_DONE);
         }
     }// run()
+
+    /**
+     * Follows the redirection ({@ink Network#HTTP_STATUS_FOUND}) within
+     * {@link Network#MAX_REDIRECTION_ALLOWED}.
+     * 
+     * @param url
+     *            the original URL.
+     * @return the last connection, maybe {@code null} if could not connect to.
+     *         You must always re-check the response code before doing further
+     *         actions.
+     */
+    private HttpURLConnection followRedirection(String url) {
+        L.i("%s >> followRedirection()", Updater.class.getSimpleName());
+
+        HttpURLConnection conn = Network.openHttpConnection(url);
+        if (conn == null)
+            return null;
+
+        int redirectCount = 0;
+        try {
+            conn.connect();
+            final InputStream inputStream = conn.getInputStream();
+            while (conn.getResponseCode() == Network.HTTP_STATUS_FOUND
+                    && redirectCount++ < Network.MAX_REDIRECTION_ALLOWED) {
+                /*
+                 * Expiration.
+                 */
+                String field = conn.getHeaderField(Network.HEADER_EXPIRES);
+                try {
+                    if (!Texts.isEmpty(field)
+                            && Calendar.getInstance().after(
+                                    new SimpleDateFormat(
+                                            Network.HEADER_DATE_FORMAT)
+                                            .parse(field))) {
+                        L.i("\t%,d is expired (%s)", conn.getResponseCode(),
+                                field);
+                        inputStream.close();
+                        return null;
+                    }
+                } catch (ParseException e) {
+                    /*
+                     * Ignore it.
+                     */
+                    L.e("\tcan't parse '%s', ignoring it...", field);
+                }
+
+                /*
+                 * Location.
+                 */
+                field = conn.getHeaderField(Network.HEADER_LOCATION);
+                if (Texts.isEmpty(field)) {
+                    L.i("\t%,d sends to null", conn.getResponseCode());
+                    inputStream.close();
+                    return null;
+                }
+
+                /*
+                 * Close current connection and open the redirected URI.
+                 */
+                conn.getInputStream().close();
+                if ((conn = Network.openHttpConnection(field)) == null)
+                    return null;
+            }// while
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return conn;
+    }// followRedirection()
 
     /**
      * Downloads the `update.properties` file from server.
@@ -181,13 +258,14 @@ public class Updater extends BaseThread {
      *         {@code null} if an error occurred.
      */
     private Properties downloadUpdateProperties() {
+        L.i("%s >> downloadUpdateProperties()", Updater.class.getSimpleName());
+
         for (String url : URLS_UPDATE_PROPERTIES) {
-            HttpURLConnection conn = Network.openHttpConnection(url);
+            HttpURLConnection conn = followRedirection(url);
             if (conn == null)
                 return null;
 
             try {
-                conn.connect();
                 final InputStream inputStream = new BufferedInputStream(
                         conn.getInputStream(), Files.FILE_BUFFER);
                 try {
@@ -235,6 +313,8 @@ public class Updater extends BaseThread {
      * @return {@code true} or {@code false}.
      */
     private boolean checklocalUpdateFile(Properties updateProperties) {
+        L.i("%s >> checklocalUpdateFile()", Updater.class.getSimpleName());
+
         File file = new File(Sys.getAppDir().getAbsolutePath()
                 + File.separator
                 + Files.fixFilename(updateProperties
@@ -307,14 +387,14 @@ public class Updater extends BaseThread {
      *            the update information.
      */
     private void downloadUpdateFile(Properties updateProperties) {
-        HttpURLConnection conn = Network
-                .openHttpConnection(Sys.DEBUG ? "http://dlc.sun.com.edgesuite.net/virtualbox/4.2.14/VirtualBox-4.2.14-86644-Linux_amd64.run"
-                        : updateProperties.getProperty(KEY_DOWNLOAD_URI));
+        L.i("%s >> downloadUpdateFile()", Updater.class.getSimpleName());
+
+        HttpURLConnection conn = followRedirection(Sys.DEBUG ? "http://dlc.sun.com.edgesuite.net/virtualbox/4.2.14/VirtualBox-4.2.14-86644-Linux_amd64.run"
+                : updateProperties.getProperty(KEY_DOWNLOAD_URI));
         if (conn == null)
             return;
 
         try {
-            conn.connect();
             final InputStream inputStream = conn.getInputStream();
             try {
                 if (conn.getResponseCode() != Network.HTTP_STATUS_OK)

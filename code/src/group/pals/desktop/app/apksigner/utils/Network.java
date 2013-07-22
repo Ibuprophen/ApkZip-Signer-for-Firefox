@@ -32,6 +32,31 @@ public class Network {
      */
     public static final int HTTP_STATUS_OK = 200;
 
+    /**
+     * The redirection status code {@code 302}.
+     */
+    public static final int HTTP_STATUS_FOUND = 302;
+
+    /**
+     * Max redirection allowed.
+     */
+    public static final int MAX_REDIRECTION_ALLOWED = 5;
+
+    /**
+     * Header field "Location".
+     */
+    public static final String HEADER_LOCATION = "Location";
+
+    /**
+     * The date format of header fields.
+     */
+    public static final String HEADER_DATE_FORMAT = "EEE, dd MMM yyyy kk:mm:ss z";
+
+    /**
+     * Header field "Expires".
+     */
+    public static final String HEADER_EXPIRES = "Expires";
+
     private static final String PROPERTY_SYS_HTTP_PROXY_HOST = "http.proxyHost";
     private static final String PROPERTY_SYS_HTTP_PROXY_PORT = "http.proxyPort";
 

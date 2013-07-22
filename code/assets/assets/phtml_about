@@ -1,4 +1,11 @@
 <html>
+    <!--
+        Copyright (C) 2012 Hai Bison
+    
+        See the file LICENSE at the root directory of this project for copying
+        permission.
+    -->
+
     <body topmargin="10px" leftmargin="10px" marginheight="10px" marginwidth="10px">
         <p><h3>%s</h3></p>
         <p>...by Hai Bison</p>

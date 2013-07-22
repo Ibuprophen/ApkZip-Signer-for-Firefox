@@ -64,8 +64,8 @@ public class Assets {
      */
     public static Font getDefaultMonoFont() {
         if (mDefaultMonoFont == null)
-            mDefaultMonoFont = getFont("fonts/DroidSansMono.ttf").deriveFont(
-                    12f);
+            mDefaultMonoFont = getFont("fonts/SourceCodePro-Regular.ttf")
+                    .deriveFont(12f);
         return mDefaultMonoFont;
     }// getDefaultMonoFont()
 

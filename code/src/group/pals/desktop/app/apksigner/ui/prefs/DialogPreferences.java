@@ -125,6 +125,7 @@ public class DialogPreferences extends JDialog {
         addWindowListener(mWindowAdapter);
         Preferences.getInstance().beginTransaction();
         initTabs();
+        pack();
     }// DialogPreferences()
 
     /**

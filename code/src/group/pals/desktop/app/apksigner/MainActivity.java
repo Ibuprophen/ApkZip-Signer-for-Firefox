@@ -155,6 +155,7 @@ public class MainActivity {
         UI.initJTabbedPaneHeaderMouseWheelListener(mTabbedPane);
 
         initTabs();
+        mMainFrame.pack();
 
         /*
          * START UPDATER SERVICE
@@ -388,48 +389,9 @@ public class MainActivity {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            final String msg = String
-                    .format("<html><body topmargin=\"10px\" leftmargin=\"10px\" marginheight=\"10px\" marginwidth=\"10px\">"
-                            + "<p><h3>%s</h3></p>"
-                            + "<p>...by Hai Bison</p>"
-                            + "<p><ul><li>License: MIT License</li>"
-                            + "<li>Code page: <a href=\"https://code.google.com/p/apk-signer/\">https://code.google.com/p/apk-signer/</a></li>"
-                            + "<li>Official site: <a href=\"http://www.haibison.com\">http://www.haibison.com</a></li></ul><p>"
-                            + "<p>"
-                            + "We sincerely thank:"
-                            + "</p><ul>"
-                            + "<li>All of our friends, who have been contributing to this project.</li>"
-                            + "<li>The authors of external modules/ libraries which are used in this project.</li>"
-                            + "</ul></p>"
-                            + "<p>We hope this project will be always useful for everyone.</p>"
-                            + ""
-                            + "<p><h2>CREDITS</h2></p>"
-                            + "<p><ul>"
-                            + "<li>Hans Bickel (library <a href=\"http://www.muntjak.de/hans/java/tinylaf/index.html\">TinyLaF</a>)"
-                            + "<ul>"
-                            + "<li>License: <a href=\"http://www.gnu.org/licenses/lgpl.html\">GNU Lesser General Public License</a></li>"
-                            + "</ul>"
-                            + "</li>"
-                            + "<li>Leo Chien (contributor)"
-                            + "<ul><li><a href=\"https://plus.google.com/118055781130476825691?prsrc=2\">Google+ page</a></li></ul>"
-                            + "</li>"
-                            + "<li>Robert Harder and his friends (module <a href=\"http://www.iharder.net/current/java/filedrop/\">FileDrop</a>)"
-                            + "<ul>"
-                            + "<li>License: Public Domain</li>"
-                            + "</ul>"
-                            + "</li>"
-                            + "<li>The Android Open Source Project (module <a href=\"https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/util/\">AOSP Base64</a>)"
-                            + "<ul>"
-                            + "<li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
-                            + "</li>"
-                            + "<li>Paul D. Hunt (font Source Code Pro)"
-                            + "<ul><li>License: <a href=\"http://scripts.sil.org/OFL\">SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007</a></li></ul>"
-                            + "</li>"
-                            + "<li>Christian Robertson (font Roboto)"
-                            + "<ul><li>License: <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache License, Version 2.0</a></li></ul>"
-                            + "</li>" + "</ul></p>" + "</body></html>",
-                            Messages.getString(R.string.pmsg_app_name,
-                                    Sys.APP_NAME, Sys.APP_VERSION_NAME));
+            final String msg = String.format(Assets.getPhtmlAbout().toString(),
+                    Messages.getString(R.string.pmsg_app_name, Sys.APP_NAME,
+                            Sys.APP_VERSION_NAME));
 
             JLabel label = new JLabel(new ImageIcon(Assets.getIconSplash()),
                     SwingConstants.CENTER);

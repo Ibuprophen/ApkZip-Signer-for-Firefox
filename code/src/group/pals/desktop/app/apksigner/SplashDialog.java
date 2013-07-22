@@ -107,9 +107,8 @@ public class SplashDialog extends JDialog {
                 mLabelInfo.getFont().getSize() - 3f));
         getContentPane().add(mLabelInfo, BorderLayout.CENTER);
 
-        UI.setWindowCenterScreen(this, logo.getIconWidth(),
-                logo.getIconHeight());
         pack();
+        UI.setWindowCenterScreen(this);
     }// SplashDialog()
 
     /**

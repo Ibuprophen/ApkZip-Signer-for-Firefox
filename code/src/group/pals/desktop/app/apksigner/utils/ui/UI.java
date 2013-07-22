@@ -82,13 +82,27 @@ public class UI {
      */
     public static void setWindowCenterScreen(java.awt.Window window, int width,
             int height) {
-        java.awt.Dimension dim;
-
-        dim = new java.awt.Dimension(width, height);
+        java.awt.Dimension dim = new java.awt.Dimension(width, height);
         window.setMinimumSize(dim);
         window.setSize(dim);
 
-        dim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setWindowCenterScreen(window);
+    }// setWindowCenterScreen()
+
+    /**
+     * Moves the {@code window} to center of the screen, also resizes it by
+     * {@code width} x {@code height}.
+     * 
+     * @param window
+     *            the window.
+     * @param width
+     *            the window width.
+     * @param height
+     *            the window height.
+     */
+    public static void setWindowCenterScreen(java.awt.Window window) {
+        java.awt.Dimension dim = java.awt.Toolkit.getDefaultToolkit()
+                .getScreenSize();
         window.setLocation((dim.width - window.getWidth()) / 2,
                 (dim.height - window.getHeight()) / 2);
     }// setWindowCenterScreen()

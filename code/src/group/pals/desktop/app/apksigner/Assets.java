@@ -12,6 +12,7 @@ import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * The assets.
@@ -33,8 +34,14 @@ public class Assets {
      */
     public static Font getFont(String resName) {
         try {
-            return Font.createFont(Font.TRUETYPE_FONT, Thread.currentThread()
-                    .getContextClassLoader().getResourceAsStream(resName));
+            InputStream inputStream = Thread.currentThread()
+                    .getContextClassLoader().getResourceAsStream(resName);
+            try {
+                return Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            } finally {
+                if (inputStream != null)
+                    inputStream.close();
+            }
         } catch (FontFormatException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -53,7 +60,8 @@ public class Assets {
      */
     public static Font getDefaultFont() {
         if (mDefaultFont == null)
-            mDefaultFont = getFont("fonts/Roboto-Regular.ttf").deriveFont(12f);
+            mDefaultFont = getFont("assets/fonts/Roboto-Regular.ttf")
+                    .deriveFont(12f);
         return mDefaultFont;
     }// getDefaultFont()
 
@@ -64,7 +72,7 @@ public class Assets {
      */
     public static Font getDefaultMonoFont() {
         if (mDefaultMonoFont == null)
-            mDefaultMonoFont = getFont("fonts/SourceCodePro-Regular.ttf")
+            mDefaultMonoFont = getFont("assets/fonts/SourceCodePro-Regular.ttf")
                     .deriveFont(12f);
         return mDefaultMonoFont;
     }// getDefaultMonoFont()
@@ -77,7 +85,8 @@ public class Assets {
     public static Image getIconLogo() {
         if (mIconLogo == null)
             mIconLogo = Toolkit.getDefaultToolkit().getImage(
-                    SplashDialog.class.getResource("/images/logo_256.png"));
+                    SplashDialog.class
+                            .getResource("/assets/images/logo_256.png"));
         return mIconLogo;
     }// getIconLogo()
 
@@ -89,7 +98,40 @@ public class Assets {
     public static Image getIconSplash() {
         if (mIconSplash == null)
             mIconSplash = Toolkit.getDefaultToolkit().getImage(
-                    SplashDialog.class.getResource("/images/logo_399x144.png"));
+                    SplashDialog.class
+                            .getResource("/assets/images/logo_399x144.png"));
         return mIconSplash;
     }// getIconSplash()
+
+    /**
+     * Get pattern HTML about.
+     * 
+     * @return the pattern HTML about.
+     */
+    public static CharSequence getPhtmlAbout() {
+        final StringBuilder result = new StringBuilder();
+        InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("assets/phtml_about");
+        try {
+            final byte[] buf = new byte[1024 * 32];
+            int read = 0;
+            try {
+                while ((read = inputStream.read(buf)) > 0)
+                    result.append(new String(buf, 0, read));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                if (inputStream != null)
+                    inputStream.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }// getPhtmlAbout()
 }

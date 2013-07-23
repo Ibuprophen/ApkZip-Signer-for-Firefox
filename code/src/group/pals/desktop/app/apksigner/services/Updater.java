@@ -127,6 +127,11 @@ public class Updater extends BaseThread {
     public static final int MSG_UPDATE_FINISHED = 5;
 
     /**
+     * Used for debugging...
+     */
+    private static final String DEBUG_UPDATE_LINK_EXECUTABLE = "http://dlc.sun.com.edgesuite.net/virtualbox/4.2.14/VirtualBox-4.2.14-86644-Linux_amd64.run";
+
+    /**
      * Creates new instance.
      */
     public Updater() {
@@ -394,7 +399,7 @@ public class Updater extends BaseThread {
     private void downloadUpdateFile(Properties updateProperties) {
         L.i("%s >> downloadUpdateFile()", Updater.class.getSimpleName());
 
-        HttpURLConnection conn = followRedirection(Sys.DEBUG ? "http://dlc.sun.com.edgesuite.net/virtualbox/4.2.14/VirtualBox-4.2.14-86644-Linux_amd64.run"
+        HttpURLConnection conn = followRedirection(Sys.DEBUG ? DEBUG_UPDATE_LINK_EXECUTABLE
                 : updateProperties.getProperty(KEY_DOWNLOAD_URI));
         if (conn == null)
             return;

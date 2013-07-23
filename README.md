@@ -1,3 +1,7 @@
+# apk-signer
+
+* Version: 1.8.2 beta
+
 ### Feel free to contact us at:
 
 * [Homepage](http://www.haibison.com)
@@ -36,6 +40,9 @@ We hope this project will be always useful for everyone.
 
 
 # HISTORY
+
+* Version 1.8.2 beta
+    + *Initialize:* July 23, 2013
 
 * Version 1.8.1
     + *Release:* July 22, 2013

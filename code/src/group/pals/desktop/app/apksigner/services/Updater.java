@@ -187,12 +187,13 @@ public class Updater extends BaseThread {
      * 
      * @param url
      *            the original URL.
-     * @return the last connection, maybe {@code null} if could not connect to.
-     *         You must always re-check the response code before doing further
-     *         actions.
+     * @return the last <i>established</i>-connection, maybe {@code null} if
+     *         could not connect to. You must always re-check the response code
+     *         before doing further actions.
      */
     private HttpURLConnection followRedirection(String url) {
-        L.i("%s >> followRedirection()", Updater.class.getSimpleName());
+        L.i("%s >> followRedirection() >> %s", Updater.class.getSimpleName(),
+                url);
 
         HttpURLConnection conn = Network.openHttpConnection(url);
         if (conn == null)
@@ -201,9 +202,10 @@ public class Updater extends BaseThread {
         int redirectCount = 0;
         try {
             conn.connect();
-            final InputStream inputStream = conn.getInputStream();
             while (conn.getResponseCode() == Network.HTTP_STATUS_FOUND
                     && redirectCount++ < Network.MAX_REDIRECTION_ALLOWED) {
+                final InputStream inputStream = conn.getInputStream();
+
                 /*
                  * Expiration.
                  */
@@ -239,9 +241,12 @@ public class Updater extends BaseThread {
                 /*
                  * Close current connection and open the redirected URI.
                  */
-                conn.getInputStream().close();
+                inputStream.close();
                 if ((conn = Network.openHttpConnection(field)) == null)
                     return null;
+
+                L.i("\t>> %s", field);
+                conn.connect();
             }// while
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -40,7 +40,7 @@ public class Network {
     /**
      * Max redirection allowed.
      */
-    public static final int MAX_REDIRECTION_ALLOWED = 5;
+    public static final int MAX_REDIRECTION_ALLOWED = 9;
 
     /**
      * Header field "Location".

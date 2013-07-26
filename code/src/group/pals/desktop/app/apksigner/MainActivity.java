@@ -401,6 +401,11 @@ public class MainActivity {
             label.setText(msg);
 
             JScrollPane scrollPane = new JScrollPane(label);
+            /*
+             * TODO hard code?
+             */
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
             Dimension size = new Dimension(630, 270);
             scrollPane.setMaximumSize(size);
             scrollPane.setMinimumSize(size);

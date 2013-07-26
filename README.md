@@ -1,6 +1,6 @@
 # apk-signer
 
-* Version: 1.8.2 beta
+* Version: 1.8.2
 
 ### Feel free to contact us at:
 
@@ -40,6 +40,10 @@ We hope this project will be always useful for everyone.
 
 
 # HISTORY
+
+* Version 1.8.2:
+    + *Release:* July 26, 2013
+    + Fix and upgrade module Updater.
 
 * Version 1.8.2 beta
     + *Initialize:* July 23, 2013

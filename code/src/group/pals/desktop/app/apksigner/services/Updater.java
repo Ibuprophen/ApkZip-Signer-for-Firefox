@@ -54,6 +54,7 @@ public class Updater extends BaseThread {
      * case one of them doesn't exist, or for some reason we can't reach it).
      */
     public static final String[] URLS_UPDATE_PROPERTIES = {
+            "http://dl.bintray.com/hai%20bison%20apps/android/apk-signer/update.properties",
             "https://bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",
             "https://sites.google.com/site/haibisonapps/apps/apk-signer/update.properties" };
 

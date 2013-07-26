@@ -50,16 +50,8 @@ public class Updater extends BaseThread {
     private static final String CLASSNAME = Updater.class.getName();
 
     /**
-     * The URLs pointing to `update.properties` file. We should try all (in case
-     * one of them doesn't exist, or for some reason we can't reach it).
-     * <p>
-     * <h1>Notes</h1>
-     * </p>
-     * <ul>
-     * <li>
-     * Currently the final one (at our Google Sites) is just a place holder, it
-     * doesn't exist.</li>
-     * </ul>
+     * The URLs pointing to `update.properties` file. We should try them all (in
+     * case one of them doesn't exist, or for some reason we can't reach it).
      */
     public static final String[] URLS_UPDATE_PROPERTIES = {
             "https://bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",

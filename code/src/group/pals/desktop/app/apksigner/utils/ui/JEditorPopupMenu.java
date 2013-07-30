@@ -70,7 +70,7 @@ public class JEditorPopupMenu extends JPopupMenu {
             else if (comp instanceof Container)
                 apply((Container) comp);
         }
-    }// setEditorPopupMenu()
+    }// apply()
 
     /**
      * Action CUT.

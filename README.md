@@ -6,8 +6,7 @@
 
 * [Homepage](http://www.haibison.com)
 * E-mails  :
-    - haibison.apps(@)gmail(.)com
-    - support(@)haibison(.)com
+    - haibisonapps[at]gmail.com
 
 
 ### We sincerely thank:

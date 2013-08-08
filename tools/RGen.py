@@ -27,7 +27,7 @@ count = 1
 with open(SOURCE_FILE, 'r') as f:
     for line in f:
         line = line.strip()
-        if not line.startswith('#') and len(line) > 0:
+        if line and not line.startswith('#'):
             print('public static final int {} = 0x{:08x};'\
                    .format(re.sub(r'(?s)=.*', '', line).strip(), count))
             count += 1

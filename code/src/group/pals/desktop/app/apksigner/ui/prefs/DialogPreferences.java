@@ -10,6 +10,7 @@ package group.pals.desktop.app.apksigner.ui.prefs;
 import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.utils.Preferences;
+import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.BorderLayout;
@@ -78,7 +79,10 @@ public class DialogPreferences extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                closeDialog(false);
+                if (JEditorPopupMenu.getInstance().isShowing())
+                    JEditorPopupMenu.getInstance().setVisible(false);
+                else
+                    closeDialog(false);
             }// actionPerformed()
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);

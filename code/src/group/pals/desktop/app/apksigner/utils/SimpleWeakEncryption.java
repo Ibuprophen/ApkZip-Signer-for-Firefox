@@ -46,6 +46,7 @@ public class SimpleWeakEncryption {
     private static final int KEY_LEN = 128;
     private static final int ITERATION_COUNT = (int) Math.pow(2, 16);
     private static final String SEPARATOR = "\t";
+    private static final int DEFAULT_BASE64_FLAGS = Base64.NO_WRAP;
 
     public static final String UTF8 = "UTF-8";
 
@@ -89,9 +90,10 @@ public class SimpleWeakEncryption {
 
         try {
             bytes = cipher.doFinal(bytes);
-            return String.format("%s%s%s",
-                    Base64.encodeToString(cipher.getIV(), Base64.DEFAULT),
-                    SEPARATOR, Base64.encodeToString(bytes, Base64.DEFAULT));
+            return String
+                    .format("%s%s%s", Base64.encodeToString(cipher.getIV(),
+                            DEFAULT_BASE64_FLAGS), SEPARATOR, Base64
+                            .encodeToString(bytes, DEFAULT_BASE64_FLAGS));
         } catch (IllegalBlockSizeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -130,8 +132,9 @@ public class SimpleWeakEncryption {
             cipher.init(
                     Cipher.DECRYPT_MODE,
                     genKey(password),
-                    new IvParameterSpec(Base64.decode(
-                            data.substring(0, iSeparator), Base64.DEFAULT)));
+                    new IvParameterSpec(
+                            Base64.decode(data.substring(0, iSeparator),
+                                    DEFAULT_BASE64_FLAGS)));
         } catch (InvalidKeyException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -142,7 +145,8 @@ public class SimpleWeakEncryption {
 
         try {
             return new String(cipher.doFinal(Base64.decode(
-                    data.substring(iSeparator + 1), Base64.DEFAULT)), UTF8);
+                    data.substring(iSeparator + 1), DEFAULT_BASE64_FLAGS)),
+                    UTF8);
         } catch (IllegalBlockSizeException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

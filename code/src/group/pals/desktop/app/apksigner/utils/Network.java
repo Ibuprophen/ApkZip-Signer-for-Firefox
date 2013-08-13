@@ -111,7 +111,7 @@ public class Network {
                                 (Preferences.getInstance().getProxyUsername()
                                         + ":" + (password != null ? new String(
                                         password) : "")).getBytes(Texts.UTF8),
-                                Base64.DEFAULT);
+                                Base64.NO_WRAP);
                 // https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
                 conn.setRequestProperty("Proxy-Authorization", "Basic "
                         + proxyAuthorization);

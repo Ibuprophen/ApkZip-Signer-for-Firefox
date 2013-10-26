@@ -30,11 +30,13 @@ class Parser:
     '''
 
     def __init__(self):
+        print(' > Open "{}"...'.format(os.path.basename(FILE_R)))
         with open(FILE_R, 'w') as target:
             # Write header
             self.write_header(target)
 
             # Parse
+            print(' > Open "{}"...'.format(os.path.basename(FILE_SOURCE)))
             with open(FILE_SOURCE, 'r') as source:
                 # Should start from 1...
                 count = 1

@@ -64,36 +64,38 @@ class Parser:
         '''
         Write the header to ``target``.
         '''
-        target.write('''/*
- *    Copyright (C) 2012 Hai Bison
- *
- *    See the file LICENSE at the root directory of this project for copying
- *    permission.
- */
 
-package group.pals.desktop.app.apksigner.i18n;
-
-/**
- * The resources.
- *
- * @author Hai Bison
- * @since v1.6.5 beta
- */
-public class R {
-
-    /**
-     * The string resources.
-     * <p>
-     * This class is generated automatically, you shouldn't rely on the values
-     * for your works.
-     * </p>
-     *
-     * @author Hai Bison
-     * @since v1.6.5 beta
-     */
-    public static class string {
-
-''')
+        target.write('\n'.join([
+            '/*',
+            ' *    Copyright (C) 2012 Hai Bison',
+            ' *',
+            ' *    See the file LICENSE at the root directory of this project for copying',
+            ' *    permission.',
+            ' */',
+            '',
+            'package group.pals.desktop.app.apksigner.i18n;',
+            '',
+            '/**',
+            ' * The resources.',
+            ' *',
+            ' * @author Hai Bison',
+            ' * @since v1.6.5 beta',
+            ' */',
+            'public class R {',
+            '',
+            '    /**',
+            '     * The string resources.',
+            '     * <p>',
+            '     * This class is generated automatically, you shouldn\'t rely on the values',
+            '     * for your works.',
+            '     * </p>',
+            '     *',
+            '     * @author Hai Bison',
+            '     * @since v1.6.5 beta',
+            '     */',
+            '    public static class string {',
+            '',
+            '']))
 
         #.write_header()
 
@@ -102,10 +104,11 @@ public class R {
         Write the footer to ``target``.
         '''
 
-        target.write('''
-    }// string
-
-}''')
+        target.write('\n'.join([
+            '',
+            '    }// string',
+            '',
+            '}']))
 
         #.write_footer()
 

@@ -9,7 +9,7 @@ package group.pals.desktop.app.apksigner.i18n;
 
 /**
  * The resources.
- * 
+ *
  * @author Hai Bison
  * @since v1.6.5 beta
  */
@@ -21,7 +21,7 @@ public class R {
      * This class is generated automatically, you shouldn't rely on the values
      * for your works.
      * </p>
-     * 
+     *
      * @author Hai Bison
      * @since v1.6.5 beta
      */
@@ -165,6 +165,7 @@ public class R {
         public static final int version = 0x00000088;
         public static final int warning = 0x00000089;
         public static final int yes = 0x0000008a;
+
     }// string
 
 }

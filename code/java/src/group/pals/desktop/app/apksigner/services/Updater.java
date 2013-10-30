@@ -92,7 +92,7 @@ public class Updater extends BaseThread {
      * Maximum filesize allowed for the new version.
      */
     public static final int MAX_UPDATE_FILESIZE = Sys.DEBUG ? Integer.MAX_VALUE
-            : 9 * 1024 * 1024;
+            : 50 * 1024 * 1024;
 
     /**
      * There is a local update file available.

@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 /**
  * Application updater service.
- * 
+ *
  * @author Hai Bison
  * @since v1.6 beta
  */
@@ -54,7 +54,7 @@ public class Updater extends BaseThread {
      * case one of them doesn't exist, or for some reason we can't reach it).
      */
     public static final String[] URLS_UPDATE_PROPERTIES = {
-            "http://dl.bintray.com/hai%20bison%20apps/android/apk-signer/update.properties",
+            "https://dl.dropboxusercontent.com/u/237978006/android/apk-signer/update.properties",
             "https://bitbucket.org/haibisonapps/apk-signer/downloads/update.properties",
             "https://sites.google.com/site/haibisonapps/apps/apk-signer/update.properties" };
 
@@ -182,7 +182,7 @@ public class Updater extends BaseThread {
     /**
      * Follows the redirection ({@ink Network#HTTP_STATUS_FOUND}) within
      * {@link Network#MAX_REDIRECTION_ALLOWED}.
-     * 
+     *
      * @param url
      *            the original URL.
      * @return the last <i>established</i>-connection, maybe {@code null} if
@@ -256,7 +256,7 @@ public class Updater extends BaseThread {
 
     /**
      * Downloads the `update.properties` file from server.
-     * 
+     *
      * @return the {@link Properties} object containing update information. Or
      *         {@code null} if an error occurred.
      */
@@ -310,7 +310,7 @@ public class Updater extends BaseThread {
 
     /**
      * Checks to see if there is update file which has been downloaded before.
-     * 
+     *
      * @param updateProperties
      *            the update information.
      * @return {@code true} or {@code false}.
@@ -385,7 +385,7 @@ public class Updater extends BaseThread {
 
     /**
      * Downloads the update file.
-     * 
+     *
      * @param updateProperties
      *            the update information.
      */

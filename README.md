@@ -1,6 +1,6 @@
 # apk-signer
 
-* Version: 1.8.3 beta
+* Version: 1.8.3
 
 ### Feel free to contact us at:
 
@@ -39,6 +39,9 @@ We hope this project will be always useful for everyone.
 
 
 # HISTORY
+
+* Version 1.8.3
+    + *Release:* October 11, 2013
 
 * Version 1.8.3 beta
     + *Initialize:* August 11, 2013

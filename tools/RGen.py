@@ -16,10 +16,10 @@ import re
 import sys
 
 FILE_SOURCE = os.sep.join([os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0]))),
-                           'code','src','group','pals','desktop','app',
+                           'code','java','src','group','pals','desktop','app',
                            'apksigner','i18n','messages_en.properties'])
 FILE_R = os.sep.join([os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0]))),
-                      'code','src','group','pals','desktop','app',
+                      'code','java','src','group','pals','desktop','app',
                       'apksigner','i18n','R.java'])
 
 # PARSE SOURCE FILE

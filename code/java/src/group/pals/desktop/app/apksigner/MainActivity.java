@@ -24,6 +24,7 @@ import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
 import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.Beans;
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -46,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -181,11 +184,17 @@ public class MainActivity {
         JMenu mMenuFile = new JMenu(Messages.getString(R.string.file)); //$NON-NLS-1$
         mMenuBar.add(mMenuFile);
 
-        JMenuItem mMenuItemPreferences = new JMenuItem(
+        JMenuItem mMenuItemSettings = new JMenuItem(
                 Messages.getString(R.string.settings)); //$NON-NLS-1$
-        mMenuItemPreferences
-                .addActionListener(mMenuItemPreferencesActionListener);
-        mMenuFile.add(mMenuItemPreferences);
+        mMenuItemSettings.addActionListener(mMenuItemSettingsActionListener);
+        mMenuFile.add(mMenuItemSettings);
+
+        mMenuFile.addSeparator();
+
+        JMenuItem mMenuItemDonation = new JMenuItem(
+                Messages.getString(R.string.donation)); //$NON-NLS-1$
+        mMenuItemDonation.addActionListener(mMenuItemDonationActionListener);
+        mMenuFile.add(mMenuItemDonation);
 
         mMenuFile.addSeparator();
 
@@ -415,7 +424,7 @@ public class MainActivity {
         }// actionPerformed()
     };// mMenuItemAboutActionListener
 
-    private final ActionListener mMenuItemPreferencesActionListener = new ActionListener() {
+    private final ActionListener mMenuItemSettingsActionListener = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -424,7 +433,7 @@ public class MainActivity {
             UI.setWindowCenterScreen(dialog, 40);
             dialog.setVisible(true);
         }// actionPerformed()
-    };// mMenuItemPreferencesActionListener
+    };// mMenuItemSettingsActionListener
 
     private final ActionListener mMenuItemExitActionListener = new ActionListener() {
 
@@ -451,4 +460,32 @@ public class MainActivity {
             setJdkPath(files[0]);
         }// onFilesDropped()
     };// mTextJdkPathFileDropListener
+
+    private final ActionListener mMenuItemDonationActionListener = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object[] options = { Messages.getString(R.string.go),
+                    Messages.getString(R.string.cancel) };
+            final int opt = JOptionPane.showOptionDialog(
+                    null,
+                    Messages.getString(R.string.pmsg_donation,
+                            Messages.getString(R.string.go),
+                            Messages.getString(R.string.cancel)),
+                    Messages.getString(R.string.donation),
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (opt == 0 && Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().browse(
+                            new URI("http://www.haibison.com/donation"));
+                } catch (Exception ex) {
+                    Dlg.showErrMsg(Messages
+                            .getString(R.string.msg_unknown_error_try_again));
+                    ex.printStackTrace();
+                }
+            }
+        }// actionPerformed()
+    };// mMenuItemDonationActionListener
+
 }

@@ -1,6 +1,6 @@
 # apk-signer
 
-* Version: 1.8.3
+* Version: 1.8.4
 
 ### Feel free to contact us at:
 
@@ -39,6 +39,10 @@ We hope this project will be always useful for everyone.
 
 
 # HISTORY
+
+* Version 1.8.4
+    + *Release:* February 07, 2014
+    + Update to support JDK 7.
 
 * Version 1.8.3
     + *Release:* October 11, 2013

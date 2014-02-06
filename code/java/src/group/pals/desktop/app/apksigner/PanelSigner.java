@@ -11,14 +11,14 @@ import group.pals.desktop.app.apksigner.i18n.Messages;
 import group.pals.desktop.app.apksigner.i18n.R;
 import group.pals.desktop.app.apksigner.utils.Files;
 import group.pals.desktop.app.apksigner.utils.Files.JFileChooserEx;
-import group.pals.desktop.app.apksigner.utils.ui.Dlg;
-import group.pals.desktop.app.apksigner.utils.ui.FileDrop;
-import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
-import group.pals.desktop.app.apksigner.utils.ui.UI;
 import group.pals.desktop.app.apksigner.utils.KeyTools;
 import group.pals.desktop.app.apksigner.utils.Preferences;
 import group.pals.desktop.app.apksigner.utils.Signer;
 import group.pals.desktop.app.apksigner.utils.Texts;
+import group.pals.desktop.app.apksigner.utils.ui.Dlg;
+import group.pals.desktop.app.apksigner.utils.ui.FileDrop;
+import group.pals.desktop.app.apksigner.utils.ui.JEditorPopupMenu;
+import group.pals.desktop.app.apksigner.utils.ui.UI;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -428,7 +428,11 @@ public class PanelSigner extends JPanel {
                     mTargetFile, mKeyfile, mTextPassword.getPassword(),
                     String.valueOf(mCbxAlias.getSelectedItem()),
                     mTextAliasPassword.getPassword());
-            if (Texts.isEmpty(info))
+            /*
+             * TODO JDK 7 shows a warning for missing option `-tsa` (Timestamp
+             * Authorization).
+             */
+            if (Texts.isEmpty(info) || info.matches("(?sim)^jar signed.+"))
                 Dlg.showInfoMsg(Messages.getString(R.string.msg_file_is_signed));
             else
                 Dlg.showErrMsg(Messages.getString(

@@ -47,7 +47,7 @@ public class Signer {
      *            the keystore alias.
      * @param keypass
      *            the keystore's alias password.
-     * @return
+     * @return result from {@code jarsigner}.
      * @throws IOException
      *             if any occurred.
      * @throws InterruptedException

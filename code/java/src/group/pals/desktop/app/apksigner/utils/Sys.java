@@ -30,12 +30,12 @@ public class Sys {
     /**
      * The app version code.
      */
-    public static final int APP_VERSION_CODE = 44;
+    public static final int APP_VERSION_CODE = 45;
 
     /**
      * The app version name.
      */
-    public static final String APP_VERSION_NAME = "1.8.4";
+    public static final String APP_VERSION_NAME = "1.8.5";
 
     /**
      * Gets the app directory.

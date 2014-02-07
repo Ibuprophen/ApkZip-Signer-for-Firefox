@@ -47,7 +47,8 @@ public class Signer {
      *            the keystore alias.
      * @param keypass
      *            the keystore's alias password.
-     * @return result from {@code jarsigner}.
+     * @return {@code null} if everything is OK. Or result from
+     *         {@code jarsigner}. Or a message from this method.
      * @throws IOException
      *             if any occurred.
      * @throws InterruptedException
@@ -99,7 +100,11 @@ public class Signer {
          */
 
         final String result = console.toString().trim();
-        if (result.isEmpty()) {
+        /*
+         * TODO JDK 7 shows a warning for missing option `-tsa` (Timestamp
+         * Authorization).
+         */
+        if (result.isEmpty() || result.matches("(?sim)^jar signed.+")) {
             final String oldName = targetFile.getName();
             String newName;
             if (oldName.matches("(?si).*?unsigned.+")) {

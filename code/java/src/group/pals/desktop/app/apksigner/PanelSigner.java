@@ -428,11 +428,7 @@ public class PanelSigner extends JPanel {
                     mTargetFile, mKeyfile, mTextPassword.getPassword(),
                     String.valueOf(mCbxAlias.getSelectedItem()),
                     mTextAliasPassword.getPassword());
-            /*
-             * TODO JDK 7 shows a warning for missing option `-tsa` (Timestamp
-             * Authorization).
-             */
-            if (Texts.isEmpty(info) || info.matches("(?sim)^jar signed.+"))
+            if (Texts.isEmpty(info))
                 Dlg.showInfoMsg(Messages.getString(R.string.msg_file_is_signed));
             else
                 Dlg.showErrMsg(Messages.getString(

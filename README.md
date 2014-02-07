@@ -1,6 +1,6 @@
 # apk-signer
 
-* Version: 1.8.4
+* Version: 1.8.5
 
 ### Feel free to contact us at:
 
@@ -39,6 +39,10 @@ We hope this project will be always useful for everyone.
 
 
 # HISTORY
+
+* Version 1.8.5
+    + *Release:* February 08, 2014
+    + Fix module Signer.
 
 * Version 1.8.4
     + *Release:* February 07, 2014

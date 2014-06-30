@@ -118,7 +118,7 @@ We hope this project will be always useful for everyone.
 
 * Version 1.7.1
     + *Initialize:* July 1st, 2013
-    + *Release:* July 01, 2013
+    + *Release:* July 1st, 2013
     + Optimize code, fix some bugs...
 
 * Version 1.7
